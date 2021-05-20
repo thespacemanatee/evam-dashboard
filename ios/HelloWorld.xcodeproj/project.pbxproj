@@ -114,7 +114,6 @@
 				D3F58F1669D6473B53413163 /* Pods-HelloWorld-HelloWorldTests.debug.xcconfig */,
 				D9304D14D9696DB124E1E5C9 /* Pods-HelloWorld-HelloWorldTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};

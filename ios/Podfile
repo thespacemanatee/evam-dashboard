@@ -12,6 +12,8 @@ target 'HelloWorld' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-ble-plx', :path => '../node_modules/react-native-ble-plx'
+
   target 'HelloWorldTests' do
     inherit! :complete
     # Pods for testing
