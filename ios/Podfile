@@ -12,7 +12,6 @@ target 'EVAM' do
     :hermes_enabled => false
   )
 
-  pod 'react-native-ble-plx', :path => '../node_modules/react-native-ble-plx'
 
   target 'EVAMTests' do
     inherit! :complete
