@@ -23,7 +23,8 @@ module.exports = {
     'react/display-name': 'off',
     'react/prop-types': 'off',
     'prettier/prettier': 'error',
-    'no-use-before-define': ['error', { variables: false }],
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
     'react/jsx-filename-extension': [0, { extensions: ['.js', '.jsx'] }],
   },
 };

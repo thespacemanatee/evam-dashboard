@@ -5,9 +5,15 @@
       location = "group:misc.swift">
    </FileRef>
    <FileRef
-      location = "group:HelloWorld.xcodeproj">
+      location = "group:EVAM.xcworkspace">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/thespacemanatee/Documents/GitHub/evam-dashboard/ios/EVAM.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:EVAM.xcodeproj">
    </FileRef>
 </Workspace>
