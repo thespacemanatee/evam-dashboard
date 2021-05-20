@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { ImageProps, StyleSheet, View, ViewStyle, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ImageProps,
+  StyleSheet,
+  View,
+  ViewStyle,
+  Alert,
+  FlatList,
+} from 'react-native';
 import {
   Button,
   Icon,
@@ -19,6 +26,7 @@ import {
 } from '../features/settings/settingsSlice';
 import { requestLocationPermissions } from '../utils/utils';
 import LoadingIndicator from '../components/LoadingIndicator';
+import DeviceCard from '../components/DeviceCard';
 
 const styles = StyleSheet.create({
   screen: {
@@ -41,7 +49,7 @@ const styles = StyleSheet.create({
 const DrawerIcon = props => <Icon {...props} name='menu-outline' />;
 
 const Dashboard = ({ navigation }) => {
-  const count = useAppSelector(state => state.settings.devices);
+  const devices = useAppSelector(state => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -88,6 +96,12 @@ const Dashboard = ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      manager.destroy();
+    };
+  }, []);
+
   return (
     <View style={styles.screen}>
       <TopNavigation
@@ -102,6 +116,11 @@ const Dashboard = ({ navigation }) => {
           onPress={scanDevices}>
           SCAN
         </Button>
+        <FlatList
+          keyExtractor={item => item.id}
+          data={devices}
+          renderItem={({ item }) => <DeviceCard device={item} />}
+        />
       </Layout>
     </View>
   );

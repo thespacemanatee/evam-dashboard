@@ -19,7 +19,7 @@ export const settingsSlice = createSlice({
   initialState,
   reducers: {
     addDevice: (state, action: PayloadAction<Device>) => {
-      if (!state.devices.includes(action.payload)) {
+      if (!state.devices.some(e => e.id === action.payload.id)) {
         state.devices.push(action.payload);
       }
     },

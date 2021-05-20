@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Device } from 'react-native-ble-plx';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Device } from 'react-native-ble-plx';
+import { Buffer } from 'buffer';
+
+import { RootStackParamList } from '../navigation/index';
 
 type DeviceCardProps = {
   device: Device;
@@ -22,7 +25,7 @@ const styles = StyleSheet.create({
 });
 
 const DeviceCard = ({ device }: DeviceCardProps) => {
-  const navigation = useNavigation<StackNavigationProp<any>>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [isConnected, setIsConnected] = useState(false);
 
@@ -41,9 +44,14 @@ const DeviceCard = ({ device }: DeviceCardProps) => {
       <Text>{`Is connected : ${isConnected}`}</Text>
       <Text>{`RSSI : ${device.rssi}`}</Text>
       {/* Decode the ble device manufacturer which is encoded with the base64 algorithm */}
-      <Text>
-        {`Manufacturer : ${btoa(device.manufacturerData?.replace(/[=]/g, ''))}`}
-      </Text>
+      {device.manufacturerData ? (
+        <Text>
+          {`Manufacturer : ${Buffer.from(
+            device.manufacturerData.replace(/[=]/g, ''),
+            'base64',
+          ).toString('ascii')}`}
+        </Text>
+      ) : null}
       <Text>{`ServiceData : ${device.serviceData}`}</Text>
       <Text>{`UUIDS : ${device.serviceUUIDs}`}</Text>
     </TouchableOpacity>
