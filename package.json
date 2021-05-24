@@ -50,7 +50,7 @@
     "@types/react-test-renderer": "^17.0.1",
     "@ui-kitten/metro-config": "^5.1.0",
     "babel-jest": "^26.6.3",
-    "eslint": "^7.2.0",
+    "eslint": "^7.27.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.66.0",
     "react-test-renderer": "17.0.1",
