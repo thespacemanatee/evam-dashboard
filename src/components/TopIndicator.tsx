@@ -1,18 +1,14 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import {
-  MAX_WIDTH,
-  TOP_INDICATOR_HEIGHT,
-  TOP_INDICATOR_WIDTH,
-} from '../utils/config';
+import { FINAL_TOP_INDICATOR_HEIGHT, MAX_WIDTH } from '../utils/config';
 
 const TopIndicator = props => {
   return (
     <Svg
       {...props}
       width={`${MAX_WIDTH}`}
-      height={`${TOP_INDICATOR_HEIGHT * (MAX_WIDTH / TOP_INDICATOR_WIDTH)}`}
+      height={`${FINAL_TOP_INDICATOR_HEIGHT}`}
       viewBox='0 0 1867 121'
       fill='none'>
       <Circle

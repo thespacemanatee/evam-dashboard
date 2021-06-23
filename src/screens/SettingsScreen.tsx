@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ImageProps,
-  StyleSheet,
-  View,
-  ViewStyle,
-  Alert,
-  FlatList,
-  Button,
-} from 'react-native';
+import { StyleSheet, View, Alert, FlatList, Button } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -37,7 +29,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Dashboard = ({ navigation }) => {
+const SettingsScreen = ({ navigation }) => {
   const devices = useAppSelector(state => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
 
@@ -94,4 +86,4 @@ const Dashboard = ({ navigation }) => {
   );
 };
 
-export default Dashboard;
+export default SettingsScreen;

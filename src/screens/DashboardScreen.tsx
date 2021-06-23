@@ -1,67 +1,72 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import {
-  BASE_GRAPHIC_HEIGHT,
-  BASE_GRAPHIC_WIDTH,
-  MAX_WIDTH,
+  FINAL_BASE_GRAPHIC_HEIGHT,
+  FINAL_TOP_INDICATOR_HEIGHT,
 } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
 import TopIndicator from '../components/TopIndicator';
+import SpeedIndicator from '../components/SpeedIndicator';
+import LeftTachometer from '../components/LeftTachometer';
+import RightTachometer from '../components/RightTachometer';
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'black',
   },
+  topIndicator: {
+    marginTop: 16,
+    position: 'absolute',
+  },
   baseGraphic: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: BASE_GRAPHIC_HEIGHT * (MAX_WIDTH / BASE_GRAPHIC_WIDTH),
+    height: FINAL_BASE_GRAPHIC_HEIGHT,
   },
-  text: {
-    textAlign: 'center',
-  },
-  scanButton: {
-    marginVertical: 16,
-  },
-  indicator: {
+  analogIndicators: {
     position: 'absolute',
-    right: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    bottom: 16,
+    left: 0,
+    right: 0,
+  },
+  settingsButton: {
+    position: 'absolute',
+    right: 16,
+    top: FINAL_TOP_INDICATOR_HEIGHT + 16,
   },
 });
 
-const Dashboard = ({ navigation }) => {
+const DashboardScreen = ({ navigation }) => {
+  const handleSettings = () => {
+    navigation.navigate('Settings');
+  };
+
   return (
     <View style={styles.screen}>
-      <TopIndicator style={{ marginTop: 16, position: 'absolute' }} />
+      <TopIndicator style={styles.topIndicator} />
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <View
-          style={{
-            alignItems: 'flex-end',
-          }}>
-          <Text
-            style={{
-              color: 'white',
-              fontFamily: 'Digital-Numbers',
-              fontSize: 200,
-            }}>
-            88.8
-          </Text>
-          <Text
-            style={{
-              color: 'white',
-              fontFamily: 'Gotham-Narrow',
-              fontSize: 20,
-            }}>
-            KM/H
-          </Text>
-        </View>
+      <View style={styles.analogIndicators}>
+        <LeftTachometer />
+        <SpeedIndicator />
+        <RightTachometer />
       </View>
+      <TouchableOpacity onPress={handleSettings} style={styles.settingsButton}>
+        <Ionicons name='settings-outline' size={32} color='gray' />
+      </TouchableOpacity>
     </View>
   );
 };
 
-export default Dashboard;
+export default DashboardScreen;

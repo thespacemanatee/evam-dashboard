@@ -6,23 +6,14 @@ import DashboardScreen from '../screens/DashboardScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import DeviceScreen from '../screens/DeviceScreen';
 
-const BluetoothStackNavigator = () => {
-  const { Navigator, Screen } = createStackNavigator();
-  return (
-    <Navigator headerMode='none'>
-      <Screen name='Settings' component={SettingsScreen} />
-      <Screen name='Device' component={DeviceScreen} />
-    </Navigator>
-  );
-};
-
 const AppNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
     <NavigationContainer>
       <Navigator headerMode='none'>
         <Screen name='Dashboard' component={DashboardScreen} />
-        <Screen name='BluetoothStack' component={BluetoothStackNavigator} />
+        <Screen name='Settings' component={SettingsScreen} />
+        <Screen name='Device' component={DeviceScreen} />
       </Navigator>
     </NavigationContainer>
   );
