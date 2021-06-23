@@ -6,16 +6,8 @@ import {
   ViewStyle,
   Alert,
   FlatList,
-} from 'react-native';
-import {
   Button,
-  Icon,
-  Layout,
-  Text,
-  Spinner,
-  TopNavigation,
-  TopNavigationAction,
-} from '@ui-kitten/components';
+} from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -25,7 +17,6 @@ import {
   resetDevices,
 } from '../features/settings/settingsSlice';
 import { requestLocationPermissions } from '../utils/utils';
-import LoadingIndicator from '../components/LoadingIndicator';
 import DeviceCard from '../components/DeviceCard';
 
 const styles = StyleSheet.create({
@@ -46,8 +37,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const DrawerIcon = props => <Icon {...props} name='menu-outline' />;
-
 const Dashboard = ({ navigation }) => {
   const devices = useAppSelector(state => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
@@ -55,15 +44,6 @@ const Dashboard = ({ navigation }) => {
   const dispatch = useAppDispatch();
 
   const manager = new BleManager();
-
-  const DrawerAction = () => (
-    <TopNavigationAction
-      icon={DrawerIcon}
-      onPress={() => {
-        navigation.openDrawer();
-      }}
-    />
-  );
 
   const scanDevices = async () => {
     setBluetoothLoading(true);
@@ -104,24 +84,12 @@ const Dashboard = ({ navigation }) => {
 
   return (
     <View style={styles.screen}>
-      <TopNavigation
-        title='Settings'
-        alignment='center'
-        accessoryLeft={DrawerAction}
+      <Button onPress={scanDevices} title='SCAN' />
+      <FlatList
+        keyExtractor={item => item.id}
+        data={devices}
+        renderItem={({ item }) => <DeviceCard device={item} />}
       />
-      <Layout style={styles.container}>
-        <Button
-          style={styles.scanButton}
-          accessoryLeft={() => <LoadingIndicator loading={bluetoothLoading} />}
-          onPress={scanDevices}>
-          SCAN
-        </Button>
-        <FlatList
-          keyExtractor={item => item.id}
-          data={devices}
-          renderItem={({ item }) => <DeviceCard device={item} />}
-        />
-      </Layout>
     </View>
   );
 };

@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Service } from 'react-native-ble-plx';
-import { Button } from '@ui-kitten/components';
 
 import { RootStackParamList } from '../navigation';
 import ServiceCard from '../components/ServiceCard';
@@ -76,7 +75,7 @@ const DeviceScreen = ({
   return (
     <>
       <FlatList data={services} renderItem={renderDevices} />
-      <Button onPress={disconnectDevice}>DISCONNECT</Button>
+      <Button onPress={disconnectDevice} title='DISCONNECT' />
       <View>
         <View style={styles.header}>
           <Text>{`Id : ${device.id}`}</Text>

@@ -1,21 +1,24 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+
 import {
-  Icon,
-  Layout,
-  Text,
-  TopNavigation,
-  TopNavigationAction,
-} from '@ui-kitten/components';
+  BASE_GRAPHIC_HEIGHT,
+  BASE_GRAPHIC_WIDTH,
+  MAX_WIDTH,
+} from '../utils/config';
+import BaseGraphic from '../../assets/base-graphic.png';
+import TopIndicator from '../components/TopIndicator';
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    backgroundColor: 'black',
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    // alignItems: 'center',
+  baseGraphic: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: BASE_GRAPHIC_HEIGHT * (MAX_WIDTH / BASE_GRAPHIC_WIDTH),
   },
   text: {
     textAlign: 'center',
@@ -29,29 +32,34 @@ const styles = StyleSheet.create({
   },
 });
 
-const DrawerIcon = props => <Icon {...props} name='menu-outline' />;
-
 const Dashboard = ({ navigation }) => {
-  const DrawerAction = () => (
-    <TopNavigationAction
-      icon={DrawerIcon}
-      onPress={() => {
-        navigation.openDrawer();
-      }}
-    />
-  );
   return (
     <View style={styles.screen}>
-      <TopNavigation
-        title='Dashboard'
-        alignment='center'
-        accessoryLeft={DrawerAction}
-      />
-      <Layout style={styles.container}>
-        <Text style={styles.text} category='h1'>
-          Welcome to EVAM 😻
-        </Text>
-      </Layout>
+      <TopIndicator style={{ marginTop: 16, position: 'absolute' }} />
+      <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{
+            alignItems: 'flex-end',
+          }}>
+          <Text
+            style={{
+              color: 'white',
+              fontFamily: 'Digital-Numbers',
+              fontSize: 200,
+            }}>
+            88.8
+          </Text>
+          <Text
+            style={{
+              color: 'white',
+              fontFamily: 'Gotham-Narrow',
+              fontSize: 20,
+            }}>
+            KM/H
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
