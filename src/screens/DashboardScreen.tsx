@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-start',
     bottom: 16,
     left: 0,
     right: 0,
@@ -45,6 +44,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     top: FINAL_TOP_INDICATOR_HEIGHT + 16,
+  },
+  leftTachometer: {
+    marginRight: 40,
+  },
+  rightTachometer: {
+    marginLeft: 40,
   },
 });
 
@@ -55,12 +60,12 @@ const DashboardScreen = ({ navigation }) => {
 
   return (
     <View style={styles.screen}>
-      <TopIndicator style={styles.topIndicator} />
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
+      <TopIndicator style={styles.topIndicator} />
       <View style={styles.analogIndicators}>
-        <LeftTachometer />
-        <SpeedIndicator />
-        <RightTachometer />
+        <SpeedIndicator style={{ position: 'absolute' }} />
+        <LeftTachometer style={styles.leftTachometer} />
+        <RightTachometer style={styles.rightTachometer} />
       </View>
       <TouchableOpacity onPress={handleSettings} style={styles.settingsButton}>
         <Ionicons name='settings-outline' size={32} color='gray' />
