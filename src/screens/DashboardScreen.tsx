@@ -38,7 +38,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     bottom: 16,
     left: 0,
-    right: 0,
+    right: 30,
+  },
+  speedIndicator: {
+    position: 'absolute',
   },
   settingsButton: {
     position: 'absolute',
@@ -46,10 +49,10 @@ const styles = StyleSheet.create({
     top: FINAL_TOP_INDICATOR_HEIGHT + 16,
   },
   leftTachometer: {
-    marginRight: 40,
+    marginRight: 50,
   },
   rightTachometer: {
-    marginLeft: 40,
+    marginLeft: 50,
   },
 });
 
@@ -63,7 +66,7 @@ const DashboardScreen = ({ navigation }) => {
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
       <TopIndicator style={styles.topIndicator} />
       <View style={styles.analogIndicators}>
-        <SpeedIndicator style={{ position: 'absolute' }} />
+        <SpeedIndicator style={styles.speedIndicator} />
         <LeftTachometer style={styles.leftTachometer} />
         <RightTachometer style={styles.rightTachometer} />
       </View>
