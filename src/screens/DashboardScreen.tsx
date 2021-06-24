@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ImageBackground,
   StyleSheet,
   View,
   TouchableOpacity,
+  Pressable,
+  Text,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
 
 import {
   FINAL_BASE_GRAPHIC_HEIGHT,
@@ -23,8 +26,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   topIndicator: {
-    marginTop: 16,
     position: 'absolute',
+    top: 16,
   },
   baseGraphic: {
     position: 'absolute',
@@ -39,9 +42,11 @@ const styles = StyleSheet.create({
     bottom: 16,
     left: 0,
     right: 30,
+    alignItems: 'flex-end',
   },
   speedIndicator: {
     position: 'absolute',
+    top: 0,
   },
   settingsButton: {
     position: 'absolute',
@@ -54,11 +59,39 @@ const styles = StyleSheet.create({
   rightTachometer: {
     marginLeft: 50,
   },
+  tachoButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  tachoText: {
+    color: 'white',
+    fontFamily: 'Gotham-Narrow',
+  },
 });
 
 const DashboardScreen = ({ navigation }) => {
+  const brakeProgress = useSharedValue(0);
+  const throttleProgress = useSharedValue(0);
+
   const handleSettings = () => {
     navigation.navigate('Settings');
+  };
+
+  const handleBrakeIn = () => {
+    brakeProgress.value = withTiming(1, { duration: 1000 });
+  };
+
+  const handleThrottleIn = () => {
+    throttleProgress.value = withTiming(1, { duration: 1000 });
+  };
+
+  const handleBrakeOut = () => {
+    brakeProgress.value = withTiming(0, { duration: 1000 });
+  };
+
+  const handleThrottleOut = () => {
+    throttleProgress.value = withTiming(0, { duration: 1000 });
   };
 
   return (
@@ -66,9 +99,27 @@ const DashboardScreen = ({ navigation }) => {
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
       <TopIndicator style={styles.topIndicator} />
       <View style={styles.analogIndicators}>
+        <Pressable
+          android_ripple={{ color: '#000000 ' }}
+          onPressIn={handleBrakeIn}
+          onPressOut={handleBrakeOut}
+          style={styles.tachoButton}>
+          <Text style={styles.tachoText}>BRAKE</Text>
+        </Pressable>
         <SpeedIndicator style={styles.speedIndicator} />
-        <LeftTachometer style={styles.leftTachometer} />
-        <RightTachometer style={styles.rightTachometer} />
+        <View style={styles.leftTachometer}>
+          <LeftTachometer progress={brakeProgress} />
+        </View>
+        <View style={styles.rightTachometer}>
+          <RightTachometer progress={throttleProgress} />
+        </View>
+        <Pressable
+          android_ripple={{ color: '#000000 ' }}
+          onPressIn={handleThrottleIn}
+          onPressOut={handleThrottleOut}
+          style={styles.tachoButton}>
+          <Text style={styles.tachoText}>THROTTLE</Text>
+        </Pressable>
       </View>
       <TouchableOpacity onPress={handleSettings} style={styles.settingsButton}>
         <Ionicons name='settings-outline' size={32} color='gray' />

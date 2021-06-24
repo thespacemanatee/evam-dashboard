@@ -42,6 +42,8 @@ module.exports = {
       },
     ],
     'react/jsx-closing-bracket-location': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
   },
   settings: {
     'import/resolver': {
