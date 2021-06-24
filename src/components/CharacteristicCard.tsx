@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Characteristic } from 'react-native-ble-plx';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { encode as atob, decode as btoa } from 'base-64';
 
 type CharacteristicCardProps = {
   char: Characteristic;

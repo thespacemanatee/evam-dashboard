@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Device } from 'react-native-ble-plx';
-import { Buffer } from 'buffer';
+import { decode as btoa } from 'base-64';
 
 import { RootStackParamList } from '../navigation/index';
 
@@ -39,21 +39,14 @@ const DeviceCard = ({ device }: DeviceCardProps) => {
       style={styles.container}
       // navigate to the Device Screen
       onPress={() => navigation.navigate('Device', { device })}>
-      <Text>{`Id : ${device.id}`}</Text>
-      <Text>{`Name : ${device.name}`}</Text>
-      <Text>{`Is connected : ${isConnected}`}</Text>
+      <Text>{`ID: ${device.id}`}</Text>
+      <Text>{`Name: ${device.name}`}</Text>
+      <Text>{`Connected: ${isConnected}`}</Text>
       <Text>{`RSSI : ${device.rssi}`}</Text>
-      {/* Decode the ble device manufacturer which is encoded with the base64 algorithm */}
       {device.manufacturerData ? (
-        <Text>
-          {`Manufacturer : ${Buffer.from(
-            device.manufacturerData.replace(/[=]/g, ''),
-            'base64',
-          ).toString('ascii')}`}
-        </Text>
+        <Text>{`Manufacturer : ${btoa(device.manufacturerData)}`}</Text>
       ) : null}
-      <Text>{`ServiceData : ${device.serviceData}`}</Text>
-      <Text>{`UUIDS : ${device.serviceUUIDs}`}</Text>
+      <Text>{`UUIDs: ${device.serviceUUIDs}`}</Text>
     </TouchableOpacity>
   );
 };

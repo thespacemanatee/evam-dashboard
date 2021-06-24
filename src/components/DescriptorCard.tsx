@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Descriptor } from 'react-native-ble-plx';
+import { decode as btoa } from 'base-64';
 
 type DescriptorCardProps = {
   descriptor: Descriptor;

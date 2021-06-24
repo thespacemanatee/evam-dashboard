@@ -1,11 +1,10 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 import { StatusBar } from 'react-native';
 import * as Font from 'expo-font';
 
-import { store, persistor } from './app/store';
+import { store } from './app/store';
 import AppNavigator from './navigation/AppNavigator';
 
 const App = (): React.ReactFragment => {
@@ -21,10 +20,8 @@ const App = (): React.ReactFragment => {
   }
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <StatusBar hidden />
-        <AppNavigator />
-      </PersistGate>
+      <StatusBar hidden />
+      <AppNavigator />
     </Provider>
   );
 };
