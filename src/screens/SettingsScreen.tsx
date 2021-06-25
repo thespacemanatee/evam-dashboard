@@ -3,11 +3,7 @@ import { StyleSheet, View, Alert, FlatList, Button } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  addDevice,
-  removeDevice,
-  resetDevices,
-} from '../features/settings/settingsSlice';
+import { addDevice, resetDevices } from '../features/settings/settingsSlice';
 import { requestLocationPermissions } from '../utils/utils';
 import DeviceCard from '../components/DeviceCard';
 
@@ -42,27 +38,28 @@ const SettingsScreen = ({ navigation }) => {
 
   const scanDevices = async () => {
     setBluetoothLoading(true);
+    const stopScan = () => {
+      if (isMounted.current) {
+        manager.current?.stopDeviceScan();
+        setBluetoothLoading(false);
+      }
+    };
     const granted = await requestLocationPermissions();
     if (granted) {
       manager.current?.startDeviceScan(null, null, (error, scannedDevice) => {
+        const scanTimeout = setTimeout(() => {
+          stopScan();
+        }, 5000);
         if (error) {
+          clearTimeout(scanTimeout);
+          stopScan();
           Alert.alert('Error', 'Could not scan for bluetooth devices');
         }
 
-        // if a device is detected add the device to the list by dispatching the action into the reducer
         if (scannedDevice) {
-          //   console.log(scannedDevice.manufacturerData);
           dispatch(addDevice(scannedDevice));
         }
       });
-
-      // stop scanning devices after 5 seconds
-      setTimeout(() => {
-        if (isMounted.current) {
-          manager.current?.stopDeviceScan();
-          setBluetoothLoading(false);
-        }
-      }, 5000);
     } else {
       setBluetoothLoading(false);
       Alert.alert('Error', 'Bluetooth permissions not granted', [

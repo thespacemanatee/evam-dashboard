@@ -8,6 +8,7 @@ import Svg, {
   LinearGradient,
   Stop,
 } from 'react-native-svg';
+import { FINAL_TACHOMETER_HEIGHT } from '../utils/config';
 import AnimatedBar from './AnimatedBar';
 
 const paths = [
@@ -50,7 +51,11 @@ interface RightTachometerProps {
 }
 
 const RightTachometer = ({ progress }: RightTachometerProps) => (
-  <Svg width={265.3} height={400} viewBox='0 0 566 848' fill='none'>
+  <Svg
+    width={FINAL_TACHOMETER_HEIGHT * 0.66325}
+    height={FINAL_TACHOMETER_HEIGHT}
+    viewBox='0 0 566 848'
+    fill='none'>
     <Mask
       id='mask0'
       mask-type='alpha'

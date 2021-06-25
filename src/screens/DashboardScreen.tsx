@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '101.75%',
-    height: FINAL_BASE_GRAPHIC_HEIGHT,
+    height: FINAL_BASE_GRAPHIC_HEIGHT * 1.1,
   },
   analogIndicators: {
     position: 'absolute',
@@ -50,20 +50,33 @@ const styles = StyleSheet.create({
   },
   settingsButton: {
     position: 'absolute',
-    right: 16,
+    right: 32,
     top: FINAL_TOP_INDICATOR_HEIGHT + 16,
   },
   leftTachometer: {
     right: 70,
   },
   rightTachometer: {
-    left: 90,
+    left: 70,
   },
-  tachoButton: {
+  tachoButtonRight: {
+    position: 'absolute',
+    alignItems: 'center',
     backgroundColor: 'red',
+    left: 32,
+    width: 100,
     padding: 10,
     borderRadius: 5,
     zIndex: 10,
+  },
+  tachoButtonLeft: {
+    position: 'absolute',
+    alignItems: 'center',
+    backgroundColor: 'red',
+    right: 32,
+    width: 100,
+    padding: 10,
+    borderRadius: 5,
   },
   tachoText: {
     color: 'white',
@@ -104,10 +117,13 @@ const DashboardScreen = ({ navigation }) => {
           android_ripple={{ color: '#000000 ' }}
           onPressIn={handleBrakeIn}
           onPressOut={handleBrakeOut}
-          style={styles.tachoButton}>
+          style={styles.tachoButtonRight}>
           <Text style={styles.tachoText}>BRAKE</Text>
         </Pressable>
-        <SpeedIndicator style={styles.speedIndicator} />
+        <SpeedIndicator
+          style={styles.speedIndicator}
+          progress={throttleProgress}
+        />
         <View style={styles.leftTachometer}>
           <LeftTachometer progress={brakeProgress} />
         </View>
@@ -118,12 +134,12 @@ const DashboardScreen = ({ navigation }) => {
           android_ripple={{ color: '#000000 ' }}
           onPressIn={handleThrottleIn}
           onPressOut={handleThrottleOut}
-          style={styles.tachoButton}>
+          style={styles.tachoButtonLeft}>
           <Text style={styles.tachoText}>THROTTLE</Text>
         </Pressable>
       </View>
       <TouchableOpacity onPress={handleSettings} style={styles.settingsButton}>
-        <Ionicons name='settings-outline' size={32} color='gray' />
+        <Ionicons name='bluetooth-outline' size={32} color='gray' />
       </TouchableOpacity>
     </View>
   );

@@ -10,6 +10,7 @@ import Svg, {
 import Animated from 'react-native-reanimated';
 
 import AnimatedBar from './AnimatedBar';
+import { FINAL_TACHOMETER_HEIGHT } from '../utils/config';
 
 const paths = [
   'M371.5 834L371.5 814.013L-2.96439e-05 814.013L-3.05176e-05 834L371.5 834Z',
@@ -51,7 +52,11 @@ interface LeftTachometerProps {
 }
 
 const LeftTachometer = ({ progress }: LeftTachometerProps) => (
-  <Svg width={265.3} height={400} viewBox='0 0 564 848' fill='none'>
+  <Svg
+    width={FINAL_TACHOMETER_HEIGHT * 0.66325}
+    height={FINAL_TACHOMETER_HEIGHT}
+    viewBox='0 0 564 848'
+    fill='none'>
     <Mask
       id='mask0'
       mask-type='alpha'
