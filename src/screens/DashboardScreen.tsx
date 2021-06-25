@@ -1,20 +1,14 @@
 import React from 'react';
-import {
-  ImageBackground,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { ImageBackground, StyleSheet, View } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { FINAL_BASE_GRAPHIC_HEIGHT } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
-import TopIndicator from '../components/TopIndicator';
 import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
 import RightTachometer from '../components/RightTachometer';
 import ThemedButton from '../components/ThemedButton';
+import ThemedIconButton from '../components/ThemedIconButton';
 
 const styles = StyleSheet.create({
   screen: {
@@ -40,10 +34,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
   },
-  settingsButton: {
+  featureButtonsContainer: {
     position: 'absolute',
-    right: 16,
+    right: 32,
     top: 16,
+  },
+  featureButton: {
+    marginVertical: 10,
   },
   leftTachometer: {
     right: 70,
@@ -111,9 +108,23 @@ const DashboardScreen = ({ navigation }) => {
           THROTTLE
         </ThemedButton>
       </View>
-      <TouchableOpacity onPress={handleSettings} style={styles.settingsButton}>
-        <Ionicons name='bluetooth-outline' size={32} color='gray' />
-      </TouchableOpacity>
+      <View style={styles.featureButtonsContainer}>
+        <ThemedIconButton
+          onPress={handleSettings}
+          iconName='bluetooth-outline'
+          style={styles.featureButton}
+        />
+        <ThemedIconButton
+          onPress={handleSettings}
+          iconName='thermometer-outline'
+          style={styles.featureButton}
+        />
+        <ThemedIconButton
+          onPress={handleSettings}
+          iconName='sunny-outline'
+          style={styles.featureButton}
+        />
+      </View>
     </View>
   );
 };
