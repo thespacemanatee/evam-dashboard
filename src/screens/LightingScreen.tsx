@@ -16,7 +16,9 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'black',
-    justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
     alignItems: 'center',
   },
   baseGraphic: {
@@ -65,17 +67,19 @@ const LightingScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
-      <AnimateableText
-        animatedProps={animatedProps}
-        style={[{ color: 'white', fontSize: 16 }, animatedStyle]}
-      />
-      <View style={styles.colorPickerContainer}>
-        <ColorPicker
-          ref={pickerRef}
-          sliderSize={40}
-          onColorChangeComplete={handleColorChangeComplete}
-          onColorChange={handleColorChange}
+      <View style={styles.container}>
+        <AnimateableText
+          animatedProps={animatedProps}
+          style={[{ color: 'white', fontSize: 16 }, animatedStyle]}
         />
+        <View style={styles.colorPickerContainer}>
+          <ColorPicker
+            ref={pickerRef}
+            sliderSize={40}
+            onColorChangeComplete={handleColorChangeComplete}
+            onColorChange={handleColorChange}
+          />
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         <ThemedIconButton
