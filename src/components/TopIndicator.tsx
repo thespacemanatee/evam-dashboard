@@ -7,7 +7,7 @@ const TopIndicator = props => {
   return (
     <Svg
       {...props}
-      width={`${MAX_WIDTH}`}
+      width='100%'
       height={`${FINAL_TOP_INDICATOR_HEIGHT}`}
       viewBox='0 0 1867 121'
       fill='none'>

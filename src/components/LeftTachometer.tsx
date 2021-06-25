@@ -51,7 +51,7 @@ interface LeftTachometerProps {
 }
 
 const LeftTachometer = ({ progress }: LeftTachometerProps) => (
-  <Svg width={199} height={300} viewBox='0 0 564 848' fill='none'>
+  <Svg width={265.3} height={400} viewBox='0 0 564 848' fill='none'>
     <Mask
       id='mask0'
       mask-type='alpha'

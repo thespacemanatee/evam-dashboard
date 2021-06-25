@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   baseGraphic: {
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    width: '101.75%',
     height: FINAL_BASE_GRAPHIC_HEIGHT,
   },
   analogIndicators: {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     bottom: 16,
     left: 0,
-    right: 30,
+    right: 0,
     alignItems: 'flex-end',
   },
   speedIndicator: {
@@ -54,15 +54,16 @@ const styles = StyleSheet.create({
     top: FINAL_TOP_INDICATOR_HEIGHT + 16,
   },
   leftTachometer: {
-    marginRight: 50,
+    right: 70,
   },
   rightTachometer: {
-    marginLeft: 50,
+    left: 90,
   },
   tachoButton: {
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
+    zIndex: 10,
   },
   tachoText: {
     color: 'white',

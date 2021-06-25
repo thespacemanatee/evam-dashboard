@@ -73,13 +73,14 @@ const DeviceScreen = ({
           Alert.alert('Disconnected', 'Device was disconnected');
         });
       } catch (err) {
+        console.error(err);
         Alert.alert('Error', 'Could not connect to selected device');
         // navigation.goBack();
       }
     };
 
     getDeviceInformation();
-  }, [device, disconnectDevice, isConnected, navigation]);
+  }, []);
 
   const renderServices = ({ item }) => {
     return <ServiceCard service={item} />;

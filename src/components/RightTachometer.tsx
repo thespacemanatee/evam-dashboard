@@ -50,7 +50,7 @@ interface RightTachometerProps {
 }
 
 const RightTachometer = ({ progress }: RightTachometerProps) => (
-  <Svg width={199} height={300} viewBox='0 0 566 848' fill='none'>
+  <Svg width={265.3} height={400} viewBox='0 0 566 848' fill='none'>
     <Mask
       id='mask0'
       mask-type='alpha'
