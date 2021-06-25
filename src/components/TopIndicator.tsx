@@ -34,7 +34,11 @@ const TopIndicator = props => {
   }, []);
 
   return (
-    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+    <View
+      style={{
+        alignItems: 'center',
+        backgroundColor: 'black',
+      }}>
       <Svg
         width='60%'
         height={FINAL_TOP_INDICATOR_HEIGHT}
@@ -42,10 +46,10 @@ const TopIndicator = props => {
         fill='none'
         {...props}>
         {transforms.map((transform, key) => (
-          // eslint-disable-next-line react/no-array-index-key
           <AnimatedIndicator
             transform={transform}
             progress={progress}
+            // eslint-disable-next-line react/no-array-index-key
             key={key}
           />
         ))}

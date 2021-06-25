@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   featureButtonsContainer: {
     position: 'absolute',
     right: 32,
-    top: 16,
   },
   featureButton: {
     marginVertical: 10,
@@ -63,7 +62,15 @@ const DashboardScreen = ({ navigation }) => {
   const throttleProgress = useSharedValue(0);
 
   const handleSettings = () => {
-    navigation.navigate('Settings');
+    navigation.navigate('SettingsStack');
+  };
+
+  const handleTemperature = () => {
+    navigation.navigate('Temperature');
+  };
+
+  const handleLighting = () => {
+    navigation.navigate('Lighting');
   };
 
   const handleBrakeIn = () => {
@@ -115,12 +122,12 @@ const DashboardScreen = ({ navigation }) => {
           style={styles.featureButton}
         />
         <ThemedIconButton
-          onPress={handleSettings}
+          onPress={handleTemperature}
           iconName='thermometer-outline'
           style={styles.featureButton}
         />
         <ThemedIconButton
-          onPress={handleSettings}
+          onPress={handleLighting}
           iconName='sunny-outline'
           style={styles.featureButton}
         />
