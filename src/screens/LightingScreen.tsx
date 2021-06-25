@@ -31,11 +31,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    right: 32,
+    left: 32,
     top: 0,
-  },
-  backButton: {
-    marginVertical: 10,
   },
 });
 
@@ -84,7 +81,6 @@ const LightingScreen = ({ navigation }) => {
         <ThemedIconButton
           onPress={() => navigation.goBack()}
           iconName='chevron-back-outline'
-          style={styles.backButton}
         />
       </View>
     </View>

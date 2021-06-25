@@ -9,6 +9,7 @@ import LeftTachometer from '../components/LeftTachometer';
 import RightTachometer from '../components/RightTachometer';
 import ThemedButton from '../components/ThemedButton';
 import ThemedIconButton from '../components/ThemedIconButton';
+import BatteryStatistics from '../components/BatteryStatistics';
 
 const styles = StyleSheet.create({
   screen: {
@@ -21,14 +22,18 @@ const styles = StyleSheet.create({
     width: '101.75%',
     height: FINAL_BASE_GRAPHIC_HEIGHT * 1.1,
   },
+  batteryContainer: {
+    position: 'absolute',
+    right: 32,
+  },
   analogIndicators: {
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'flex-end',
     bottom: 16,
     left: 0,
     right: 0,
-    alignItems: 'flex-end',
   },
   speedIndicator: {
     position: 'absolute',
@@ -36,10 +41,10 @@ const styles = StyleSheet.create({
   },
   featureButtonsContainer: {
     position: 'absolute',
-    right: 32,
+    left: 32,
   },
   featureButton: {
-    marginVertical: 10,
+    marginBottom: 16,
   },
   leftTachometer: {
     right: 70,
@@ -47,13 +52,8 @@ const styles = StyleSheet.create({
   rightTachometer: {
     left: 70,
   },
-  buttonRight: {
-    position: 'absolute',
-    left: 32,
-  },
-  buttonLeft: {
-    position: 'absolute',
-    right: 32,
+  button: {
+    zIndex: 10,
   },
 });
 
@@ -92,11 +92,14 @@ const DashboardScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
+      <View style={styles.batteryContainer}>
+        <BatteryStatistics />
+      </View>
       <View style={styles.analogIndicators}>
         <ThemedButton
           onPressIn={handleBrakeIn}
           onPressOut={handleBrakeOut}
-          style={styles.buttonRight}>
+          style={styles.button}>
           BRAKE
         </ThemedButton>
         <View style={styles.speedIndicator}>
@@ -111,7 +114,7 @@ const DashboardScreen = ({ navigation }) => {
         <ThemedButton
           onPressIn={handleThrottleIn}
           onPressOut={handleThrottleOut}
-          style={styles.buttonLeft}>
+          style={styles.button}>
           THROTTLE
         </ThemedButton>
       </View>
