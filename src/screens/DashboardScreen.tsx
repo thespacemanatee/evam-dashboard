@@ -4,30 +4,22 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Pressable,
-  Text,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 
-import {
-  FINAL_BASE_GRAPHIC_HEIGHT,
-  FINAL_TOP_INDICATOR_HEIGHT,
-} from '../utils/config';
+import { FINAL_BASE_GRAPHIC_HEIGHT } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
 import TopIndicator from '../components/TopIndicator';
 import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
 import RightTachometer from '../components/RightTachometer';
+import ThemedButton from '../components/ThemedButton';
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'black',
-  },
-  topIndicator: {
-    width: '100%',
-    alignItems: 'center',
   },
   baseGraphic: {
     position: 'absolute',
@@ -51,7 +43,6 @@ const styles = StyleSheet.create({
   settingsButton: {
     position: 'absolute',
     right: 32,
-    top: 32,
   },
   leftTachometer: {
     right: 70,
@@ -59,28 +50,13 @@ const styles = StyleSheet.create({
   rightTachometer: {
     left: 70,
   },
-  tachoButtonRight: {
+  buttonRight: {
     position: 'absolute',
-    alignItems: 'center',
-    backgroundColor: 'red',
     left: 32,
-    width: 100,
-    padding: 10,
-    borderRadius: 5,
-    zIndex: 10,
   },
-  tachoButtonLeft: {
+  buttonLeft: {
     position: 'absolute',
-    alignItems: 'center',
-    backgroundColor: 'red',
     right: 32,
-    width: 100,
-    padding: 10,
-    borderRadius: 5,
-  },
-  tachoText: {
-    color: 'white',
-    fontFamily: 'Gotham-Narrow',
   },
 });
 
@@ -111,17 +87,13 @@ const DashboardScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
-      <View style={styles.topIndicator}>
-        <TopIndicator />
-      </View>
       <View style={styles.analogIndicators}>
-        <Pressable
-          android_ripple={{ color: '#000000 ' }}
+        <ThemedButton
           onPressIn={handleBrakeIn}
           onPressOut={handleBrakeOut}
-          style={styles.tachoButtonRight}>
-          <Text style={styles.tachoText}>BRAKE</Text>
-        </Pressable>
+          style={styles.buttonRight}>
+          BRAKE
+        </ThemedButton>
         <View style={styles.speedIndicator}>
           <SpeedIndicator progress={throttleProgress} />
         </View>
@@ -131,13 +103,12 @@ const DashboardScreen = ({ navigation }) => {
         <View style={styles.rightTachometer}>
           <RightTachometer progress={throttleProgress} />
         </View>
-        <Pressable
-          android_ripple={{ color: '#000000 ' }}
+        <ThemedButton
           onPressIn={handleThrottleIn}
           onPressOut={handleThrottleOut}
-          style={styles.tachoButtonLeft}>
-          <Text style={styles.tachoText}>THROTTLE</Text>
-        </Pressable>
+          style={styles.buttonLeft}>
+          THROTTLE
+        </ThemedButton>
       </View>
       <TouchableOpacity onPress={handleSettings} style={styles.settingsButton}>
         <Ionicons name='bluetooth-outline' size={32} color='gray' />

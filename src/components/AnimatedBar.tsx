@@ -19,7 +19,7 @@ const AnimatedBar = ({ d, progress, index }: AnimatedBarProps) => {
     return {
       opacity: interpolate(
         progress.value,
-        [index * 0.03125, (index + 1) * 0.03125],
+        [index * (1 / 32), (index + 1) * (1 / 32)],
         [0.2, 1],
         Extrapolate.CLAMP,
       ),
