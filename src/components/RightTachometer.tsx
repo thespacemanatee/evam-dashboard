@@ -8,6 +8,7 @@ import Svg, {
   LinearGradient,
   Stop,
 } from 'react-native-svg';
+
 import { FINAL_TACHOMETER_HEIGHT } from '../utils/config';
 import AnimatedBar from './AnimatedBar';
 

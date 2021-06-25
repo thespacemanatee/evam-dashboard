@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import {
   ImageBackground,
   StyleSheet,
@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   topIndicator: {
-    position: 'absolute',
-    top: 16,
+    width: '100%',
+    alignItems: 'center',
   },
   baseGraphic: {
     position: 'absolute',
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   settingsButton: {
     position: 'absolute',
     right: 32,
-    top: FINAL_TOP_INDICATOR_HEIGHT + 16,
+    top: 32,
   },
   leftTachometer: {
     right: 70,
@@ -111,7 +111,9 @@ const DashboardScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
-      <TopIndicator style={styles.topIndicator} />
+      <View style={styles.topIndicator}>
+        <TopIndicator />
+      </View>
       <View style={styles.analogIndicators}>
         <Pressable
           android_ripple={{ color: '#000000 ' }}
@@ -120,10 +122,9 @@ const DashboardScreen = ({ navigation }) => {
           style={styles.tachoButtonRight}>
           <Text style={styles.tachoText}>BRAKE</Text>
         </Pressable>
-        <SpeedIndicator
-          style={styles.speedIndicator}
-          progress={throttleProgress}
-        />
+        <View style={styles.speedIndicator}>
+          <SpeedIndicator progress={throttleProgress} />
+        </View>
         <View style={styles.leftTachometer}>
           <LeftTachometer progress={brakeProgress} />
         </View>
