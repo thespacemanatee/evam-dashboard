@@ -12,16 +12,18 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Navigator
+        headerMode='float'
         screenOptions={{
-          headerTitle: () => <TopIndicator />,
-          headerStyle: {
-            backgroundColor: 'black',
-            borderBottomWidth: 0,
-            elevation: 0,
-          },
+          headerTransparent: true,
+          headerBackground: () => <TopIndicator />,
+          headerTitle: '',
         }}>
         <Screen name='Dashboard' component={DashboardScreen} />
-        <Screen name='Settings' component={SettingsScreen} />
+        <Screen
+          name='Settings'
+          component={SettingsScreen}
+          options={{ headerShown: false }}
+        />
         <Screen name='Device' component={DeviceScreen} />
       </Navigator>
     </NavigationContainer>

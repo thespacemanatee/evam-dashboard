@@ -38,11 +38,12 @@ const styles = StyleSheet.create({
   },
   speedIndicator: {
     position: 'absolute',
-    top: 0,
+    top: 20,
   },
   settingsButton: {
     position: 'absolute',
-    right: 32,
+    right: 16,
+    top: 16,
   },
   leftTachometer: {
     right: 70,

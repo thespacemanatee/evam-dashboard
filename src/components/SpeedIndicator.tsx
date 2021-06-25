@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'Gotham-Narrow',
     fontSize: MAX_HEIGHT / 15,
-    bottom: 0,
+    bottom: -10,
     right: MAX_HEIGHT / 6,
   },
 });

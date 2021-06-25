@@ -34,7 +34,7 @@ const TopIndicator = props => {
   }, []);
 
   return (
-    <View style={{ alignItems: 'center', marginTop: 16 }}>
+    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
       <Svg
         width='60%'
         height={FINAL_TOP_INDICATOR_HEIGHT}
