@@ -4,7 +4,7 @@ import colors from '../utils/colors';
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    borderRadius: 10,
+    borderRadius: 6,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
