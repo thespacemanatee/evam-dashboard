@@ -43,8 +43,7 @@ const TopIndicator = props => {
         width='60%'
         height={FINAL_TOP_INDICATOR_HEIGHT}
         viewBox='0 0 1423 121'
-        fill='none'
-        {...props}>
+        fill='none'>
         {transforms.map((transform, key) => (
           <AnimatedIndicator
             transform={transform}

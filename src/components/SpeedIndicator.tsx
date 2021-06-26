@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
-  Extrapolate,
   interpolate,
   useAnimatedProps,
 } from 'react-native-reanimated';
@@ -29,16 +28,16 @@ interface SpeedIndicatorProps {
   progress: Animated.SharedValue<number>;
 }
 
-const SpeedIndicator = ({ progress, ...props }: SpeedIndicatorProps) => {
+const SpeedIndicator = ({ progress }: SpeedIndicatorProps) => {
   const animatedProps = useAnimatedProps(() => {
     return {
-      text: interpolate(progress.value, [0, 1], [0, 50], Extrapolate.CLAMP)
+      text: interpolate(progress.value, [0, 1], [0, 50])
         .toFixed(1)
         .padStart(4, '0'),
     };
   });
   return (
-    <View {...props} style={styles.container}>
+    <View style={styles.container}>
       <AnimateableText
         animatedProps={animatedProps}
         style={styles.speedIndicator}
