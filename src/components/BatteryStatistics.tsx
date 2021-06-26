@@ -9,6 +9,8 @@ import {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
+
+import { MAX_WIDTH } from '../utils/config';
 import Battery from './Battery';
 
 const styles = StyleSheet.create({
@@ -22,12 +24,12 @@ const styles = StyleSheet.create({
   stats: {
     color: 'white',
     fontFamily: 'Digital-Numbers',
-    fontSize: 80,
+    fontSize: MAX_WIDTH / 25,
+    marginTop: 5,
   },
   units: {
     fontFamily: 'Gotham-Narrow',
     color: 'white',
-    marginBottom: 16,
     fontSize: 20,
   },
 });

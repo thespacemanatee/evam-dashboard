@@ -8,9 +8,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Path, Rect, Mask, G } from 'react-native-svg';
 
+import { FINAL_BATTERY_HEIGHT } from '../utils/config';
+
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-const Battery = props => {
+const Battery = () => {
   const batteryLevel = useSharedValue(0);
 
   const animatedProps = useAnimatedProps(() => {
@@ -25,15 +27,15 @@ const Battery = props => {
       -1,
       true,
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Svg
-      width={125}
-      height={66.88}
+      width={FINAL_BATTERY_HEIGHT}
+      height={FINAL_BATTERY_HEIGHT * 0.535}
       viewBox='0 0 260 139'
-      fill='none'
-      {...props}>
+      fill='none'>
       <Path
         d='M22.4605 111.842L22.4605 26.6717C22.4605 15.2859 31.6905 6.05589 43.0763 6.05589L232.844 6.05589C244.23 6.05589 253.46 15.2859 253.46 26.6717L253.46 111.842C253.46 123.228 244.23 132.458 232.844 132.458L43.0763 132.458C31.6905 132.458 22.4605 123.228 22.4605 111.842Z'
         fill='black'

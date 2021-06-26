@@ -14,6 +14,13 @@ interface AnimatedBarProps {
   index: number;
 }
 
+/**
+ * ! Deprecated: Old implementation
+ * @param d svg d string
+ * @param progress progress shared animation value
+ * @param index index of animated bar in tachometer
+ * @returns jsx element
+ */
 const AnimatedBar = ({ d, progress, index }: AnimatedBarProps) => {
   const animatedProps = useAnimatedProps(() => {
     return {
