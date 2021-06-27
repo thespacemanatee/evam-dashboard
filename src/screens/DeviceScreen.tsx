@@ -80,6 +80,7 @@ const DeviceScreen = ({
     };
 
     getDeviceInformation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderServices = ({ item }) => {

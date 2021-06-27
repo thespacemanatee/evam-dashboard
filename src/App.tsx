@@ -7,7 +7,7 @@ import * as Font from 'expo-font';
 import { store } from './app/store';
 import AppNavigator from './navigation/AppNavigator';
 
-const App = (): React.ReactFragment => {
+const App = (): React.ReactElement => {
   const [loaded] = Font.useFonts({
     // eslint-disable-next-line global-require
     'Gotham-Narrow': require('../assets/fonts/Gotham-Narrow-Book.otf'),
@@ -16,7 +16,7 @@ const App = (): React.ReactFragment => {
   });
 
   if (!loaded) {
-    return null;
+    return <></>;
   }
   return (
     <Provider store={store}>
