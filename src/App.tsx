@@ -8,12 +8,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { store } from './app/store';
 import AppNavigator from './navigation/AppNavigator';
 
-const App = (): React.ReactNode => {
+const App = (): React.ReactElement | null => {
   const [loaded, setLoaded] = useState(false);
 
   const loadAssets = async () => {
     await SplashScreen.preventAutoHideAsync();
-    Font.loadAsync({
+    await Font.loadAsync({
       // eslint-disable-next-line global-require
       'Gotham-Narrow': require('../assets/fonts/Gotham-Narrow-Book.otf'),
       // eslint-disable-next-line global-require
