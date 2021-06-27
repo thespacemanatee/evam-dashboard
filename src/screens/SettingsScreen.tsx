@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 });
 
 const SettingsScreen = ({ navigation }) => {
-  const devices = useAppSelector(state => state.settings.devices);
+  const devices = useAppSelector((state) => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
   const manager = useRef(new BleManager());
   const isMounted = useRef(false);
@@ -97,7 +97,7 @@ const SettingsScreen = ({ navigation }) => {
         </View>
       </View>
       <FlatList
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         data={devices}
         renderItem={({ item }) => <DeviceCard device={item} />}
       />

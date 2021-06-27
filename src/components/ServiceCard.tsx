@@ -35,9 +35,9 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
     const getCharacteristics = async () => {
       const newCharacteristics = await service.characteristics();
       setCharacteristics(newCharacteristics);
-      newCharacteristics.forEach(async characteristic => {
+      newCharacteristics.forEach(async (characteristic) => {
         const newDescriptors = await characteristic.descriptors();
-        setDescriptors(prev => [...new Set([...prev, ...newDescriptors])]);
+        setDescriptors((prev) => [...new Set([...prev, ...newDescriptors])]);
       });
     };
 
@@ -48,18 +48,18 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => {
-          setAreCharacteristicsVisible(prev => !prev);
+          setAreCharacteristicsVisible((prev) => !prev);
         }}>
         <Text>{`UUID : ${service.uuid}`}</Text>
       </TouchableOpacity>
 
       {areCharacteristicsVisible &&
         characteristics &&
-        characteristics.map(char => (
+        characteristics.map((char) => (
           <CharacteristicCard key={char.id} char={char} />
         ))}
       {descriptors &&
-        descriptors.map(descriptor => (
+        descriptors.map((descriptor) => (
           <DescriptorCard key={descriptor.id} descriptor={descriptor} />
         ))}
     </View>

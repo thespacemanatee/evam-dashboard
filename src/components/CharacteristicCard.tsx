@@ -36,8 +36,8 @@ const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
 
   useEffect(() => {
     // discover characteristic descriptors
-    char.descriptors().then(desc => {
-      desc[0]?.read().then(val => {
+    char.descriptors().then((desc) => {
+      desc[0]?.read().then((val) => {
         if (val) {
           setDescriptor(btoa(val.value));
         }
@@ -63,7 +63,7 @@ const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
       .then(() => {
         console.warn('Success');
       })
-      .catch(e => console.log('Error', e));
+      .catch((e) => console.log('Error', e));
   };
 
   return (

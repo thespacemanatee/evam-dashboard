@@ -58,11 +58,11 @@ const LightingScreen = ({ navigation }) => {
    * TODO Persist color settings in redux
    * @param color string
    */
-  const handleColorChange = color => {
+  const handleColorChange = (color) => {
     colorAnim.value = color;
   };
 
-  const handleColorChangeComplete = color => {};
+  const handleColorChangeComplete = (color) => {};
 
   return (
     <View style={styles.screen}>
