@@ -12,6 +12,12 @@ import TopIndicator from '../components/TopIndicator';
 const AppNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
 
+  const config = {
+    cardStyleInterpolator: () => {
+      return {};
+    },
+  };
+
   const SettingsStack = () => (
     <Navigator>
       <Screen name='Settings' component={SettingsScreen} />
@@ -27,21 +33,9 @@ const AppNavigator = () => {
         <Screen
           name='Temperature'
           component={TemperatureScreen}
-          options={{
-            cardStyleInterpolator: () => {
-              return {};
-            },
-          }}
+          options={config}
         />
-        <Screen
-          name='Lighting'
-          component={LightingScreen}
-          options={{
-            cardStyleInterpolator: () => {
-              return {};
-            },
-          }}
-        />
+        <Screen name='Lighting' component={LightingScreen} options={config} />
       </Navigator>
     </>
   );
