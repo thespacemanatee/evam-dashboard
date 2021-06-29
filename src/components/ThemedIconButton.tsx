@@ -1,6 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  ViewStyle,
+  StyleProp,
+} from 'react-native';
 import colors from '../utils/colors';
 
 const styles = StyleSheet.create({
@@ -14,7 +19,7 @@ const styles = StyleSheet.create({
 interface ThemedIconButtonProps {
   onPress: () => void;
   iconName: keyof typeof Ionicons.glyphMap;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 const ThemedIconButton = ({

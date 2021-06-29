@@ -8,8 +8,8 @@ import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
 import RightTachometer from '../components/RightTachometer';
 import ThemedButton from '../components/ThemedButton';
-import ThemedIconButton from '../components/ThemedIconButton';
 import BatteryStatistics from '../components/BatteryStatistics';
+import DashboardButtonGroup from '../components/DashboardMenu';
 
 const styles = StyleSheet.create({
   screen: {
@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 32,
   },
+  menuContainer: {
+    position: 'absolute',
+    left: 32,
+  },
   analogIndicators: {
     position: 'absolute',
     flexDirection: 'row',
@@ -38,13 +42,6 @@ const styles = StyleSheet.create({
   speedIndicator: {
     position: 'absolute',
     top: 20,
-  },
-  featureButtonsContainer: {
-    position: 'absolute',
-    left: 32,
-  },
-  featureButton: {
-    marginBottom: 16,
   },
   leftTachometer: {
     right: 70,
@@ -60,18 +57,6 @@ const styles = StyleSheet.create({
 const DashboardScreen = ({ navigation }) => {
   const brakeProgress = useSharedValue(0);
   const throttleProgress = useSharedValue(0);
-
-  const handleSettings = () => {
-    navigation.navigate('SettingsStack');
-  };
-
-  const handleTemperature = () => {
-    navigation.navigate('Temperature');
-  };
-
-  const handleLighting = () => {
-    navigation.navigate('Lighting');
-  };
 
   const handleBrakeIn = () => {
     brakeProgress.value = withTiming(1, { duration: 1000 });
@@ -118,22 +103,8 @@ const DashboardScreen = ({ navigation }) => {
           THROTTLE
         </ThemedButton>
       </View>
-      <View style={styles.featureButtonsContainer}>
-        <ThemedIconButton
-          onPress={handleSettings}
-          iconName='bluetooth-outline'
-          style={styles.featureButton}
-        />
-        <ThemedIconButton
-          onPress={handleTemperature}
-          iconName='thermometer-outline'
-          style={styles.featureButton}
-        />
-        <ThemedIconButton
-          onPress={handleLighting}
-          iconName='sunny-outline'
-          style={styles.featureButton}
-        />
+      <View style={styles.menuContainer}>
+        <DashboardButtonGroup />
       </View>
     </View>
   );
