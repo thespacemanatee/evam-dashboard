@@ -1,5 +1,10 @@
 import React, { useRef } from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import ColorPicker from 'react-native-wheel-color-picker';
 import AnimateableText from 'react-native-animateable-text';
 import {
@@ -7,10 +12,10 @@ import {
   useSharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
 
-import { FINAL_BASE_GRAPHIC_HEIGHT } from '../utils/config';
+import { FINAL_BASE_GRAPHIC_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
-import ThemedIconButton from '../components/ThemedIconButton';
 
 const styles = StyleSheet.create({
   screen: {
@@ -82,10 +87,13 @@ const LightingScreen = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <ThemedIconButton
-          onPress={() => navigation.goBack()}
-          iconName='chevron-back-outline'
-        />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons
+            name='chevron-back-outline'
+            size={MENU_ICON_SIZE}
+            color='white'
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

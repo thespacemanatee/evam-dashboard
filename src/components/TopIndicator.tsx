@@ -30,8 +30,7 @@ const TopIndicator = () => {
   const progress = useSharedValue(0);
   useEffect(() => {
     progress.value = withRepeat(withTiming(1, { duration: 2000 }), -1, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [progress]);
 
   return (
     <View

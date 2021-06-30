@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   },
   button: {
     zIndex: 10,
+    marginHorizontal: 20,
   },
 });
 

@@ -1,9 +1,14 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-import { FINAL_BASE_GRAPHIC_HEIGHT } from '../utils/config';
+import { FINAL_BASE_GRAPHIC_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
-import ThemedIconButton from '../components/ThemedIconButton';
 
 const styles = StyleSheet.create({
   screen: {
@@ -28,10 +33,13 @@ const TemperatureScreen = ({ navigation }) => {
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
       <View style={styles.buttonContainer}>
-        <ThemedIconButton
-          onPress={() => navigation.goBack()}
-          iconName='chevron-back-outline'
-        />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons
+            name='chevron-back-outline'
+            size={MENU_ICON_SIZE}
+            color='white'
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

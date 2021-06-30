@@ -19,13 +19,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     padding: 10,
     alignItems: 'center',
-    width: 150,
+    width: 125,
   },
   buttonText: {
     color: 'white',
     fontFamily: 'Gotham-Narrow',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 16,
   },
 });
 

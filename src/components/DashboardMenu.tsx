@@ -11,10 +11,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { MAX_HEIGHT } from '../utils/config';
+import { MAX_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
 import MenuButton from './MenuButton';
 
-const ICON_SIZE = 32;
 const SPACING = 20;
 const MENU_SIZE = 160;
 
@@ -31,17 +30,17 @@ const styles = StyleSheet.create({
   },
   bluetoothButton: {
     position: 'absolute',
-    top: ICON_SIZE + SPACING,
+    top: MENU_ICON_SIZE + SPACING,
     left: -MENU_SIZE,
   },
   temperatureButton: {
     position: 'absolute',
-    top: (ICON_SIZE + SPACING) * 2,
+    top: (MENU_ICON_SIZE + SPACING) * 2,
     left: -MENU_SIZE,
   },
   lightingButton: {
     position: 'absolute',
-    top: (ICON_SIZE + SPACING) * 3,
+    top: (MENU_ICON_SIZE + SPACING) * 3,
     left: -MENU_SIZE,
   },
 });
@@ -82,7 +81,7 @@ const DashboardMenu = () => {
   });
 
   const closeAnimatedStyle = useAnimatedStyle(() => {
-    const rotate = `${interpolate(mainProgress.value, [0, 1], [90, 0])}deg`;
+    const rotate = `${interpolate(mainProgress.value, [0, 1], [0, 90])}deg`;
     const opacity = interpolate(mainProgress.value, [0, 1], [0, 1]);
     return {
       transform: [{ rotate }],
@@ -136,34 +135,34 @@ const DashboardMenu = () => {
         containerStyle={styles.mainButton}
         onPress={handleMenuPress}>
         <Animated.View style={cogAnimatedStyle}>
-          <Ionicons name='cog-outline' size={ICON_SIZE} color='white' />
+          <Ionicons name='cog-outline' size={MENU_ICON_SIZE} color='white' />
         </Animated.View>
       </TouchableOpacity>
       <TouchableOpacity
         containerStyle={styles.mainButton}
         onPress={handleMenuPress}>
         <Animated.View style={closeAnimatedStyle}>
-          <Ionicons name='close-outline' size={ICON_SIZE} color='white' />
+          <Ionicons name='close-outline' size={MENU_ICON_SIZE} color='white' />
         </Animated.View>
       </TouchableOpacity>
       <View style={styles.menuButtons}>
         <MenuButton
           iconName='bluetooth-outline'
-          iconSize={ICON_SIZE}
+          iconSize={MENU_ICON_SIZE}
           label='Bluetooth'
           style={[styles.bluetoothButton, bluetoothAnimatedStyle]}
           onPress={handleSettings}
         />
         <MenuButton
           iconName='thermometer-outline'
-          iconSize={ICON_SIZE}
+          iconSize={MENU_ICON_SIZE}
           label='Temperature'
           style={[styles.temperatureButton, temperatureAnimatedStyle]}
           onPress={handleTemperature}
         />
         <MenuButton
           iconName='sunny-outline'
-          iconSize={ICON_SIZE}
+          iconSize={MENU_ICON_SIZE}
           label='Lighting'
           style={[styles.lightingButton, lightingAnimatedStyle]}
           onPress={handleLighting}
