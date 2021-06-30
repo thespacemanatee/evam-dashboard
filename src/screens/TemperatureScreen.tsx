@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { FINAL_BASE_GRAPHIC_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
+import CarGraphic from '../components/CarGraphic';
 
 const styles = StyleSheet.create({
   screen: {
@@ -24,7 +25,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     left: 32,
-    top: 0,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -32,6 +37,9 @@ const TemperatureScreen = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
+      <View style={styles.container}>
+        <CarGraphic />
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons
