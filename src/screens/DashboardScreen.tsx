@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { FINAL_BASE_GRAPHIC_HEIGHT } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
 import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
 import RightTachometer from '../components/RightTachometer';
-import ThemedButton from '../components/ThemedButton';
 import BatteryStatistics from '../components/BatteryStatistics';
 import DashboardButtonGroup from '../components/DashboardMenu';
+import { useAppSelector } from '../app/hooks';
+import { CORE_CHARACTERISTIC_UUID } from '../utils/constants';
+import { bleManagerRef } from '../utils/BleHelper';
+import { decodeBleString, getCharacteristic } from '../utils/utils';
 
 const styles = StyleSheet.create({
   screen: {
@@ -55,25 +59,40 @@ const styles = StyleSheet.create({
   },
 });
 
-const DashboardScreen = ({ navigation }) => {
-  const brakeProgress = useSharedValue(0);
+const DashboardScreen = () => {
+  const deviceUUID = useAppSelector(
+    (state) => state.settings.selectedDeviceUUID,
+  );
+  const speedProgress = useSharedValue(0);
   const throttleProgress = useSharedValue(0);
+  const brakeProgress = useSharedValue(0);
 
-  const handleBrakeIn = () => {
-    brakeProgress.value = withTiming(1, { duration: 1000 });
-  };
-
-  const handleThrottleIn = () => {
-    throttleProgress.value = withTiming(1, { duration: 1000 });
-  };
-
-  const handleBrakeOut = () => {
-    brakeProgress.value = withTiming(0, { duration: 1000 });
-  };
-
-  const handleThrottleOut = () => {
-    throttleProgress.value = withTiming(0, { duration: 1000 });
-  };
+  useFocusEffect(
+    useCallback(() => {
+      const getDevice = async () => {
+        const device = await bleManagerRef.current?.devices([deviceUUID]);
+        if (device) {
+          const characteristic = await getCharacteristic(
+            deviceUUID,
+            CORE_CHARACTERISTIC_UUID,
+          );
+          characteristic?.monitor((err, cha) => {
+            if (err) {
+              console.warn('Disconnected BLE device', err);
+              return;
+            }
+            const decodedString = decodeBleString(cha?.value);
+            speedProgress.value = withTiming(decodedString.charCodeAt(0) / 100);
+            throttleProgress.value = withTiming(
+              decodedString.charCodeAt(1) / 100,
+            );
+            brakeProgress.value = withTiming(decodedString.charCodeAt(2) / 100);
+          });
+        }
+      };
+      getDevice();
+    }, [brakeProgress, deviceUUID, speedProgress, throttleProgress]),
+  );
 
   return (
     <View style={styles.screen}>
@@ -82,12 +101,6 @@ const DashboardScreen = ({ navigation }) => {
         <BatteryStatistics />
       </View>
       <View style={styles.analogIndicators}>
-        <ThemedButton
-          onPressIn={handleBrakeIn}
-          onPressOut={handleBrakeOut}
-          style={styles.button}>
-          BRAKE
-        </ThemedButton>
         <View style={styles.speedIndicator}>
           <SpeedIndicator progress={throttleProgress} />
         </View>
@@ -97,12 +110,6 @@ const DashboardScreen = ({ navigation }) => {
         <View style={styles.rightTachometer}>
           <RightTachometer progress={throttleProgress} />
         </View>
-        <ThemedButton
-          onPressIn={handleThrottleIn}
-          onPressOut={handleThrottleOut}
-          style={styles.button}>
-          THROTTLE
-        </ThemedButton>
       </View>
       <View style={styles.menuContainer}>
         <DashboardButtonGroup />

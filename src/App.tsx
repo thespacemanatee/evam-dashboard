@@ -4,9 +4,11 @@ import { Provider } from 'react-redux';
 import { StatusBar } from 'react-native';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { BleManager } from 'react-native-ble-plx';
 
 import { store } from './app/store';
 import AppNavigator from './navigation/AppNavigator';
+import { bleManagerRef } from './utils/BleHelper';
 
 const App = (): React.ReactElement | null => {
   const [loaded, setLoaded] = useState(false);
@@ -26,6 +28,7 @@ const App = (): React.ReactElement | null => {
       setLoaded(true);
       SplashScreen.hideAsync();
     });
+    bleManagerRef.current = new BleManager();
   });
 
   if (!loaded) {

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Alert, FlatList, Button } from 'react-native';
-import { BleManager } from 'react-native-ble-plx';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addDevice, resetDevices } from '../features/settings/settingsSlice';
 import { requestLocationPermissions } from '../utils/utils';
 import DeviceCard from '../components/DeviceCard';
+import { bleManagerRef } from '../utils/BleHelper';
 
 const styles = StyleSheet.create({
   screen: {
@@ -28,10 +28,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen = () => {
   const devices = useAppSelector((state) => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
-  const manager = useRef(new BleManager());
   const isMounted = useRef(false);
 
   const dispatch = useAppDispatch();
@@ -40,26 +39,31 @@ const SettingsScreen = ({ navigation }) => {
     setBluetoothLoading(true);
     const stopScan = () => {
       if (isMounted.current) {
-        manager.current?.stopDeviceScan();
+        bleManagerRef.current?.stopDeviceScan();
         setBluetoothLoading(false);
       }
     };
     const granted = await requestLocationPermissions();
     if (granted) {
-      manager.current?.startDeviceScan(null, null, (error, scannedDevice) => {
-        const scanTimeout = setTimeout(() => {
-          stopScan();
-        }, 5000);
-        if (error) {
-          clearTimeout(scanTimeout);
-          stopScan();
-          Alert.alert('Error', 'Could not scan for bluetooth devices');
-        }
+      bleManagerRef.current?.startDeviceScan(
+        null,
+        null,
+        (error, scannedDevice) => {
+          const scanTimeout = setTimeout(() => {
+            stopScan();
+          }, 5000);
+          if (error) {
+            console.error(error);
+            clearTimeout(scanTimeout);
+            stopScan();
+            Alert.alert('Error', 'Could not scan for bluetooth devices');
+          }
 
-        if (scannedDevice) {
-          dispatch(addDevice(scannedDevice));
-        }
-      });
+          if (scannedDevice) {
+            dispatch(addDevice(scannedDevice));
+          }
+        },
+      );
     } else {
       setBluetoothLoading(false);
       Alert.alert('Error', 'Bluetooth permissions not granted', [
@@ -73,7 +77,6 @@ const SettingsScreen = ({ navigation }) => {
     isMounted.current = true;
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      manager.current?.destroy();
       isMounted.current = false;
     };
   }, []);

@@ -3,6 +3,7 @@ import { StyleSheet, Text } from 'react-native';
 import { Characteristic } from 'react-native-ble-plx';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { encode as atob, decode as btoa } from 'base-64';
+import { decodeBleString } from '../utils/utils';
 
 type CharacteristicCardProps = {
   char: Characteristic;
@@ -23,13 +24,6 @@ const styles = StyleSheet.create({
   descriptor: { color: 'blue', fontSize: 24 },
 });
 
-const decodeBleString = (value: string | undefined | null): string => {
-  if (!value) {
-    return '';
-  }
-  return btoa(value).charCodeAt(0);
-};
-
 const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
   const [measure, setMeasure] = useState('');
   const [descriptor, setDescriptor] = useState<string | null>('');
@@ -39,7 +33,7 @@ const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
     char.descriptors().then((desc) => {
       desc[0]?.read().then((val) => {
         if (val) {
-          setDescriptor(btoa(val.value));
+          setDescriptor(btoa(val.value || ''));
         }
       });
     });
@@ -47,11 +41,11 @@ const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
     // read on the characteristic 👏
     char.monitor((err, cha) => {
       if (err) {
-        console.warn('ERROR');
+        console.warn('Disconnected BLE device', err);
         return;
       }
       // each received value has to be decoded with a Base64 algorythm you can find on the Internet (or in my repository 😉)
-      setMeasure(decodeBleString(cha?.value));
+      setMeasure(decodeBleString(cha?.value).charCodeAt(0));
     });
   }, [char]);
 

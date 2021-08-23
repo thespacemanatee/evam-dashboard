@@ -19,7 +19,7 @@ const DescriptorCard = ({ descriptor }: DescriptorCardProps) => {
         }
       });
     })();
-  }, []);
+  }, [descriptor]);
   return (
     <View style={styles.container}>
       <Text>{`${descriptor.id} -> ( ${btoa(value)} ) ( ${value} )`}</Text>
