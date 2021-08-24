@@ -71,28 +71,32 @@ const DashboardScreen = () => {
     useCallback(() => {
       let subscription: Subscription | undefined;
       const getDevice = async () => {
-        const device = await bleManagerRef.current?.devices([deviceUUID]);
-        if (device) {
-          const characteristic = await getCharacteristic(
-            deviceUUID,
-            CORE_CHARACTERISTIC_UUID,
-          );
-          subscription = characteristic?.monitor((err, cha) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            const decodedString = decodeBleString(cha?.value);
-            speedProgress.value = withTiming(decodedString.charCodeAt(0), {
-              duration: 1000,
+        try {
+          const device = await bleManagerRef.current?.devices([deviceUUID]);
+          if (device) {
+            const characteristic = await getCharacteristic(
+              deviceUUID,
+              CORE_CHARACTERISTIC_UUID,
+            );
+            subscription = characteristic?.monitor((err, cha) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              const decodedString = decodeBleString(cha?.value);
+              speedProgress.value = withTiming(decodedString.charCodeAt(0), {
+                duration: 1000,
+              });
+              throttleProgress.value = withTiming(decodedString.charCodeAt(1), {
+                duration: 1000,
+              });
+              brakeProgress.value = withTiming(decodedString.charCodeAt(2), {
+                duration: 1000,
+              });
             });
-            throttleProgress.value = withTiming(decodedString.charCodeAt(1), {
-              duration: 1000,
-            });
-            brakeProgress.value = withTiming(decodedString.charCodeAt(2), {
-              duration: 1000,
-            });
-          });
+          }
+        } catch (err) {
+          console.error(err);
         }
       };
       getDevice();

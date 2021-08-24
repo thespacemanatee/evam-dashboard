@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   colorPickerContainer: {
     width: '50%',
-    height: '90%',
+    height: '80%',
   },
   buttonContainer: {
     position: 'absolute',
