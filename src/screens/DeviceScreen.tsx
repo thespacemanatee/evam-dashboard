@@ -7,6 +7,8 @@ import { decode as btoa } from 'base-64';
 import { RootStackParamList } from '../navigation';
 import ServiceCard from '../components/ServiceCard';
 import { MAX_WIDTH } from '../utils/config';
+import { useAppDispatch } from '../app/hooks';
+import { setSelectedDeviceUUID } from '../features/settings/settingsSlice';
 
 const styles = StyleSheet.create({
   screen: {
@@ -39,13 +41,14 @@ const styles = StyleSheet.create({
 
 const DeviceScreen = ({
   route,
-  navigation,
 }: StackScreenProps<RootStackParamList, 'Device'>) => {
   // get the device object which was given through navigation params
   const { device } = route.params;
 
   const [isConnected, setIsConnected] = useState(false);
   const [services, setServices] = useState<Service[]>([]);
+
+  const dispatch = useAppDispatch();
 
   const disconnectDevice = useCallback(async () => {
     const isDeviceConnected = await device.isConnected();
@@ -59,6 +62,7 @@ const DeviceScreen = ({
       try {
         // connect to the device
         const connectedDevice = await device.connect();
+        dispatch(setSelectedDeviceUUID(device.id));
         setIsConnected(true);
 
         // discover all device services and characteristics
@@ -97,7 +101,9 @@ const DeviceScreen = ({
             <Text>{`Name : ${device.name}`}</Text>
             <Text>{`Is connected : ${isConnected}`}</Text>
             <Text>{`RSSI : ${device.rssi}`}</Text>
-            <Text>{`Manufacturer : ${btoa(device.manufacturerData)}`}</Text>
+            {device.manufacturerData && (
+              <Text>{`Manufacturer : ${btoa(device.manufacturerData)}`}</Text>
+            )}
             <Text>{`ServiceData : ${device.serviceData}`}</Text>
             <Text>{`UUIDS : ${device.serviceUUIDs}`}</Text>
           </View>

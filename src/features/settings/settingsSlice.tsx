@@ -6,11 +6,13 @@ import type { RootState } from '../../app/store';
 
 // Define a type for the slice state
 interface SettingsState {
+  selectedDeviceUUID: string;
   devices: Device[];
 }
 
 // Define the initial state using that type
 const initialState: SettingsState = {
+  selectedDeviceUUID: '',
   devices: [],
 };
 export const settingsSlice = createSlice({
@@ -23,6 +25,9 @@ export const settingsSlice = createSlice({
         state.devices.push(action.payload);
       }
     },
+    setSelectedDeviceUUID: (state, action: PayloadAction<string>) => {
+      state.selectedDeviceUUID = action.payload;
+    },
     removeDevice: (state, action: PayloadAction<Device>) => {
       state.devices = state.devices.filter((e) => e !== action.payload);
     },
@@ -33,7 +38,8 @@ export const settingsSlice = createSlice({
   },
 });
 
-export const { addDevice, removeDevice, resetDevices } = settingsSlice.actions;
+export const { addDevice, setSelectedDeviceUUID, removeDevice, resetDevices } =
+  settingsSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.settings.devices;
