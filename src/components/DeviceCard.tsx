@@ -26,7 +26,6 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, style }) => {
   return (
     <BaseCard
       style={style}
-      // navigate to the Device Screen
       onPress={() => navigation.navigate('Device', { device })}>
       <Text>{`ID: ${device.id}`}</Text>
       <Text>{`Name: ${device.name}`}</Text>
