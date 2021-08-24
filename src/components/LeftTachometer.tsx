@@ -24,7 +24,7 @@ interface LeftTachometerProps {
 const LeftTachometer = ({ progress }: LeftTachometerProps) => {
   const animatedProps = useAnimatedProps(() => {
     return {
-      height: interpolate(progress.value, [0, 1], [834, 0]),
+      height: interpolate(progress.value, [0, 100], [834, 0]),
     };
   });
   return (

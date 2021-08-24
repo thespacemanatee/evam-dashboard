@@ -25,11 +25,10 @@ const styles = StyleSheet.create({
 });
 
 const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
-  const [measure, setMeasure] = useState('');
-  const [descriptor, setDescriptor] = useState<string | null>('');
+  const [measure, setMeasure] = useState(0);
+  const [descriptor, setDescriptor] = useState('');
 
   useEffect(() => {
-    // discover characteristic descriptors
     char.descriptors().then((desc) => {
       desc[0]?.read().then((val) => {
         if (val) {
@@ -38,13 +37,11 @@ const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
       });
     });
 
-    // read on the characteristic 👏
     char.monitor((err, cha) => {
       if (err) {
-        console.warn('Disconnected BLE device', err);
+        console.error('Failed to monitor characteristic', err);
         return;
       }
-      // each received value has to be decoded with a Base64 algorythm you can find on the Internet (or in my repository 😉)
       setMeasure(decodeBleString(cha?.value).charCodeAt(0));
     });
   }, [char]);

@@ -24,7 +24,7 @@ interface RightTachometerProps {
 const RightTachometer = ({ progress }: RightTachometerProps) => {
   const animatedProps = useAnimatedProps(() => {
     return {
-      height: interpolate(progress.value, [0, 1], [834, 0]),
+      height: interpolate(progress.value, [0, 100], [834, 0]),
     };
   });
   return (

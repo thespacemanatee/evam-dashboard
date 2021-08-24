@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Alert, FlatList, Button } from 'react-native';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -31,17 +31,14 @@ const styles = StyleSheet.create({
 const SettingsScreen = () => {
   const devices = useAppSelector((state) => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
-  const isMounted = useRef(false);
 
   const dispatch = useAppDispatch();
 
   const scanDevices = async () => {
     setBluetoothLoading(true);
     const stopScan = () => {
-      if (isMounted.current) {
-        bleManagerRef.current?.stopDeviceScan();
-        setBluetoothLoading(false);
-      }
+      bleManagerRef.current?.stopDeviceScan();
+      setBluetoothLoading(false);
     };
     const granted = await requestLocationPermissions();
     if (granted) {
@@ -58,7 +55,6 @@ const SettingsScreen = () => {
             stopScan();
             Alert.alert('Error', 'Could not scan for bluetooth devices');
           }
-
           if (scannedDevice) {
             dispatch(addDevice(scannedDevice));
           }
@@ -72,14 +68,6 @@ const SettingsScreen = () => {
       ]);
     }
   };
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      isMounted.current = false;
-    };
-  }, []);
 
   return (
     <View style={styles.screen}>

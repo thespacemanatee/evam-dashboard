@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
+import { Subscription } from 'react-native-ble-plx';
 
 import { FINAL_BASE_GRAPHIC_HEIGHT } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
@@ -53,10 +54,6 @@ const styles = StyleSheet.create({
   rightTachometer: {
     left: 70,
   },
-  button: {
-    zIndex: 10,
-    marginHorizontal: 20,
-  },
 });
 
 const DashboardScreen = () => {
@@ -69,6 +66,7 @@ const DashboardScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      let subscription: Subscription | undefined;
       const getDevice = async () => {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
         if (device) {
@@ -76,21 +74,27 @@ const DashboardScreen = () => {
             deviceUUID,
             CORE_CHARACTERISTIC_UUID,
           );
-          characteristic?.monitor((err, cha) => {
+          subscription = characteristic?.monitor((err, cha) => {
             if (err) {
-              console.warn('Disconnected BLE device', err);
+              console.error('Failed to monitor characteristic', err);
               return;
             }
             const decodedString = decodeBleString(cha?.value);
-            speedProgress.value = withTiming(decodedString.charCodeAt(0) / 100);
-            throttleProgress.value = withTiming(
-              decodedString.charCodeAt(1) / 100,
-            );
-            brakeProgress.value = withTiming(decodedString.charCodeAt(2) / 100);
+            speedProgress.value = withTiming(decodedString.charCodeAt(0), {
+              duration: 1000,
+            });
+            throttleProgress.value = withTiming(decodedString.charCodeAt(1), {
+              duration: 1000,
+            });
+            brakeProgress.value = withTiming(decodedString.charCodeAt(2), {
+              duration: 1000,
+            });
           });
         }
       };
       getDevice();
+
+      return () => subscription?.remove();
     }, [brakeProgress, deviceUUID, speedProgress, throttleProgress]),
   );
 
@@ -102,7 +106,7 @@ const DashboardScreen = () => {
       </View>
       <View style={styles.analogIndicators}>
         <View style={styles.speedIndicator}>
-          <SpeedIndicator progress={throttleProgress} />
+          <SpeedIndicator progress={speedProgress} />
         </View>
         <View style={styles.leftTachometer}>
           <LeftTachometer progress={brakeProgress} />

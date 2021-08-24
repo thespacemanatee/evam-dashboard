@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
+  Extrapolate,
   interpolate,
   useAnimatedProps,
 } from 'react-native-reanimated';
@@ -31,7 +32,7 @@ interface SpeedIndicatorProps {
 const SpeedIndicator = ({ progress }: SpeedIndicatorProps) => {
   const animatedProps = useAnimatedProps(() => {
     return {
-      text: interpolate(progress.value, [0, 1], [0, 50])
+      text: interpolate(progress.value, [0, 99], [0, 99], Extrapolate.CLAMP)
         .toFixed(1)
         .padStart(4, '0'),
     };

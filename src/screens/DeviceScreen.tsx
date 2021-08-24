@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Button, FlatList, StyleSheet, Text, View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { Service } from 'react-native-ble-plx';
+import { Service, Subscription } from 'react-native-ble-plx';
 import { decode as btoa } from 'base-64';
 
 import { RootStackParamList } from '../navigation';
@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
 const DeviceScreen = ({
   route,
 }: StackScreenProps<RootStackParamList, 'Device'>) => {
-  // get the device object which was given through navigation params
   const { device } = route.params;
 
   const [isConnected, setIsConnected] = useState(false);
@@ -58,6 +57,7 @@ const DeviceScreen = ({
   }, [device]);
 
   useEffect(() => {
+    let subscription: Subscription;
     const getDeviceInformation = async () => {
       try {
         // connect to the device
@@ -65,27 +65,24 @@ const DeviceScreen = ({
         dispatch(setSelectedDeviceUUID(device.id));
         setIsConnected(true);
 
-        // discover all device services and characteristics
         const allServicesAndCharacteristics =
           await connectedDevice.discoverAllServicesAndCharacteristics();
-        // get the services only
         const discoveredServices =
           await allServicesAndCharacteristics.services();
         setServices(discoveredServices);
 
-        device.onDisconnected(() => {
+        subscription = device.onDisconnected(() => {
           Alert.alert('Disconnected', 'Device was disconnected');
         });
       } catch (err) {
         console.error(err);
         Alert.alert('Error', 'Could not connect to selected device');
-        // navigation.goBack();
       }
     };
 
     getDeviceInformation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return () => subscription.remove();
+  }, [device, dispatch]);
 
   const renderServices = ({ item }) => {
     return <ServiceCard service={item} />;
