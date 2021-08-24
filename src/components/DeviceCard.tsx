@@ -1,30 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleProp, Text, ViewStyle } from 'react-native';
 import { Device } from 'react-native-ble-plx';
 import { decode as btoa } from 'base-64';
 
 import { RootStackParamList } from '../navigation/index';
+import BaseCard from './BaseCard';
 
-type DeviceCardProps = {
+interface DeviceCardProps {
   device: Device;
-};
+  style?: StyleProp<ViewStyle>;
+}
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    marginBottom: 12,
-    borderRadius: 16,
-    shadowColor: 'rgba(60,64,67,0.3)',
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 4,
-    padding: 12,
-  },
-});
-
-const DeviceCard = ({ device }: DeviceCardProps) => {
+const DeviceCard: React.FC<DeviceCardProps> = ({ device, style }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [isConnected, setIsConnected] = useState(false);
@@ -35,8 +24,8 @@ const DeviceCard = ({ device }: DeviceCardProps) => {
   }, [device]);
 
   return (
-    <TouchableOpacity
-      style={styles.container}
+    <BaseCard
+      style={style}
       // navigate to the Device Screen
       onPress={() => navigation.navigate('Device', { device })}>
       <Text>{`ID: ${device.id}`}</Text>
@@ -47,7 +36,7 @@ const DeviceCard = ({ device }: DeviceCardProps) => {
         <Text>{`Manufacturer : ${btoa(device.manufacturerData)}`}</Text>
       ) : null}
       <Text>{`UUIDs: ${device.serviceUUIDs}`}</Text>
-    </TouchableOpacity>
+    </BaseCard>
   );
 };
 

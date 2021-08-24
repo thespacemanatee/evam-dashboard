@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Characteristic } from 'react-native-ble-plx';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { encode as atob, decode as btoa } from 'base-64';
 import { decodeBleString } from '../utils/utils';
 
-type CharacteristicCardProps = {
+interface CharacteristicCardProps {
   char: Characteristic;
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    marginVertical: 12,
-    borderRadius: 16,
-    shadowColor: 'rgba(60,64,67,0.3)',
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
-    padding: 12,
+    flex: 1,
+    flexDirection: 'row',
   },
-  measure: { color: 'red', fontSize: 24 },
-  descriptor: { color: 'blue', fontSize: 24 },
+  measureContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  measure: {
+    color: 'red',
+    fontSize: 64,
+  },
+  descriptor: {
+    color: 'blue',
+    fontSize: 24,
+  },
 });
 
-const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
+const CharacteristicCard: React.FC<CharacteristicCardProps> = ({ char }) => {
   const [measure, setMeasure] = useState(0);
   const [descriptor, setDescriptor] = useState('');
 
@@ -58,21 +62,20 @@ const CharacteristicCard = ({ char }: CharacteristicCardProps) => {
   };
 
   return (
-    <TouchableOpacity
-      key={char.uuid}
-      style={styles.container}
-      onPress={writeCharacteristic}>
-      <Text style={styles.measure}>{measure}</Text>
-      <Text style={styles.descriptor}>{descriptor}</Text>
-      <Text>{`isIndicatable : ${char.isIndicatable}`}</Text>
-      <Text>{`isNotifiable : ${char.isNotifiable}`}</Text>
-      <Text>{`isNotifying : ${char.isNotifying}`}</Text>
-      <Text>{`isReadable : ${char.isReadable}`}</Text>
-      <TouchableOpacity>
+    <View style={styles.container}>
+      <View>
+        <Text style={styles.descriptor}>{descriptor}</Text>
+        <Text>{`isIndicatable : ${char.isIndicatable}`}</Text>
+        <Text>{`isNotifiable : ${char.isNotifiable}`}</Text>
+        <Text>{`isNotifying : ${char.isNotifying}`}</Text>
+        <Text>{`isReadable : ${char.isReadable}`}</Text>
         <Text>{`isWritableWithResponse : ${char.isWritableWithResponse}`}</Text>
-      </TouchableOpacity>
-      <Text>{`isWritableWithoutResponse : ${char.isWritableWithoutResponse}`}</Text>
-    </TouchableOpacity>
+        <Text>{`isWritableWithoutResponse : ${char.isWritableWithoutResponse}`}</Text>
+      </View>
+      <View style={styles.measureContainer}>
+        <Text style={styles.measure}>{measure}</Text>
+      </View>
+    </View>
   );
 };
 

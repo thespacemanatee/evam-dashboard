@@ -10,21 +10,22 @@ import { bleManagerRef } from '../utils/BleHelper';
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    padding: 12,
-  },
-
-  text: {
-    textAlign: 'center',
+    padding: 16,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginVertical: 16,
+    marginBottom: 16,
   },
   button: {
-    width: '50%',
-    paddingHorizontal: 16,
+    flex: 0.5,
+    marginHorizontal: 8,
+  },
+  card: {
+    flex: 0.5,
+    marginBottom: 16,
+    marginHorizontal: 8,
   },
 });
 
@@ -89,8 +90,11 @@ const SettingsScreen = () => {
       </View>
       <FlatList
         keyExtractor={(item) => item.id}
+        numColumns={2}
         data={devices}
-        renderItem={({ item }) => <DeviceCard device={item} />}
+        renderItem={({ item }) => (
+          <DeviceCard device={item} style={styles.card} />
+        )}
       />
     </View>
   );
