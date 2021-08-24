@@ -7,7 +7,6 @@ import TemperatureScreen from '../screens/TemperatureScreen';
 import LightingScreen from '../screens/LightingScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import DeviceScreen from '../screens/DeviceScreen';
-import TopIndicator from '../components/TopIndicator';
 
 const AppNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
@@ -26,18 +25,15 @@ const AppNavigator = () => {
   );
 
   const DashboardStack = () => (
-    <>
-      <TopIndicator />
-      <Navigator headerMode='none'>
-        <Screen name='Dashboard' component={DashboardScreen} />
-        <Screen
-          name='Temperature'
-          component={TemperatureScreen}
-          options={config}
-        />
-        <Screen name='Lighting' component={LightingScreen} options={config} />
-      </Navigator>
-    </>
+    <Navigator headerMode='none'>
+      <Screen name='Dashboard' component={DashboardScreen} />
+      <Screen
+        name='Temperature'
+        component={TemperatureScreen}
+        options={config}
+      />
+      <Screen name='Lighting' component={LightingScreen} options={config} />
+    </Navigator>
   );
 
   return (

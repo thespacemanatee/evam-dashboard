@@ -43,7 +43,7 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({ char }) => {
 
     char.monitor((err, cha) => {
       if (err) {
-        console.error('Failed to monitor characteristic', err);
+        console.error(err);
         return;
       }
       setMeasure(decodeBleString(cha?.value).charCodeAt(0));

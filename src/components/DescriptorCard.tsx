@@ -5,11 +5,11 @@ import { decode as btoa } from 'base-64';
 
 import BaseCard from './BaseCard';
 
-type DescriptorCardProps = {
+interface DescriptorCardProps {
   descriptor: Descriptor;
-};
+}
 
-const DescriptorCard = ({ descriptor }: DescriptorCardProps) => {
+const DescriptorCard: React.FC<DescriptorCardProps> = ({ descriptor }) => {
   const [value, setValue] = useState('');
   useEffect(() => {
     (async () => {

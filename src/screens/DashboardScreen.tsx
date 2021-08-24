@@ -15,6 +15,7 @@ import { useAppSelector } from '../app/hooks';
 import { CORE_CHARACTERISTIC_UUID } from '../utils/constants';
 import { bleManagerRef } from '../utils/BleHelper';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
+import TopIndicator from '../components/TopIndicator';
 
 const styles = StyleSheet.create({
   screen: {
@@ -29,10 +30,12 @@ const styles = StyleSheet.create({
   },
   batteryContainer: {
     position: 'absolute',
+    top: 32,
     right: 32,
   },
   menuContainer: {
     position: 'absolute',
+    top: 32,
     left: 32,
   },
   analogIndicators: {
@@ -76,7 +79,7 @@ const DashboardScreen = () => {
           );
           subscription = characteristic?.monitor((err, cha) => {
             if (err) {
-              console.error('Failed to monitor characteristic', err);
+              console.error(err);
               return;
             }
             const decodedString = decodeBleString(cha?.value);
@@ -101,6 +104,7 @@ const DashboardScreen = () => {
   return (
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
+      <TopIndicator />
       <View style={styles.batteryContainer}>
         <BatteryStatistics />
       </View>
