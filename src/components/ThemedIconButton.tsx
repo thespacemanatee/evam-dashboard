@@ -22,11 +22,11 @@ interface ThemedIconButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const ThemedIconButton = ({
+const ThemedIconButton: React.FC<ThemedIconButtonProps> = ({
   onPress,
   iconName,
   style,
-}: ThemedIconButtonProps) => {
+}) => {
   return (
     <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
       <Ionicons name={iconName} size={32} color='white' />

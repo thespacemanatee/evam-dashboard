@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 import ColorPicker from 'react-native-wheel-color-picker';
 import AnimateableText from 'react-native-animateable-text';
 import {
@@ -16,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { FINAL_BASE_GRAPHIC_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
+import { RootStackParamList } from '../navigation';
 
 const styles = StyleSheet.create({
   screen: {
@@ -44,7 +46,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const LightingScreen = ({ navigation }) => {
+type Props = StackScreenProps<RootStackParamList, 'Lighting'>;
+
+const LightingScreen = ({ navigation }: Props): JSX.Element => {
   const pickerRef = useRef(null);
   const colorAnim = useSharedValue('#ffffff');
 

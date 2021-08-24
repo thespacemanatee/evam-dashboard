@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Alert, FlatList, Button } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
+import { Device } from 'react-native-ble-plx';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addDevice, resetDevices } from '../features/settings/settingsSlice';
 import { requestLocationPermissions } from '../utils/utils';
 import DeviceCard from '../components/DeviceCard';
 import { bleManagerRef } from '../utils/BleHelper';
+import { RootStackParamList } from '../navigation';
 
 const styles = StyleSheet.create({
   screen: {
@@ -29,11 +32,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const SettingsScreen = () => {
+type Props = StackScreenProps<RootStackParamList, 'Settings'>;
+
+const SettingsScreen = ({ navigation }: Props): JSX.Element => {
   const devices = useAppSelector((state) => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
 
   const dispatch = useAppDispatch();
+
+  const navigateToDevice = (device: Device) =>
+    navigation.navigate('Device', { device });
 
   const scanDevices = async () => {
     setBluetoothLoading(true);
@@ -93,7 +101,11 @@ const SettingsScreen = () => {
         numColumns={2}
         data={devices}
         renderItem={({ item }) => (
-          <DeviceCard device={item} style={styles.card} />
+          <DeviceCard
+            device={item}
+            onPress={navigateToDevice}
+            style={styles.card}
+          />
         )}
       />
     </View>

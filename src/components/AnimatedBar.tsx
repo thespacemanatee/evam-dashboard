@@ -21,7 +21,7 @@ interface AnimatedBarProps {
  * @param index index of animated bar in tachometer
  * @returns jsx element
  */
-const AnimatedBar = ({ d, progress, index }: AnimatedBarProps) => {
+const AnimatedBar: React.FC<AnimatedBarProps> = ({ d, progress, index }) => {
   const animatedProps = useAnimatedProps(() => {
     return {
       opacity: interpolate(

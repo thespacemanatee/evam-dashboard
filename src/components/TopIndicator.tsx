@@ -18,7 +18,7 @@ const transforms = [
   'matrix(1 0 0 -1 489.5 45.5)',
 ];
 
-const TopIndicator = () => {
+const TopIndicator = (): JSX.Element => {
   const progress = useSharedValue(0);
   useEffect(() => {
     progress.value = withRepeat(withTiming(1, { duration: 2000 }), -1, true);

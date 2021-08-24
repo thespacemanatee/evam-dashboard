@@ -1,6 +1,9 @@
 import { Device } from 'react-native-ble-plx';
 
 export type RootStackParamList = {
-  Home: undefined;
+  Dashboard: undefined;
+  Temperature: undefined;
+  Lighting: undefined;
+  Settings: undefined;
   Device: { device: Device };
 };

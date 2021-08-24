@@ -12,7 +12,10 @@ interface AnimatedIndicatorProps {
   progress: Animated.SharedValue<number>;
 }
 
-const AnimatedIndicator = ({ transform, progress }: AnimatedIndicatorProps) => {
+const AnimatedIndicator: React.FC<AnimatedIndicatorProps> = ({
+  transform,
+  progress,
+}) => {
   const animatedProps = useAnimatedProps(() => {
     return {
       fill: interpolateColor(

@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 
 const DeviceScreen = ({
   route,
-}: StackScreenProps<RootStackParamList, 'Device'>) => {
+}: StackScreenProps<RootStackParamList, 'Device'>): JSX.Element => {
   const { device } = route.params;
 
   const [isConnected, setIsConnected] = useState(false);

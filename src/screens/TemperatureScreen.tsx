@@ -6,10 +6,12 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { StackScreenProps } from '@react-navigation/stack';
 
 import { FINAL_BASE_GRAPHIC_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
 import BaseGraphic from '../../assets/base-graphic.png';
 import CarGraphic from '../components/CarGraphic';
+import { RootStackParamList } from '../navigation';
 
 const styles = StyleSheet.create({
   screen: {
@@ -34,7 +36,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const TemperatureScreen = ({ navigation }) => {
+type Props = StackScreenProps<RootStackParamList, 'Temperature'>;
+
+const TemperatureScreen = ({ navigation }: Props): JSX.Element => {
   return (
     <View style={styles.screen}>
       <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />

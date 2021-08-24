@@ -37,13 +37,13 @@ interface ThemedButtonProps {
   style?: ViewStyle;
 }
 
-const ThemedButton = ({
+const ThemedButton: React.FC<ThemedButtonProps> = ({
   onPress,
   onPressIn,
   onPressOut,
   children,
   style,
-}: ThemedButtonProps) => {
+}) => {
   return (
     <View style={[styles.buttonContainer, style]}>
       <Pressable

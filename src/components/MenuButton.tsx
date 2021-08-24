@@ -32,13 +32,13 @@ interface MenuButtonProps {
   onPress: () => void;
 }
 
-const MenuButton = ({
+const MenuButton: React.FC<MenuButtonProps> = ({
   iconName,
   iconSize,
   label,
   style,
   onPress,
-}: MenuButtonProps) => {
+}) => {
   return (
     <AnimatedTouchable onPress={onPress} style={[styles.container, style]}>
       <Ionicons name={iconName} size={iconSize} color='white' />

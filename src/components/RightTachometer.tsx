@@ -21,7 +21,7 @@ interface RightTachometerProps {
   progress: Animated.SharedValue<number>;
 }
 
-const RightTachometer = ({ progress }: RightTachometerProps) => {
+const RightTachometer: React.FC<RightTachometerProps> = ({ progress }) => {
   const animatedProps = useAnimatedProps(() => {
     return {
       height: interpolate(progress.value, [0, 100], [834, 0]),

@@ -8,7 +8,7 @@ import LightingScreen from '../screens/LightingScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import DeviceScreen from '../screens/DeviceScreen';
 
-const AppNavigator = () => {
+const AppNavigator = (): JSX.Element => {
   const { Navigator, Screen } = createStackNavigator();
 
   const config = {

@@ -12,7 +12,7 @@ import { FINAL_BATTERY_HEIGHT } from '../utils/config';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-const Battery = () => {
+const Battery = (): JSX.Element => {
   const batteryLevel = useSharedValue(0);
 
   const animatedProps = useAnimatedProps(() => {

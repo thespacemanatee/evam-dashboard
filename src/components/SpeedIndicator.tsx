@@ -29,7 +29,7 @@ interface SpeedIndicatorProps {
   progress: Animated.SharedValue<number>;
 }
 
-const SpeedIndicator = ({ progress }: SpeedIndicatorProps) => {
+const SpeedIndicator: React.FC<SpeedIndicatorProps> = ({ progress }) => {
   const animatedProps = useAnimatedProps(() => {
     return {
       text: interpolate(progress.value, [0, 99], [0, 99], Extrapolate.CLAMP)

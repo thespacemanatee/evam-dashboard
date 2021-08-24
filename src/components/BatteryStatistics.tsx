@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const BatteryStatistics = () => {
+const BatteryStatistics = (): JSX.Element => {
   const voltage = useSharedValue(0);
   const ampere = useSharedValue(0);
 

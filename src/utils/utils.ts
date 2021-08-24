@@ -27,7 +27,7 @@ export const getCharacteristic = async (
   return undefined;
 };
 
-export const requestLocationPermissions = async () => {
+export const requestLocationPermissions = async (): Promise<boolean> => {
   try {
     const granted = await PermissionsAndroid.check(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,

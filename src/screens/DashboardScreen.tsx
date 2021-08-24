@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const DashboardScreen = () => {
+const DashboardScreen = (): JSX.Element => {
   const deviceUUID = useAppSelector(
     (state) => state.settings.selectedDeviceUUID,
   );

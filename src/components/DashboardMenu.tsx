@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const DashboardMenu = () => {
+const DashboardMenu = (): JSX.Element => {
   const [open, setOpen] = useState(false);
   const mainProgress = useSharedValue(0);
   const menuProgress = useSharedValue(0);
