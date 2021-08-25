@@ -1,15 +1,9 @@
 import React from 'react';
-import {
-  ImageBackground,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 
-import { FINAL_BASE_GRAPHIC_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
-import BaseGraphic from '../../assets/base-graphic.png';
+import { MENU_ICON_SIZE } from '../utils/config';
 import CarGraphic from '../components/CarGraphic';
 import { RootStackParamList } from '../navigation';
 
@@ -17,12 +11,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'black',
-  },
-  baseGraphic: {
-    position: 'absolute',
-    bottom: 0,
-    width: '101.75%',
-    height: FINAL_BASE_GRAPHIC_HEIGHT * 1.1,
   },
   buttonContainer: {
     position: 'absolute',
@@ -41,7 +29,6 @@ type Props = StackScreenProps<RootStackParamList, 'Temperature'>;
 const TemperatureScreen = ({ navigation }: Props): JSX.Element => {
   return (
     <View style={styles.screen}>
-      <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
       <View style={styles.container}>
         <CarGraphic />
       </View>
