@@ -1,11 +1,9 @@
 import React, { useCallback } from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 import { Subscription } from 'react-native-ble-plx';
 
-import { FINAL_BASE_GRAPHIC_HEIGHT } from '../utils/config';
-import BaseGraphic from '../../assets/base-graphic.png';
 import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
 import RightTachometer from '../components/RightTachometer';
@@ -21,12 +19,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'black',
-  },
-  baseGraphic: {
-    position: 'absolute',
-    bottom: 0,
-    width: '101.75%',
-    height: FINAL_BASE_GRAPHIC_HEIGHT * 1.1,
   },
   batteryContainer: {
     position: 'absolute',
@@ -107,7 +99,6 @@ const DashboardScreen = (): JSX.Element => {
 
   return (
     <View style={styles.screen}>
-      <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
       <TopIndicator />
       <View style={styles.batteryContainer}>
         <BatteryStatistics />

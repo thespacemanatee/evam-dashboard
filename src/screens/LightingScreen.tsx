@@ -1,10 +1,5 @@
 import React, { useRef } from 'react';
-import {
-  ImageBackground,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import ColorPicker from 'react-native-wheel-color-picker';
 import AnimateableText from 'react-native-animateable-text';
@@ -15,8 +10,7 @@ import {
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 
-import { FINAL_BASE_GRAPHIC_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
-import BaseGraphic from '../../assets/base-graphic.png';
+import { MENU_ICON_SIZE } from '../utils/config';
 import { RootStackParamList } from '../navigation';
 
 const styles = StyleSheet.create({
@@ -28,12 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  baseGraphic: {
-    position: 'absolute',
-    bottom: 0,
-    width: '101.75%',
-    height: FINAL_BASE_GRAPHIC_HEIGHT * 1.1,
   },
   colorPickerContainer: {
     width: '50%',
@@ -76,7 +64,6 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
 
   return (
     <View style={styles.screen}>
-      <ImageBackground source={BaseGraphic} style={styles.baseGraphic} />
       <View style={styles.container}>
         <AnimateableText
           animatedProps={animatedProps}
