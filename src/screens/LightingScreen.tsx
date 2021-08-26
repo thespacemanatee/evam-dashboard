@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import ColorPicker from 'react-native-wheel-color-picker';
@@ -9,9 +9,14 @@ import {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
+import { Subscription } from 'react-native-ble-plx';
 
 import { MENU_ICON_SIZE } from '../utils/config';
 import { RootStackParamList } from '../navigation';
+import { bleManagerRef } from '../utils/BleHelper';
+import { useAppSelector } from '../app/hooks';
+import { decodeBleString, getCharacteristic } from '../utils/utils';
+import { LIGHTING_CHARACTERISTIC_UUID } from '../utils/constants';
 
 const styles = StyleSheet.create({
   screen: {
@@ -37,8 +42,39 @@ const styles = StyleSheet.create({
 type Props = StackScreenProps<RootStackParamList, 'Lighting'>;
 
 const LightingScreen = ({ navigation }: Props): JSX.Element => {
+  const deviceUUID = useAppSelector(
+    (state) => state.settings.selectedDeviceUUID,
+  );
+
   const pickerRef = useRef(null);
   const colorAnim = useSharedValue('#ffffff');
+
+  useEffect(() => {
+    let subscription: Subscription | undefined;
+    const getDevice = async () => {
+      try {
+        const device = await bleManagerRef.current?.devices([deviceUUID]);
+        if (device) {
+          const characteristic = await getCharacteristic(
+            deviceUUID,
+            LIGHTING_CHARACTERISTIC_UUID,
+          );
+          subscription = characteristic?.monitor((err, cha) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            const decodedString = decodeBleString(cha?.value);
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getDevice();
+
+    return () => subscription?.remove();
+  }, [deviceUUID]);
 
   const animatedProps = useAnimatedProps(() => {
     return {
@@ -56,11 +92,11 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
    * TODO Persist color settings in redux
    * @param color string
    */
-  const handleColorChange = (color) => {
+  const handleColorChange = (color: string) => {
     colorAnim.value = color;
   };
 
-  const handleColorChangeComplete = (color) => {};
+  const handleColorChangeComplete = (color: string) => {};
 
   return (
     <View style={styles.screen}>

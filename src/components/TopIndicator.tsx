@@ -13,7 +13,6 @@ import AnimatedIndicator from './AnimatedIndicator';
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: 'black',
   },
 });
 

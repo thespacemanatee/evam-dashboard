@@ -34,20 +34,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginRight: 32,
+    marginRight: 16,
   },
   analogIndicators: {
-    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end',
     bottom: 16,
-    left: 0,
-    right: 0,
   },
   speedIndicator: {
-    position: 'absolute',
-    top: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   leftTachometer: {
     right: 70,
@@ -106,10 +103,10 @@ const DashboardScreen = (): JSX.Element => {
   return (
     <View style={styles.screen}>
       <TopIndicator style={styles.topIndicator} />
-      <View style={styles.analogIndicators}>
-        <View style={styles.speedIndicator}>
-          <SpeedIndicator progress={speedProgress} />
-        </View>
+      <View style={[StyleSheet.absoluteFill, styles.speedIndicator]}>
+        <SpeedIndicator progress={speedProgress} />
+      </View>
+      <View style={[StyleSheet.absoluteFill, styles.analogIndicators]}>
         <View style={styles.leftTachometer}>
           <LeftTachometer progress={brakeProgress} />
         </View>

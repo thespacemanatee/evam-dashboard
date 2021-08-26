@@ -156,7 +156,7 @@ const DashboardMenu = (): JSX.Element => {
         <MenuButton
           iconName='thermometer-outline'
           iconSize={MENU_ICON_SIZE}
-          label='Temperature'
+          label='Vehicle Status'
           style={[styles.temperatureButton, temperatureAnimatedStyle]}
           onPress={handleTemperature}
         />
