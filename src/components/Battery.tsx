@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedProps,
@@ -12,7 +13,11 @@ import { FINAL_BATTERY_HEIGHT } from '../utils/config';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-const Battery = (): JSX.Element => {
+type BatteryProps = {
+  style?: StyleProp<ViewStyle>;
+};
+
+const Battery = ({ style }: BatteryProps): JSX.Element => {
   const batteryLevel = useSharedValue(0);
 
   const animatedProps = useAnimatedProps(() => {
@@ -32,6 +37,7 @@ const Battery = (): JSX.Element => {
 
   return (
     <Svg
+      style={style}
       width={FINAL_BATTERY_HEIGHT}
       height={FINAL_BATTERY_HEIGHT * 0.535}
       viewBox='0 0 260 139'
@@ -91,6 +97,10 @@ const Battery = (): JSX.Element => {
       </G>
     </Svg>
   );
+};
+
+Battery.defaultProps = {
+  style: undefined,
 };
 
 export default Battery;

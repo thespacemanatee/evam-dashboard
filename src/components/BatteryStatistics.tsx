@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AnimateableText from 'react-native-animateable-text';
 import {
   Easing,
@@ -10,7 +10,6 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 
-import { MAX_WIDTH } from '../utils/config';
 import Battery from './Battery';
 
 const styles = StyleSheet.create({
@@ -24,19 +23,24 @@ const styles = StyleSheet.create({
   stats: {
     color: 'white',
     fontFamily: 'Digital-Numbers',
-    fontSize: MAX_WIDTH / 25,
+    fontSize: 32,
     marginTop: 5,
   },
   units: {
     fontFamily: 'Gotham-Narrow',
     color: 'white',
-    fontSize: 20,
+    fontSize: 16,
   },
 });
 
-const BatteryStatistics = (): JSX.Element => {
+type BatteryStatisticsProps = {
+  style?: StyleProp<ViewStyle>;
+};
+
+const BatteryStatistics = ({ style }: BatteryStatisticsProps): JSX.Element => {
   const voltage = useSharedValue(0);
   const ampere = useSharedValue(0);
+  const temperature = useSharedValue(0);
 
   useEffect(() => {
     voltage.value = withRepeat(
@@ -46,6 +50,11 @@ const BatteryStatistics = (): JSX.Element => {
     );
     ampere.value = withRepeat(
       withTiming(1, { duration: 5000, easing: Easing.linear }),
+      -1,
+      true,
+    );
+    temperature.value = withRepeat(
+      withTiming(1, { duration: 15000, easing: Easing.linear }),
       -1,
       true,
     );
@@ -63,8 +72,14 @@ const BatteryStatistics = (): JSX.Element => {
     };
   });
 
+  const temperatureProps = useAnimatedProps(() => {
+    return {
+      text: interpolate(temperature.value, [0, 1], [90, 100]).toFixed(1),
+    };
+  });
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styles]}>
       <Battery />
       <View style={styles.statsContainer}>
         <AnimateableText animatedProps={voltageProps} style={styles.stats} />
@@ -74,8 +89,19 @@ const BatteryStatistics = (): JSX.Element => {
         <AnimateableText animatedProps={ampereProps} style={styles.stats} />
         <Text style={styles.units}>A</Text>
       </View>
+      <View style={styles.statsContainer}>
+        <AnimateableText
+          animatedProps={temperatureProps}
+          style={styles.stats}
+        />
+        <Text style={styles.units}>°C</Text>
+      </View>
     </View>
   );
+};
+
+BatteryStatistics.defaultProps = {
+  style: undefined,
 };
 
 export default BatteryStatistics;

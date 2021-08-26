@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import {
   useSharedValue,
   withRepeat,
@@ -10,6 +10,13 @@ import Svg, { Path } from 'react-native-svg';
 import { FINAL_TOP_INDICATOR_HEIGHT } from '../utils/config';
 import AnimatedIndicator from './AnimatedIndicator';
 
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+});
+
 const transforms = [
   'matrix(1 0 0 -1 40 45.5)',
   'matrix(1 0 0 -1 160 45.5)',
@@ -18,18 +25,18 @@ const transforms = [
   'matrix(1 0 0 -1 525 45.5)',
 ];
 
-const TopIndicator = (): JSX.Element => {
+type TopIndicatorProps = {
+  style?: StyleProp<ViewStyle>;
+};
+
+const TopIndicator = ({ style }: TopIndicatorProps): JSX.Element => {
   const progress = useSharedValue(0);
   useEffect(() => {
     progress.value = withRepeat(withTiming(1, { duration: 2000 }), -1, true);
   }, [progress]);
 
   return (
-    <View
-      style={{
-        alignItems: 'center',
-        backgroundColor: 'black',
-      }}>
+    <View style={[styles.container, style]}>
       <Svg
         width='60%'
         height={FINAL_TOP_INDICATOR_HEIGHT}
@@ -51,6 +58,10 @@ const TopIndicator = (): JSX.Element => {
       </Svg>
     </View>
   );
+};
+
+TopIndicator.defaultProps = {
+  style: undefined,
 };
 
 export default TopIndicator;

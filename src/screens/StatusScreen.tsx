@@ -24,9 +24,9 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = StackScreenProps<RootStackParamList, 'Temperature'>;
+type Props = StackScreenProps<RootStackParamList, 'Status'>;
 
-const TemperatureScreen = ({ navigation }: Props): JSX.Element => {
+const StatusScreen = ({ navigation }: Props): JSX.Element => {
   return (
     <View style={styles.screen}>
       <View style={styles.container}>
@@ -45,4 +45,4 @@ const TemperatureScreen = ({ navigation }: Props): JSX.Element => {
   );
 };
 
-export default TemperatureScreen;
+export default StatusScreen;

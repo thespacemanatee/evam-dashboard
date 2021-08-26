@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 import DashboardScreen from '../screens/DashboardScreen';
-import TemperatureScreen from '../screens/TemperatureScreen';
+import StatusScreen from '../screens/StatusScreen';
 import LightingScreen from '../screens/LightingScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import DeviceScreen from '../screens/DeviceScreen';
@@ -27,11 +27,7 @@ const AppNavigator = (): JSX.Element => {
   const DashboardStack = () => (
     <Navigator headerMode='none'>
       <Screen name='Dashboard' component={DashboardScreen} />
-      <Screen
-        name='Temperature'
-        component={TemperatureScreen}
-        options={config}
-      />
+      <Screen name='Status' component={StatusScreen} options={config} />
       <Screen name='Lighting' component={LightingScreen} options={config} />
     </Navigator>
   );

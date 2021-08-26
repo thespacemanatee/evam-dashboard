@@ -58,7 +58,7 @@ const DashboardMenu = (): JSX.Element => {
   };
 
   const handleTemperature = () => {
-    navigation.navigate('Temperature');
+    navigation.navigate('Status');
     setOpen(!open);
   };
 

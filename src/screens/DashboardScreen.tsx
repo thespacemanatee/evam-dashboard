@@ -20,15 +20,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
-  batteryContainer: {
+  topIndicator: {
     position: 'absolute',
-    top: 32,
-    right: 32,
+    width: '100%',
+    top: 0,
   },
   menuContainer: {
     position: 'absolute',
     top: 32,
     left: 32,
+  },
+  batteryContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginRight: 32,
   },
   analogIndicators: {
     position: 'absolute',
@@ -99,10 +105,7 @@ const DashboardScreen = (): JSX.Element => {
 
   return (
     <View style={styles.screen}>
-      <TopIndicator />
-      <View style={styles.batteryContainer}>
-        <BatteryStatistics />
-      </View>
+      <TopIndicator style={styles.topIndicator} />
       <View style={styles.analogIndicators}>
         <View style={styles.speedIndicator}>
           <SpeedIndicator progress={speedProgress} />
@@ -113,6 +116,9 @@ const DashboardScreen = (): JSX.Element => {
         <View style={styles.rightTachometer}>
           <RightTachometer progress={throttleProgress} />
         </View>
+      </View>
+      <View style={styles.batteryContainer}>
+        <BatteryStatistics />
       </View>
       <View style={styles.menuContainer}>
         <DashboardButtonGroup />
