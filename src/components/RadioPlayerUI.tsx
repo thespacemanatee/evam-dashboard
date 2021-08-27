@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import {
   StyleProp,
   StyleSheet,
@@ -61,7 +61,7 @@ const RadioPlayerUI = ({
 }: RadioPlayerUIProps): JSX.Element => {
   const progress = useSharedValue(0);
 
-  useEffect(() => {
+  const resetAnimation = useCallback(() => {
     progress.value = withRepeat(
       withTiming(1, { duration: 7500, easing: Easing.linear }),
       -1,
@@ -69,12 +69,16 @@ const RadioPlayerUI = ({
     );
   }, [progress]);
 
+  useEffect(() => {
+    resetAnimation();
+  }, [progress, resetAnimation]);
+
   const labelAnimatedStyle = useAnimatedStyle(() => {
     return {
       right: interpolate(
         progress.value,
         [0, 1],
-        [-RADIO_LABEL_WIDTH, RADIO_LABEL_WIDTH],
+        [-RADIO_LABEL_WIDTH / 2, RADIO_LABEL_WIDTH / 2],
       ),
     };
   });

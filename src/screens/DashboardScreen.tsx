@@ -151,9 +151,13 @@ const DashboardScreen = (): JSX.Element => {
   const handlePressChannelItem = useCallback(
     (channel: RadioChannel) => {
       RadioPlayer.radioURL(channel.url);
+      if (!isPlaying) {
+        RadioPlayer.play();
+        setIsPlaying(true);
+      }
       dispatch(setCurrentChannel(channel));
     },
-    [dispatch],
+    [dispatch, isPlaying],
   );
 
   useFocusEffect(
