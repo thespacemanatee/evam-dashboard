@@ -50,13 +50,10 @@ interface HandleProps extends BottomSheetHandleProps {
 }
 
 const SheetHandle: React.FC<HandleProps> = ({ style, animatedIndex }) => {
-  // region animations
   const indicatorTransformOriginY = useDerivedValue(() =>
     interpolate(animatedIndex.value, [0, 1, 2], [-1, 0, 1], Extrapolate.CLAMP),
   );
-  // endregion
 
-  // region styles
   const containerStyle = useMemo(() => [styles.header, style], [style]);
   const containerAnimatedStyle = useAnimatedStyle(() => {
     const borderTopRadius = interpolate(
@@ -122,9 +119,7 @@ const SheetHandle: React.FC<HandleProps> = ({ style, animatedIndex }) => {
       ),
     };
   });
-  // endregion
 
-  // render
   return (
     <Animated.View
       style={[containerStyle, containerAnimatedStyle]}

@@ -4,115 +4,134 @@
       "id": 1,
       "name": "88.3JIA",
       "channel": "88.3",
-      "url": "https://22253.live.streamtheworld.com/883JIA_SC"
+      "url": "https://22253.live.streamtheworld.com/883JIA_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/883-jia.png"
     },
     {
       "id": 2,
       "name": "Money FM",
       "channel": "89.3",
-      "url": "https://22253.live.streamtheworld.com/MONEY_893_SC"
+      "url": "https://22253.live.streamtheworld.com/MONEY_893_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/money-89-3.png"
     },
     {
       "id": 3,
       "name": "Radio RIA",
       "channel": "89.7",
-      "url": "https://22393.live.streamtheworld.com/RIA897FMAAC.aac?dist=radiosingapore"
+      "url": "https://22393.live.streamtheworld.com/RIA897FMAAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/ria.png"
     },
     {
       "id": 4,
       "name": "Radio Gold",
       "channel": "90.5",
-      "url": "https://22393.live.streamtheworld.com/GOLD905AAC.aac?dist=radiosingapore"
+      "url": "https://22393.live.streamtheworld.com/GOLD905AAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/gold-90-5-fm.png"
     },
     {
       "id": 5,
       "name": "One FM",
       "channel": "91.3",
-      "url": "https://22283.live.streamtheworld.com/ONE_FM_913_SC"
+      "url": "https://22283.live.streamtheworld.com/ONE_FM_913_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/one-fm.png"
     },
     {
       "id": 6,
       "name": "Kiss92",
       "channel": "92.0",
-      "url": "https://22253.live.streamtheworld.com/KISS_92_SC"
+      "url": "https://22253.live.streamtheworld.com/KISS_92_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/kiss92.png"
     },
     {
       "id": 7,
       "name": "Radio Symphony",
       "channel": "92.4",
-      "url": "https://22403.live.streamtheworld.com/SYMPHONY924AAC.aac?dist=radiosingapore"
+      "url": "https://22403.live.streamtheworld.com/SYMPHONY924AAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/symphony.png"
     },
     {
       "id": 8,
       "name": "Radio Y.E.S",
       "channel": "93.3",
-      "url": "https://19183.live.streamtheworld.com/YES933_SC?dist=radiosingapore"
+      "url": "https://22893.live.streamtheworld.com/YES933_SC?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/yes-933.png"
     },
     {
       "id": 9,
       "name": "CNA938",
       "channel": "93.8",
-      "url": "https://22403.live.streamtheworld.com/938NOWAAC.aac?dist=radiosingapore"
+      "url": "https://22403.live.streamtheworld.com/938NOWAAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/cna938.png"
     },
     {
       "id": 10,
       "name": "Radio Warna",
       "channel": "94.2",
-      "url": "https://19183.live.streamtheworld.com/WARNA942FMAAC.aac?dist=radiosingapore"
+      "url": "https://19183.live.streamtheworld.com/WARNA942FMAAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/warna.png"
     },
     {
       "id": 11,
       "name": "Radio Class",
       "channel": "95.0",
-      "url": "https://19183.live.streamtheworld.com/CLASS95AAC_SC"
+      "url": "https://19183.live.streamtheworld.com/CLASS95AAC_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/class-95.png"
     },
     {
       "id": 12,
       "name": "Radio Capital",
       "channel": "95.8",
-      "url": "https://19183.live.streamtheworld.com/CAPITAL958FMAAC.aac?dist=radiosingapore"
+      "url": "https://19183.live.streamtheworld.com/CAPITAL958FMAAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/capital-958.png"
     },
     {
       "id": 13,
       "name": "96.3好FM",
       "channel": "96.3",
-      "url": "https://14073.live.streamtheworld.com/HAO_963AAC_SC"
+      "url": "https://14073.live.streamtheworld.com/HAO_963AAC_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/96-3hao.png"
     },
     {
       "id": 14,
       "name": "Radio Oli",
       "channel": "96.8",
-      "url": "https://22403.live.streamtheworld.com/OLI968FMAAC.aac?dist=radiosingapore"
+      "url": "https://22403.live.streamtheworld.com/OLI968FMAAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/oli.png"
     },
     {
       "id": 15,
       "name": "Radio Love",
       "channel": "97.2",
-      "url": "https://22393.live.streamtheworld.com/LOVE972FMAAC.aac?dist=radiosingapore"
+      "url": "https://22393.live.streamtheworld.com/LOVE972FMAAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/love-972.png"
     },
     {
       "id": 16,
       "name": "Radio 973 FM",
       "channel": "97.3",
-      "url": "https://c16.radioboss.fm:18115/stream"
+      "url": "https://c16.radioboss.fm:18115/stream",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/973fm.png"
     },
     {
       "id": 17,
       "name": "Power 98 Love Songs",
       "channel": "98.0",
-      "url": "https://22283.live.streamtheworld.com/POWER98_LOVESONGS_SC"
+      "url": "https://22283.live.streamtheworld.com/POWER98_LOVESONGS_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/power.png"
     },
     {
       "id": 18,
       "name": "Radio 987 FM",
       "channel": "98.7",
-      "url": "https://22403.live.streamtheworld.com/987FMAAC.aac?dist=radiosingapore"
+      "url": "https://22403.live.streamtheworld.com/987FMAAC.aac?dist=radiosingapore",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/987fm.png"
     },
     {
       "id": 19,
       "name": "Radio UFM",
       "channel": "100.3",
-      "url": "https://14073.live.streamtheworld.com/UFM_1003_SC"
+      "url": "https://14073.live.streamtheworld.com/UFM_1003_SC",
+      "imageUrl": "https://cdn.webrad.io/images/logos/radiosingapore-org/ufm-1003.png"
     }
   ]
 }

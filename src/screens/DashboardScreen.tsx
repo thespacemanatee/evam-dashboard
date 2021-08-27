@@ -1,25 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 import { Subscription } from 'react-native-ble-plx';
-import { Ionicons } from '@expo/vector-icons';
-import RadioPlayer, { RadioPlayerEvents } from 'react-native-radio-player';
-import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import RadioPlayer from 'react-native-radio-player';
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetFlatList,
+} from '@gorhom/bottom-sheet';
 
 import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
 import RightTachometer from '../components/RightTachometer';
 import BatteryStatistics from '../components/BatteryStatistics';
 import DashboardButtonGroup from '../components/DashboardMenu';
-import { useAppSelector } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { CORE_CHARACTERISTIC_UUID } from '../utils/constants';
 import { bleManagerRef } from '../utils/BleHelper';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
 import TopIndicator from '../components/TopIndicator';
 import { channelsSelector } from '../features/radio/channelsSlice';
-import { RadioChannel } from '../types';
 import SheetHandle from '../components/SheetHandle';
+import { setCurrentChannel } from '../features/radio/playerSlice';
+import RadioPlayerUI from '../components/RadioPlayerUI';
+import RadioChannelItem from '../components/RadioChannelItem';
+import { RadioChannel } from '../types';
 
 const styles = StyleSheet.create({
   screen: {
@@ -58,6 +63,34 @@ const styles = StyleSheet.create({
   rightTachometer: {
     left: 70,
   },
+  dashboardRadioPlayer: {
+    position: 'absolute',
+    left: 16,
+    bottom: 16,
+  },
+  bottomSheetBackdrop: {
+    backgroundColor: 'black',
+  },
+  bottomSheetContainer: {
+    flex: 1,
+    marginHorizontal: 32,
+  },
+  bottomSheetHeader: {
+    fontSize: 32,
+    color: 'white',
+    fontFamily: 'Gotham-Narrow',
+    marginBottom: 16,
+  },
+  bottomSheetContentContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  bottomSheetRadioPlayerContainer: {
+    alignItems: 'center',
+  },
+  bottomSheetRadioPlayer: {
+    marginTop: 16,
+  },
 });
 
 const DashboardScreen = (): JSX.Element => {
@@ -65,30 +98,62 @@ const DashboardScreen = (): JSX.Element => {
     (state) => state.settings.selectedDeviceUUID,
   );
   const channels = useAppSelector(channelsSelector.selectAll);
+  const currentChannel = useAppSelector((state) => state.player.currentChannel);
   const speedProgress = useSharedValue(0);
   const throttleProgress = useSharedValue(0);
   const brakeProgress = useSharedValue(0);
-  const [playerState, setPlayerState] = useState('stopped');
+  const [isPlaying, setIsPlaying] = useState(false);
   const sheetRef = useRef<BottomSheet>(null);
 
-  useEffect(() => {
-    const subscription = RadioPlayerEvents.addListener(
-      'stateDidChange',
-      (eventObject) => {
-        setPlayerState(eventObject.state);
-      },
-    );
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    RadioPlayer.radioURL(
-      'https://19183.live.streamtheworld.com/YES933_SC?dist=radiosingapore',
-    );
-    RadioPlayer.play();
-  }, []);
+    if (currentChannel) {
+      RadioPlayer.radioURL(currentChannel.url);
+    } else {
+      dispatch(setCurrentChannel(channels[0]));
+    }
+  }, [channels, currentChannel, dispatch]);
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      RadioPlayer.stop();
+      setIsPlaying(false);
+    } else {
+      RadioPlayer.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleSkipBack = () => {
+    if (currentChannel) {
+      const nextChannelId =
+        currentChannel.id - 2 < 0
+          ? channels.length - 1
+          : currentChannel?.id - 2;
+      const nextChannel = channels[nextChannelId];
+      RadioPlayer.radioURL(nextChannel.url);
+      dispatch(setCurrentChannel(nextChannel));
+    }
+  };
+
+  const handleSkipForward = () => {
+    if (currentChannel) {
+      const nextChannelId =
+        currentChannel.id > channels.length - 1 ? 0 : currentChannel.id;
+      const nextChannel = channels[nextChannelId];
+      RadioPlayer.radioURL(nextChannel.url);
+      dispatch(setCurrentChannel(nextChannel));
+    }
+  };
+
+  const handlePressChannelItem = useCallback(
+    (channel: RadioChannel) => {
+      RadioPlayer.radioURL(channel.url);
+      dispatch(setCurrentChannel(channel));
+    },
+    [dispatch],
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -129,14 +194,10 @@ const DashboardScreen = (): JSX.Element => {
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: RadioChannel }) => (
-      <View>
-        <Text style={{ color: 'white' }}>{item.channel}</Text>
-        <Text style={{ color: 'white' }}>{item.name}</Text>
-        <Text style={{ color: 'white' }}>{item.url}</Text>
-      </View>
+    ({ item }) => (
+      <RadioChannelItem radioChannel={item} onPress={handlePressChannelItem} />
     ),
-    [],
+    [handlePressChannelItem],
   );
 
   return (
@@ -159,33 +220,57 @@ const DashboardScreen = (): JSX.Element => {
       <View style={styles.menuContainer}>
         <DashboardButtonGroup />
       </View>
-      <View style={{ position: 'absolute', left: 32, bottom: 32 }}>
-        <TouchableOpacity onPress={() => sheetRef.current?.snapToIndex(1)}>
-          <Ionicons name='play-circle' color='white' size={32} />
-        </TouchableOpacity>
-      </View>
+      <RadioPlayerUI
+        onPressRadioLabel={() => sheetRef.current?.snapToIndex(1)}
+        onPressSkipBack={handleSkipBack}
+        onPressPlayPause={handlePlayPause}
+        onPressSkipForward={handleSkipForward}
+        playing={isPlaying}
+        currentChannel={currentChannel?.name || ''}
+        style={styles.dashboardRadioPlayer}
+      />
       <BottomSheet
         ref={sheetRef}
+        index={-1}
         snapPoints={['25%', '90%']}
         enablePanDownToClose
-        handleComponent={(props) => {
-          console.log(props);
-          return (
-            <SheetHandle
-              animatedIndex={props.animatedIndex}
-              animatedPosition={props.animatedPosition}
-            />
-          );
-        }}
+        handleComponent={(props) => (
+          <SheetHandle
+            animatedIndex={props.animatedIndex}
+            animatedPosition={props.animatedPosition}
+          />
+        )}
         backgroundComponent={(props) => (
-          <View style={[props.style, { backgroundColor: 'black' }]} />
-        )}>
-        <BottomSheetFlatList
-          data={channels}
-          keyExtractor={(i) => String(i.id)}
-          renderItem={renderItem}
-          // contentContainerStyle={styles.contentContainer}
-        />
+          <View style={[props.style, styles.bottomSheetBackdrop]} />
+        )}
+        backdropComponent={BottomSheetBackdrop}>
+        <View style={styles.bottomSheetContainer}>
+          <Text style={styles.bottomSheetHeader}>Radio Stations</Text>
+          <View style={styles.bottomSheetContentContainer}>
+            <BottomSheetFlatList
+              data={channels}
+              keyExtractor={(i) => String(i.id)}
+              renderItem={renderItem}
+            />
+            <View style={styles.bottomSheetRadioPlayerContainer}>
+              <Image
+                source={{
+                  uri: currentChannel?.imageUrl,
+                  width: 200,
+                  height: 137.5,
+                }}
+              />
+              <RadioPlayerUI
+                onPressSkipBack={handleSkipBack}
+                onPressPlayPause={handlePlayPause}
+                onPressSkipForward={handleSkipForward}
+                playing={isPlaying}
+                currentChannel={currentChannel?.name || ''}
+                style={styles.bottomSheetRadioPlayer}
+              />
+            </View>
+          </View>
+        </View>
       </BottomSheet>
     </View>
   );

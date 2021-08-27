@@ -13,3 +13,4 @@ export const FINAL_TOP_INDICATOR_HEIGHT =
 export const FINAL_TACHOMETER_HEIGHT = MAX_HEIGHT * 0.79;
 export const FINAL_BATTERY_HEIGHT = MAX_WIDTH / 8;
 export const MENU_ICON_SIZE = 32;
+export const RADIO_BUTTON_SIZE = 48;

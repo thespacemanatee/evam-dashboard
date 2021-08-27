@@ -79,7 +79,7 @@ const BatteryStatistics = ({ style }: BatteryStatisticsProps): JSX.Element => {
   });
 
   return (
-    <View style={[styles.container, styles]}>
+    <View style={[styles.container, style]}>
       <Battery />
       <View style={styles.statsContainer}>
         <AnimateableText animatedProps={voltageProps} style={styles.stats} />

@@ -3,4 +3,5 @@ export type RadioChannel = {
   name: string;
   channel: string;
   url: string;
+  imageUrl: string;
 };
