@@ -9,6 +9,8 @@ import { BleManager } from 'react-native-ble-plx';
 import { store } from './app/store';
 import AppNavigator from './navigation/AppNavigator';
 import { bleManagerRef } from './utils/BleHelper';
+import { setAllChannels } from './features/radio/channelsSlice';
+import * as channelsData from '../assets/stations.json';
 
 const App = (): React.ReactElement | null => {
   const [loaded, setLoaded] = useState(false);
@@ -29,6 +31,7 @@ const App = (): React.ReactElement | null => {
       SplashScreen.hideAsync();
     });
     bleManagerRef.current = new BleManager();
+    store.dispatch(setAllChannels(channelsData.stations));
   });
 
   if (!loaded) {

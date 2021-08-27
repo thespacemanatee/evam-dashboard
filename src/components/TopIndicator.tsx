@@ -39,7 +39,7 @@ const TopIndicator = ({ style }: TopIndicatorProps): JSX.Element => {
       <Svg
         width='60%'
         height={FINAL_TOP_INDICATOR_HEIGHT}
-        viewBox='0 0 535 121'
+        viewBox='0 0 560 121'
         fill='none'>
         {transforms.map((transform, key) => (
           <AnimatedIndicator

@@ -1,9 +1,13 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 import settingsReducer from '../features/settings/settingsSlice';
+import channelsReducer from '../features/radio/channelsSlice';
+import playerReducer from '../features/radio/playerSlice';
 
 const rootReducer = combineReducers({
   settings: settingsReducer,
+  channels: channelsReducer,
+  player: playerReducer,
 });
 
 export const store = configureStore({
