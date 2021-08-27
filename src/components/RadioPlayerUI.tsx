@@ -1,26 +1,39 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleProp,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
+import Animated, {
+  Easing,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 
-import { RADIO_BUTTON_SIZE } from '../utils/config';
+import {
+  RADIO_BUTTON_SIZE,
+  RADIO_LABEL_HEIGHT,
+  RADIO_LABEL_WIDTH,
+} from '../utils/config';
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: 180,
+  radioLabelContainer: {
+    position: 'absolute',
+    width: 150,
+    top: -RADIO_LABEL_HEIGHT,
+    overflow: 'hidden',
   },
   radioLabel: {
     fontFamily: 'Gotham-Narrow',
     color: 'white',
     fontSize: 24,
+    width: RADIO_LABEL_WIDTH,
   },
   radioControls: {
     flexDirection: 'row',
@@ -46,10 +59,34 @@ const RadioPlayerUI = ({
   currentChannel,
   style,
 }: RadioPlayerUIProps): JSX.Element => {
+  const progress = useSharedValue(0);
+
+  useEffect(() => {
+    progress.value = withRepeat(
+      withTiming(1, { duration: 7500, easing: Easing.linear }),
+      -1,
+      false,
+    );
+  }, [progress]);
+
+  const labelAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      right: interpolate(
+        progress.value,
+        [0, 1],
+        [-RADIO_LABEL_WIDTH, RADIO_LABEL_WIDTH],
+      ),
+    };
+  });
+
   return (
-    <View style={[styles.container, style]}>
-      <TouchableOpacity onPress={onPressRadioLabel}>
-        <Text style={styles.radioLabel}>{currentChannel}</Text>
+    <View style={style}>
+      <TouchableOpacity
+        onPress={onPressRadioLabel}
+        style={styles.radioLabelContainer}>
+        <Animated.Text style={[styles.radioLabel, labelAnimatedStyle]}>
+          {currentChannel}
+        </Animated.Text>
       </TouchableOpacity>
       <View style={styles.radioControls}>
         <TouchableOpacity onPress={onPressSkipBack}>

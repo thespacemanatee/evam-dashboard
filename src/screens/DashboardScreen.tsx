@@ -25,6 +25,7 @@ import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioPlayerUI from '../components/RadioPlayerUI';
 import RadioChannelItem from '../components/RadioChannelItem';
 import { RadioChannel } from '../types';
+import { RADIO_LABEL_HEIGHT } from '../utils/config';
 
 const styles = StyleSheet.create({
   screen: {
@@ -65,8 +66,8 @@ const styles = StyleSheet.create({
   },
   dashboardRadioPlayer: {
     position: 'absolute',
-    left: 16,
-    bottom: 16,
+    left: 32,
+    bottom: 32,
   },
   bottomSheetBackdrop: {
     backgroundColor: 'black',
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bottomSheetRadioPlayer: {
-    marginTop: 16,
+    marginTop: 16 + RADIO_LABEL_HEIGHT,
   },
 });
 
