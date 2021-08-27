@@ -3,6 +3,7 @@ import React, { useEffect, useCallback } from 'react';
 import {
   StyleProp,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -29,6 +30,10 @@ const styles = StyleSheet.create({
     top: -RADIO_LABEL_HEIGHT,
     overflow: 'hidden',
   },
+  radioTitle: {
+    fontFamily: 'Gotham-Narrow',
+    color: 'white',
+  },
   radioLabel: {
     fontFamily: 'Gotham-Narrow',
     color: 'white',
@@ -37,6 +42,7 @@ const styles = StyleSheet.create({
   },
   radioControls: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
@@ -63,7 +69,7 @@ const RadioPlayerUI = ({
 
   const resetAnimation = useCallback(() => {
     progress.value = withRepeat(
-      withTiming(1, { duration: 7500, easing: Easing.linear }),
+      withTiming(1, { duration: 5000, easing: Easing.linear }),
       -1,
       false,
     );
@@ -78,7 +84,7 @@ const RadioPlayerUI = ({
       right: interpolate(
         progress.value,
         [0, 1],
-        [-RADIO_LABEL_WIDTH / 2, RADIO_LABEL_WIDTH / 2],
+        [-RADIO_LABEL_WIDTH, RADIO_LABEL_WIDTH],
       ),
     };
   });
@@ -88,6 +94,7 @@ const RadioPlayerUI = ({
       <TouchableOpacity
         onPress={onPressRadioLabel}
         style={styles.radioLabelContainer}>
+        <Text style={styles.radioTitle}>Now Playing</Text>
         <Animated.Text style={[styles.radioLabel, labelAnimatedStyle]}>
           {currentChannel}
         </Animated.Text>
@@ -104,7 +111,7 @@ const RadioPlayerUI = ({
           <Ionicons
             name={playing ? 'pause-circle' : 'play-circle'}
             color='white'
-            size={48}
+            size={RADIO_BUTTON_SIZE + 16}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={onPressSkipForward}>

@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^1.6.1",
     "base-64": "^1.0.0",
     "expo-font": "^9.2.1",
+    "expo-linear-gradient": "^9.2.0",
     "expo-splash-screen": "^0.11.2",
     "react": "17.0.2",
     "react-native": "0.64.2",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
     "@babel/runtime": "^7.15.3",
     "@react-native-community/eslint-config": "^3.0.0",
     "@types/base-64": "^1.0.0",
@@ -46,17 +48,17 @@
     "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
-    "babel-jest": "^27.0.6",
+    "babel-jest": "^27.1.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4",
-    "jest": "^27.0.6",
+    "jest": "^27.1.0",
     "metro-react-native-babel-preset": "^0.66.2",
     "react-test-renderer": "17.0.2",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.2"
   },
   "resolutions": {
     "@types/react": "^17"

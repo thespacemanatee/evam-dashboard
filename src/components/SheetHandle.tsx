@@ -9,13 +9,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { toRad } from 'react-native-redash';
 
+import colors from '../utils/colors';
+
 const styles = StyleSheet.create({
   header: {
-    alignContent: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'black',
-    paddingVertical: 14,
+    backgroundColor: colors.background,
+    paddingVertical: 16,
   },
   indicator: {
     position: 'absolute',
@@ -58,7 +59,7 @@ const SheetHandle: React.FC<HandleProps> = ({ style, animatedIndex }) => {
   const containerAnimatedStyle = useAnimatedStyle(() => {
     const borderTopRadius = interpolate(
       animatedIndex.value,
-      [1, 2],
+      [0, 1],
       [20, 0],
       Extrapolate.CLAMP,
     );

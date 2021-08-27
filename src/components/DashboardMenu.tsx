@@ -104,7 +104,7 @@ const DashboardMenu = (): JSX.Element => {
       [0.3, 1],
       [0, MENU_SIZE],
     );
-    const opacity = interpolate(menuProgress.value, [0, 0.5, 1], [0, 0, 1]);
+    const opacity = interpolate(menuProgress.value, [0.5, 1], [0, 1]);
     return {
       transform: [{ translateX }],
       opacity,
@@ -117,7 +117,7 @@ const DashboardMenu = (): JSX.Element => {
       [0.6, 1],
       [0, MENU_SIZE],
     );
-    const opacity = interpolate(menuProgress.value, [0, 0.5, 1], [0, 0, 1]);
+    const opacity = interpolate(menuProgress.value, [0.5, 1], [0, 0, 1]);
     return {
       transform: [{ translateX }],
       opacity,

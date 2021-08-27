@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 import { Subscription } from 'react-native-ble-plx';
+import { LinearGradient } from 'expo-linear-gradient';
 import RadioPlayer from 'react-native-radio-player';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -26,6 +27,7 @@ import RadioPlayerUI from '../components/RadioPlayerUI';
 import RadioChannelItem from '../components/RadioChannelItem';
 import { RadioChannel } from '../types';
 import { RADIO_LABEL_HEIGHT } from '../utils/config';
+import colors from '../utils/colors';
 
 const styles = StyleSheet.create({
   screen: {
@@ -70,14 +72,11 @@ const styles = StyleSheet.create({
     bottom: 32,
   },
   bottomSheetBackdrop: {
-    backgroundColor: 'black',
-  },
-  bottomSheetContainer: {
-    flex: 1,
-    marginHorizontal: 32,
+    backgroundColor: colors.background,
+    borderRadius: 20,
   },
   bottomSheetHeader: {
-    fontSize: 32,
+    fontSize: 40,
     color: 'white',
     fontFamily: 'Gotham-Narrow',
     marginBottom: 16,
@@ -85,12 +84,23 @@ const styles = StyleSheet.create({
   bottomSheetContentContainer: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 32,
+  },
+  radioChannelList: {
+    marginRight: 32,
   },
   bottomSheetRadioPlayerContainer: {
+    flex: 1,
     alignItems: 'center',
+    padding: 16,
+  },
+  imageBackground: {
+    backgroundColor: 'black',
+    borderRadius: 8,
   },
   bottomSheetRadioPlayer: {
-    marginTop: 16 + RADIO_LABEL_HEIGHT,
+    marginTop: RADIO_LABEL_HEIGHT + 8,
   },
 });
 
@@ -208,9 +218,6 @@ const DashboardScreen = (): JSX.Element => {
   return (
     <View style={styles.screen}>
       <TopIndicator style={styles.topIndicator} />
-      <View style={[StyleSheet.absoluteFill, styles.speedIndicator]}>
-        <SpeedIndicator progress={speedProgress} />
-      </View>
       <View style={[StyleSheet.absoluteFill, styles.analogIndicators]}>
         <View style={styles.leftTachometer}>
           <LeftTachometer progress={brakeProgress} />
@@ -218,6 +225,9 @@ const DashboardScreen = (): JSX.Element => {
         <View style={styles.rightTachometer}>
           <RightTachometer progress={throttleProgress} />
         </View>
+      </View>
+      <View style={[StyleSheet.absoluteFill, styles.speedIndicator]}>
+        <SpeedIndicator progress={speedProgress} />
       </View>
       <View style={styles.batteryContainer}>
         <BatteryStatistics />
@@ -237,44 +247,47 @@ const DashboardScreen = (): JSX.Element => {
       <BottomSheet
         ref={sheetRef}
         index={-1}
-        snapPoints={['25%', '90%']}
+        snapPoints={['25%', '99.9%']}
         enablePanDownToClose
-        handleComponent={(props) => (
-          <SheetHandle
-            animatedIndex={props.animatedIndex}
-            animatedPosition={props.animatedPosition}
-          />
-        )}
+        handleComponent={(props) => <SheetHandle {...props} />}
         backgroundComponent={(props) => (
           <View style={[props.style, styles.bottomSheetBackdrop]} />
         )}
-        backdropComponent={BottomSheetBackdrop}>
-        <View style={styles.bottomSheetContainer}>
-          <Text style={styles.bottomSheetHeader}>Radio Stations</Text>
-          <View style={styles.bottomSheetContentContainer}>
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop {...props} opacity={1} />
+        )}>
+        <View style={styles.bottomSheetContentContainer}>
+          <View style={styles.radioChannelList}>
+            <Text style={styles.bottomSheetHeader}>Radio Stations</Text>
             <BottomSheetFlatList
               data={channels}
               keyExtractor={(i) => String(i.id)}
               renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
             />
-            <View style={styles.bottomSheetRadioPlayerContainer}>
+          </View>
+          <LinearGradient
+            colors={[colors.background, '#414345']}
+            style={styles.bottomSheetRadioPlayerContainer}>
+            <View style={styles.imageBackground}>
               <Image
                 source={{
                   uri: currentChannel?.imageUrl,
                   width: 200,
-                  height: 137.5,
+                  height: 200,
                 }}
-              />
-              <RadioPlayerUI
-                onPressSkipBack={handleSkipBack}
-                onPressPlayPause={handlePlayPause}
-                onPressSkipForward={handleSkipForward}
-                playing={isPlaying}
-                currentChannel={currentChannel?.name || ''}
-                style={styles.bottomSheetRadioPlayer}
+                resizeMode='contain'
               />
             </View>
-          </View>
+            <RadioPlayerUI
+              onPressSkipBack={handleSkipBack}
+              onPressPlayPause={handlePlayPause}
+              onPressSkipForward={handleSkipForward}
+              playing={isPlaying}
+              currentChannel={currentChannel?.name || ''}
+              style={styles.bottomSheetRadioPlayer}
+            />
+          </LinearGradient>
         </View>
       </BottomSheet>
     </View>
