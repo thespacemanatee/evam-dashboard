@@ -19,6 +19,7 @@
    A connect hander associated with the server starts a background task that performs notification
    every couple of seconds.
 */
+#include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
@@ -26,6 +27,8 @@
 
 BLEServer *pServer = NULL;
 BLECharacteristic *pCoreCharacteristic = NULL;
+BLECharacteristic *pStatusCharacteristic = NULL;
+BLECharacteristic *pLightingCharacteristic = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 unsigned long prevSendMillis = 0;
@@ -84,9 +87,24 @@ void setup()
           BLECharacteristic::PROPERTY_NOTIFY |
           BLECharacteristic::PROPERTY_INDICATE);
 
+  pStatusCharacteristic = pService->createCharacteristic(
+      STATUS_CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ |
+          BLECharacteristic::PROPERTY_NOTIFY |
+          BLECharacteristic::PROPERTY_INDICATE);
+
+  pLightingCharacteristic = pService->createCharacteristic(
+      LIGHTING_CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ |
+          BLECharacteristic::PROPERTY_WRITE |
+          BLECharacteristic::PROPERTY_NOTIFY |
+          BLECharacteristic::PROPERTY_INDICATE);
+
   // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
   // Create a BLE Descriptor
   pCoreCharacteristic->addDescriptor(new BLE2902());
+  pStatusCharacteristic->addDescriptor(new BLE2902());
+  pLightingCharacteristic->addDescriptor(new BLE2902());
 
   // Start the service
   pService->start();
@@ -145,6 +163,10 @@ void loop()
     message[7] = battTemp;
     pCoreCharacteristic->setValue((uint8_t *)message, sizeof(message));
     pCoreCharacteristic->notify();
+    pStatusCharacteristic->setValue((uint8_t *)message, sizeof(message));
+    pStatusCharacteristic->notify();
+    pLightingCharacteristic->setValue((uint8_t *)message, sizeof(message));
+    pLightingCharacteristic->notify();
     Serial.print(message[5]);
     Serial.print(" | ");
     Serial.println(message[6]);
