@@ -25,7 +25,7 @@
 #include <BLE2902.h>
 
 BLEServer *pServer = NULL;
-BLECharacteristic *pCharacteristic = NULL;
+BLECharacteristic *pCoreCharacteristic = NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 unsigned long prevSendMillis = 0;
@@ -45,7 +45,9 @@ uint8_t message[8];
 // https://www.uuidgenerator.net/
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define CORE_CHARACTERISTIC_UUID 'beb5483e-36e1-4688-b7f5-ea07361b26a8'
+#define STATUS_CHARACTERISTIC_UUID '5d2e6e74-31f0-445e-8088-827c53b71166'
+#define LIGHTING_CHARACTERISTIC_UUID '825eef3b-e3d0-4ca6-bef7-6428b7260f35'
 
 class MyServerCallbacks : public BLEServerCallbacks
 {
@@ -75,8 +77,8 @@ void setup()
   BLEService *pService = pServer->createService(SERVICE_UUID);
 
   // Create a BLE Characteristic
-  pCharacteristic = pService->createCharacteristic(
-      CHARACTERISTIC_UUID,
+  pCoreCharacteristic = pService->createCharacteristic(
+      CORE_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ |
           BLECharacteristic::PROPERTY_WRITE |
           BLECharacteristic::PROPERTY_NOTIFY |
@@ -84,7 +86,7 @@ void setup()
 
   // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
   // Create a BLE Descriptor
-  pCharacteristic->addDescriptor(new BLE2902());
+  pCoreCharacteristic->addDescriptor(new BLE2902());
 
   // Start the service
   pService->start();
@@ -141,10 +143,10 @@ void loop()
     message[5] = (uint8_t)(battCurr >> 8);
     message[6] = (uint8_t)(battCurr & 0x00FF);
     message[7] = battTemp;
-    pCharacteristic->setValue((uint8_t *)message, sizeof(message));
-    pCharacteristic->notify();
+    pCoreCharacteristic->setValue((uint8_t *)message, sizeof(message));
+    pCoreCharacteristic->notify();
     Serial.print(message[5]);
-    Serial.print("  | ");
+    Serial.print(" | ");
     Serial.println(message[6]);
     prevSendMillis = currentMillis;
   }
@@ -155,7 +157,7 @@ void loop()
   {
     delay(500);                  // give the bluetooth stack the chance to get things ready
     pServer->startAdvertising(); // restart advertising
-    Serial.println("start advertising");
+    Serial.println("Start advertising...");
     oldDeviceConnected = deviceConnected;
   }
   // connecting
