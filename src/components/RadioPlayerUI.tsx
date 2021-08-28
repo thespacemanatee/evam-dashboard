@@ -69,7 +69,7 @@ const RadioPlayerUI = ({
 
   const resetAnimation = useCallback(() => {
     progress.value = withRepeat(
-      withTiming(1, { duration: 5000, easing: Easing.linear }),
+      withTiming(1, { duration: 10000, easing: Easing.linear }),
       -1,
       false,
     );
@@ -83,8 +83,8 @@ const RadioPlayerUI = ({
     return {
       right: interpolate(
         progress.value,
-        [0, 1],
-        [-RADIO_LABEL_WIDTH, RADIO_LABEL_WIDTH],
+        [0, 0.33, 0.66, 1],
+        [-RADIO_LABEL_WIDTH, 0, 0, RADIO_LABEL_WIDTH],
       ),
     };
   });

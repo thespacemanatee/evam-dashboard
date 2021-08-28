@@ -1,0 +1,39 @@
+diff --git a/node_modules/react-native-wheel-color-picker/types.d.ts b/node_modules/react-native-wheel-color-picker/types.d.ts
+index 365aab5..6fec768 100644
+--- a/node_modules/react-native-wheel-color-picker/types.d.ts
++++ b/node_modules/react-native-wheel-color-picker/types.d.ts
+@@ -1,20 +1,20 @@
+ import * as React from 'react';
+ 
+ export interface ColorPickerProps extends React.Props<ColorPicker> {
+-  row: boolean,
+-  noSnap: boolean,
+-  thumbSize: number,
+-  sliderSize: number,
+-  discrete: boolean,
+-  swatches: boolean,
+-  swatchesLast: boolean,
+-  swatchesOnly: boolean,
+-  color: string,
+-  shadeWheelThumb: boolean,
+-  shadeSliderThumb: boolean,
+-  autoResetSlider: boolean,
+-  onColorChange(): void,
+-  onColorChangeComplete(): void,
++  row?: boolean,
++  noSnap?: boolean,
++  thumbSize?: number,
++  sliderSize?: number,
++  discrete?: boolean,
++  swatches?: boolean,
++  swatchesLast?: boolean,
++  swatchesOnly?: boolean,
++  color?: string,
++  shadeWheelThumb?: boolean,
++  shadeSliderThumb?: boolean,
++  autoResetSlider?: boolean,
++  onColorChange?(color: string): void,
++  onColorChangeComplete?(color: string): void,
+ }
+ 
+ declare class ColorPicker extends React.Component<ColorPickerProps, any> {
