@@ -34,7 +34,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export const transformOrigin = ({ x, y }, ...transformations) => {
+export const transformOrigin = (
+  { x, y }: { x: number; y: number },
+  ...transformations: [{ rotate: string }, { translateX: number }]
+): [
+  { translateX: number },
+  { translateY: number },
+  { rotate: string },
+  { translateX: number },
+  { translateX: number },
+  { translateY: number },
+] => {
   'worklet';
 
   return [
