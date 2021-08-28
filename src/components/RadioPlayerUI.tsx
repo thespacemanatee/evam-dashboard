@@ -24,6 +24,9 @@ import {
 } from '../utils/config';
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: RADIO_LABEL_HEIGHT,
+  },
   radioLabelContainer: {
     position: 'absolute',
     width: 150,
@@ -91,36 +94,38 @@ const RadioPlayerUI = ({
 
   return (
     <View style={style}>
-      <TouchableOpacity
-        onPress={onPressRadioLabel}
-        style={styles.radioLabelContainer}>
-        <Text style={styles.radioTitle}>Now Playing</Text>
-        <Animated.Text style={[styles.radioLabel, labelAnimatedStyle]}>
-          {currentChannel}
-        </Animated.Text>
-      </TouchableOpacity>
-      <View style={styles.radioControls}>
-        <TouchableOpacity onPress={onPressSkipBack}>
-          <Ionicons
-            name='play-skip-back-circle'
-            color='white'
-            size={RADIO_BUTTON_SIZE}
-          />
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={onPressRadioLabel}
+          style={styles.radioLabelContainer}>
+          <Text style={styles.radioTitle}>Now Playing</Text>
+          <Animated.Text style={[styles.radioLabel, labelAnimatedStyle]}>
+            {currentChannel}
+          </Animated.Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={onPressPlayPause}>
-          <Ionicons
-            name={playing ? 'pause-circle' : 'play-circle'}
-            color='white'
-            size={RADIO_BUTTON_SIZE + 16}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onPressSkipForward}>
-          <Ionicons
-            name='play-skip-forward-circle'
-            color='white'
-            size={RADIO_BUTTON_SIZE}
-          />
-        </TouchableOpacity>
+        <View style={styles.radioControls}>
+          <TouchableOpacity onPress={onPressSkipBack}>
+            <Ionicons
+              name='play-skip-back-circle'
+              color='white'
+              size={RADIO_BUTTON_SIZE}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPressPlayPause}>
+            <Ionicons
+              name={playing ? 'pause-circle' : 'play-circle'}
+              color='white'
+              size={RADIO_BUTTON_SIZE + 16}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPressSkipForward}>
+            <Ionicons
+              name='play-skip-forward-circle'
+              color='white'
+              size={RADIO_BUTTON_SIZE}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

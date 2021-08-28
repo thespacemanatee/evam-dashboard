@@ -26,7 +26,6 @@ import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioPlayerUI from '../components/RadioPlayerUI';
 import RadioChannelItem from '../components/RadioChannelItem';
 import { RadioChannel } from '../types';
-import { RADIO_LABEL_HEIGHT } from '../utils/config';
 import colors from '../utils/colors';
 
 const styles = StyleSheet.create({
@@ -100,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   bottomSheetRadioPlayer: {
-    marginTop: RADIO_LABEL_HEIGHT + 8,
+    marginTop: 8,
   },
 });
 
@@ -247,7 +246,7 @@ const DashboardScreen = (): JSX.Element => {
       <BottomSheet
         ref={sheetRef}
         index={-1}
-        snapPoints={['25%', '99.9%']}
+        snapPoints={['25%', '99.999%']}
         enablePanDownToClose
         handleComponent={(props) => <SheetHandle {...props} />}
         backgroundComponent={(props) => (
