@@ -63,6 +63,7 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
   return (
     <View style={[styles.container, style]}>
       <Text>{`Characteristic UUID: ${char.uuid}`}</Text>
+      <Text>{`Descriptor: ${descriptor}`}</Text>
       <View style={{ flexDirection: 'row' }}>
         <View>
           <Text>{`isIndicatable: ${char.isIndicatable}`}</Text>
