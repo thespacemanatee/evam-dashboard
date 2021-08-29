@@ -4,10 +4,12 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+/* UUIDs */
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CORE_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define STATUS_CHARACTERISTIC_UUID "5d2e6e74-31f0-445e-8088-827c53b71166"
 #define LIGHTING_CHARACTERISTIC_UUID "825eef3b-e3d0-4ca6-bef7-6428b7260f35"
+
 
 BLEServer *pServer;
 BLECharacteristic *pCoreCharacteristic;
@@ -43,20 +45,23 @@ uint8_t rlw = 255; //Rear left wheel
 uint8_t rrw = 255; //Rear right wheel
 
 /* LIGHTING MESSAGE  */
+//format: frontR,frontG,frontB, rearR,rearG,rearB, interiorR,interiorG,interiorB
 uint8_t lightingMessage[9];
-uint8_t frontR = 255; //Front red
-uint8_t frontG = 255; //Front green
-uint8_t frontB = 255; //Front blue
-uint8_t rearR = 0; //Front red
-uint8_t rearG = 0; //Front green
-uint8_t rearB = 0; //Front blue
-uint8_t intR = 0; //Internal red
-uint8_t intG = 0; //Internal green
-uint8_t intB = 0; //Internal blue
+/* //values are updated from the callback function
+uint8_t frontR = 255;
+uint8_t frontG = 255;
+uint8_t frontB = 255;
+uint8_t rearR = 0;
+uint8_t rearG = 0;
+uint8_t rearB = 0;
+uint8_t intR = 0;
+uint8_t intG = 0;
+uint8_t intB = 0;
+*/
 
 void updateCoreData();
 void updateStatusData();
-void updateLightingData();
+//void updateLightingData();    //not used; values are updated from the callback function
 void setCoreCharacteristic();
 void setStatusCharacteristic();
 void setLightingCharacteristic();
