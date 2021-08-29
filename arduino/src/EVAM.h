@@ -28,7 +28,7 @@ BLEDescriptor *pLightingDescriptor;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 unsigned long prevCoreMillis = 0;   //timer for the important data service
-unsigned long prevSlowMillis = 0;   //timer for the less important data serv
+unsigned long prevSlowMillis = 0;   //timer for the less important data service
 
 /* CORE MESSAGE */
 uint8_t coreMessage[8];
