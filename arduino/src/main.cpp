@@ -120,7 +120,7 @@ void setCoreCharacteristic()
   pCoreCharacteristic->notify();
 }
 
-/* Sets new data for node characteristic and notifies */
+/* Sets new data for node status characteristic and notifies */
 void setStatusCharacteristic()
 {
   statusMessage[0] = ecu;
@@ -151,6 +151,7 @@ void setLightingCharacteristic(){
   pLightingCharacteristic->setValue((uint8_t *)lightingMessage, sizeof(lightingMessage));
 }
 
+//set up the BLE device
 void setup()
 {
   Serial.begin(115200);
@@ -163,51 +164,52 @@ void setup()
   pServer->setCallbacks(new ConnectionCallbacks());
 
   // Create the BLE Service
-  BLEService *pService = pServer->createService(SERVICE_UUID);
+  BLEService *pCoreService = pServer->createService(CORE_SERVICE_UUID);
+  BLEService *pLightingService = pServer->createService(LIGHTING_SERVICE_UUID);
 
   // Create BLE Characteristics
-  pCoreCharacteristic = pService->createCharacteristic(
+  pCoreCharacteristic = pCoreService->createCharacteristic(
       CORE_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_WRITE
       //| BLECharacteristic::PROPERTY_INDICATE
   );
 
-  pStatusCharacteristic = pService->createCharacteristic(
+  pStatusCharacteristic = pCoreService->createCharacteristic(
       STATUS_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_WRITE
       //| BLECharacteristic::PROPERTY_INDICATE
   );
 
-  pLightingCharacteristic = pService->createCharacteristic(
+  pLightingCharacteristic = pLightingService->createCharacteristic(
       LIGHTING_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
       //| BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_INDICATE
   );
-
   pLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
 
 
   // Create BLE Descriptors
-  pCoreDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2900));
-  pCoreDescriptor->setValue("Core Data");
-  pStatusDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2901));
-  pStatusDescriptor->setValue("Status Data");
-  pLightingDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2902));
-  pLightingDescriptor->setValue("Lighting Configuration");
+  pCoreDescriptor = new BLE2902();
+  //pCoreDescriptor->setValue("Core Data");
+  pStatusDescriptor = new BLE2902();
+  //pStatusDescriptor->setValue("Status Data");
+  pLightingDescriptor = new BLE2902();
+  //pLightingDescriptor->setValue("Lights Data");
 
   pCoreCharacteristic->addDescriptor(pCoreDescriptor);
   pStatusCharacteristic->addDescriptor(pStatusDescriptor);
   pLightingCharacteristic->addDescriptor(pLightingDescriptor);
 
   // Start the service
-  pService->start();
+  pCoreService->start();
+  pLightingService->start();
 
   // Start advertising
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->addServiceUUID(CORE_SERVICE_UUID);
   pAdvertising->setScanResponse(false);
   pAdvertising->setMinPreferred(0x0); // set value to 0x00 to not advertise this parameter
   BLEDevice::startAdvertising();
@@ -217,16 +219,24 @@ void setup()
 void loop()
 {
   unsigned long currentMillis = millis();
-  //update and notify once every 100ms
-  if (currentMillis - prevMillis > 100)
+  //!!THIS CODE HAS NO OVERFLOW PROTECTION!!
+  //(since the car isn't expected to remain on for 50 days consecutively)
+
+  //update and notify for core data
+  if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)  //100ms
   {
     updateCoreData();
     updateStatusData();
-    //updateLightingData(); //lighting data is updated using the callback function
     setCoreCharacteristic();
     setStatusCharacteristic();
+    prevCoreMillis = currentMillis;
+  }
+
+  //update and notify for additional low priority data (lighting)
+  if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)  //1000ms
+  {
     setLightingCharacteristic();
-    prevMillis = currentMillis;
+    prevSlowMillis = currentMillis;
   }
 
   // disconnecting

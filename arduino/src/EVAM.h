@@ -5,13 +5,19 @@
 #include <BLE2902.h>
 
 /* UUIDs */
-#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define CORE_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define LIGHTING_SERVICE_UUID "1cbef3f2-12d5-4490-8a80-7f7970b51b54"
 #define CORE_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define STATUS_CHARACTERISTIC_UUID "5d2e6e74-31f0-445e-8088-827c53b71166"
 #define LIGHTING_CHARACTERISTIC_UUID "825eef3b-e3d0-4ca6-bef7-6428b7260f35"
 
+#define CORE_DATA_REFRESH_INTERVAL 100
+#define SLOW_DATA_REFRESH_INTERVAL 500
+
 
 BLEServer *pServer;
+BLEService *pCoreService;
+BLEService *pLightingService;
 BLECharacteristic *pCoreCharacteristic;
 BLECharacteristic *pStatusCharacteristic;
 BLECharacteristic *pLightingCharacteristic;
@@ -21,7 +27,8 @@ BLEDescriptor *pLightingDescriptor;
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
-unsigned long prevMillis = 0;
+unsigned long prevCoreMillis = 0;   //timer for the important data service
+unsigned long prevSlowMillis = 0;   //timer for the less important data serv
 
 /* CORE MESSAGE */
 uint8_t coreMessage[8];
