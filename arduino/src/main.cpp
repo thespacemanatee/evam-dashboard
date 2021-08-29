@@ -16,78 +16,12 @@
    5. Start the service.
    6. Start advertising.
 
-   A connect hander associated with the server starts a background task that performs notification
+   A connect handler associated with the server starts a background task that performs notification
    every couple of seconds.
 */
-#include <Arduino.h>
-#include <BLEDevice.h>
-#include <BLEServer.h>
-#include <BLEUtils.h>
-#include <BLE2902.h>
+#include <EVAM.h>
 
-BLEServer *pServer = NULL;
-BLECharacteristic *pCoreCharacteristic = NULL;
-BLECharacteristic *pStatusCharacteristic = NULL;
-BLECharacteristic *pLightingCharacteristic = NULL;
-bool deviceConnected = false;
-bool oldDeviceConnected = false;
-unsigned long prevSendMillis = 0;
-unsigned long prevMillis = 0;
-
-/////////CORE MESSAGE////////////////
-//wondering whether I should make it a custom struct or class...but the characteristic needs to be assigned using an int array :/
-
-//core data for main screen
-uint8_t coreMessage[8];
-uint8_t vel = 35;
-uint8_t acc = 0;
-uint8_t brake = 0;
-uint8_t battPercent = 95;
-uint8_t battVol = 78;
-uint16_t battCurr = 10000;
-uint8_t battTemp = 35;
-
-//////////NODE STATUS MESSAGE////////////////
-
-//status of CANBus Nodes
-uint8_t statusMessage[8];
-uint8_t ecu = 0;
-uint8_t bms = 0;
-uint8_t tps = 0;
-uint8_t sas = 0;
-//wheels
-uint8_t flw = 255;
-uint8_t frw = 255;
-uint8_t rlw = 255;
-uint8_t rrw = 255;
-//lights
-
-/////////LIGHTING MESSAGE/////////////
-
-//format: frontR,frontG,frontB, rearR,rearG,rearB, interiorR,interiorG,interiorB
-uint8_t lightingMessage[9];
-/* //values are updated from the callback function
-uint8_t frontR = 255;
-uint8_t frontG = 255;
-uint8_t frontB = 255;
-uint8_t rearR = 0;
-uint8_t rearG = 0;
-uint8_t rearB = 0;
-uint8_t intR = 0;
-uint8_t intG = 0;
-uint8_t intB = 0;
-*/
-
-////////////UUIDs////////////////////////////////
-// See the following for generating UUIDs:
-// https://www.uuidgenerator.net/
-
-#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CORE_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-#define STATUS_CHARACTERISTIC_UUID "5d2e6e74-31f0-445e-8088-827c53b71166"
-#define LIGHTING_CHARACTERISTIC_UUID "825eef3b-e3d0-4ca6-bef7-6428b7260f35"
-
-//////////////////CALLBACKS////////////////////////////////////
+/*  CALLBACKS */
 
 //callback for connection and disconnection of server
 class ConnectionCallbacks : public BLEServerCallbacks
@@ -111,20 +45,69 @@ class LightingUpdateCallback: public BLECharacteristicCallbacks
   void onWrite(BLECharacteristic *pCharacteristic) {
     uint8_t* valPtr = pCharacteristic->getData();
     //do stuff with <value>
-    //uint8_t intValue[9]; //note that array size of 9 is hardcoded, because there doesn't seem to be a way to determine the length of data in <pCharacteristic>
+    //note that array size of 9 is hardcoded, because there doesn't seem to be a way to determine the length of data in <pCharacteristic>
     for (int i = 0; i < 9; i++){  //loop to set the individual bytes
       lightingMessage[i] = *(valPtr + i);
       Serial.print(lightingMessage[i]);  //debug
     }
     Serial.println();  //debug
-
   }
 };
 
-////////////////////////////SET CHARACTERISTIC DATA/////////////////////////////////////////
+/*************** UPDATE DATA FROM CAR ***************/
 
-//sets new data for core characteristic and notifies
-void setCoreCharacteristic(){
+/* Updates core data for the core characteristic. Will eventually use CANBus data*/
+void updateCoreData()
+{
+  //for now is hardcoded data
+  if (vel < 100)
+  {
+    vel++;
+  }
+  else
+  {
+    vel = 0;
+  }
+
+  if (acc < 100)
+  {
+    acc++;
+  }
+  else
+  {
+    acc = 0;
+  }
+
+  if (brake > 0)
+  {
+    brake--;
+  }
+  else
+  {
+    brake = 100;
+  }
+}
+
+/* Updates CAN Bus node status for the status characteristic. Will eventually use CANBus data */
+void updateStatusData()
+{
+  //TODO
+}
+
+//not used
+/* Updates lighting values for the status characteristic */
+/*  
+void updateLightingData()
+{
+  
+}
+*/
+
+/*************** SET CHARACTERISTICS TO NEW VALUES ***************/
+
+/* Sets new data for core characteristic and notifies */
+void setCoreCharacteristic()
+{
   coreMessage[0] = vel;
   coreMessage[1] = acc;
   coreMessage[2] = brake;
@@ -137,8 +120,9 @@ void setCoreCharacteristic(){
   pCoreCharacteristic->notify();
 }
 
-//sets new data for node characteristic and notifies
-void setStatusCharacteristic(){
+/* Sets new data for node characteristic and notifies */
+void setStatusCharacteristic()
+{
   statusMessage[0] = ecu;
   statusMessage[1] = bms;
   statusMessage[2] = tps;
@@ -151,7 +135,7 @@ void setStatusCharacteristic(){
   pStatusCharacteristic->notify();
 }
 
-//sets new data for lighting characteristic and notifies
+/* Sets new data for lighting characteristic */
 void setLightingCharacteristic(){
   /*  //values are changed from the <LightingUpdateCallback> function
   lightingMessage[0] = frontR;
@@ -165,7 +149,6 @@ void setLightingCharacteristic(){
   lightingMessage[8] = intB;
   */
   pLightingCharacteristic->setValue((uint8_t *)lightingMessage, sizeof(lightingMessage));
-
 }
 
 void setup()
@@ -185,36 +168,39 @@ void setup()
   // Create BLE Characteristics
   pCoreCharacteristic = pService->createCharacteristic(
       CORE_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_WRITE
-      | BLECharacteristic::PROPERTY_NOTIFY 
       //| BLECharacteristic::PROPERTY_INDICATE
-      );
+  );
 
   pStatusCharacteristic = pService->createCharacteristic(
       STATUS_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_WRITE
-      | BLECharacteristic::PROPERTY_NOTIFY 
       //| BLECharacteristic::PROPERTY_INDICATE
-      );
+  );
 
   pLightingCharacteristic = pService->createCharacteristic(
       LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ
-      | BLECharacteristic::PROPERTY_WRITE
-      //| BLECharacteristic::PROPERTY_NOTIFY 
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
+      //| BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_INDICATE
-      );
+  );
 
   pLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
 
-  // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
-  // Create a BLE Descriptor
-  pCoreCharacteristic->addDescriptor(new BLE2902());
-  pStatusCharacteristic->addDescriptor(new BLE2902());
-  pLightingCharacteristic->addDescriptor(new BLE2902());
 
+  // Create BLE Descriptors
+  pCoreDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2900));
+  pCoreDescriptor->setValue("Core Data");
+  pStatusDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2901));
+  pStatusDescriptor->setValue("Status Data");
+  pLightingDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2902));
+  pLightingDescriptor->setValue("Lighting Configuration");
+
+  pCoreCharacteristic->addDescriptor(pCoreDescriptor);
+  pStatusCharacteristic->addDescriptor(pStatusDescriptor);
+  pLightingCharacteristic->addDescriptor(pLightingDescriptor);
 
   // Start the service
   pService->start();
@@ -227,76 +213,22 @@ void setup()
   BLEDevice::startAdvertising();
   Serial.println("Waiting a client connection...");
 }
-////////////////////////////UPDATE DATA FROM CAR///////////////////////////////////////////
-
-//updates core data for the core characteristic. Will eventually use CANBus data
-void updateCoreData(){
-  //for now is hardcoded data
-  if (vel < 100)
-    {
-      vel++;
-    }
-    else
-    {
-      vel = 0;
-    }
-
-    if (acc < 100)
-    {
-      acc++;
-    }
-    else
-    {
-      acc = 0;
-    }
-
-    if (brake > 0)
-    {
-      brake--;
-    }
-    else
-    {
-      brake = 100;
-    }
-}
-
-//updates CAN Bus node status for the status characteristic. Will eventually use CANBus data
-void updateStatusData(){
-  //in progress
-
-}
-
-//NOT USED. updates lighting values for the status characteristic
-/*
-void updateLightingData(){
-  //in progress
-
-}
-*/
-
-
-//////////MAIN LOOP////////////////////////////////////
 
 void loop()
 {
   unsigned long currentMillis = millis();
-  if (currentMillis - prevMillis > 100) //update once every 100ms
+  //update and notify once every 100ms
+  if (currentMillis - prevMillis > 100)
   {
     updateCoreData();
     updateStatusData();
-    //updateLightingData();
-    prevMillis = currentMillis;
-  }
-  
-  if (deviceConnected && currentMillis - prevSendMillis > 200) //publish
-  {
+    //updateLightingData(); //lighting data is updated using the callback function
     setCoreCharacteristic();
     setStatusCharacteristic();
     setLightingCharacteristic();
-    prevSendMillis = currentMillis;
+    prevMillis = currentMillis;
   }
 
- 
   // disconnecting
   if (!deviceConnected && oldDeviceConnected)
   {
@@ -312,4 +244,3 @@ void loop()
     oldDeviceConnected = deviceConnected;
   }
 }
-
