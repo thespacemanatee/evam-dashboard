@@ -16,10 +16,7 @@ import RightTachometer from '../components/RightTachometer';
 import BatteryStatistics from '../components/BatteryStatistics';
 import DashboardButtonGroup from '../components/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  CORE_CHARACTERISTIC_UUID,
-  CORE_REFRESH_RATE,
-} from '../utils/constants';
+import { CORE_CHARACTERISTIC_UUID, CORE_REFRESH_RATE } from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
 import TopIndicator from '../components/TopIndicator';
@@ -112,9 +109,13 @@ const DashboardScreen = (): JSX.Element => {
   );
   const channels = useAppSelector(channelsSelector.selectAll);
   const currentChannel = useAppSelector((state) => state.player.currentChannel);
-  const speedProgress = useSharedValue(0);
-  const throttleProgress = useSharedValue(0);
-  const brakeProgress = useSharedValue(0);
+  const velocity = useSharedValue(0);
+  const acceleration = useSharedValue(0);
+  const brake = useSharedValue(0);
+  const battPercentage = useSharedValue(0);
+  const battVoltage = useSharedValue(0);
+  const battCurrent = useSharedValue(0);
+  const battTemperature = useSharedValue(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -189,13 +190,28 @@ const DashboardScreen = (): JSX.Element => {
                 return;
               }
               const decodedString = decodeBleString(cha?.value);
-              speedProgress.value = withTiming(decodedString.charCodeAt(0), {
+              velocity.value = withTiming(decodedString.charCodeAt(0), {
                 duration: CORE_REFRESH_RATE,
               });
-              throttleProgress.value = withTiming(decodedString.charCodeAt(1), {
+              acceleration.value = withTiming(decodedString.charCodeAt(1), {
                 duration: CORE_REFRESH_RATE,
               });
-              brakeProgress.value = withTiming(decodedString.charCodeAt(2), {
+              brake.value = withTiming(decodedString.charCodeAt(2), {
+                duration: CORE_REFRESH_RATE,
+              });
+              battPercentage.value = withTiming(decodedString.charCodeAt(3), {
+                duration: CORE_REFRESH_RATE,
+              });
+              battVoltage.value = withTiming(decodedString.charCodeAt(4), {
+                duration: CORE_REFRESH_RATE,
+              });
+              battCurrent.value = withTiming(
+                decodedString.charCodeAt(6) + 255,
+                {
+                  duration: CORE_REFRESH_RATE,
+                },
+              );
+              battTemperature.value = withTiming(decodedString.charCodeAt(7), {
                 duration: CORE_REFRESH_RATE,
               });
             });
@@ -207,7 +223,16 @@ const DashboardScreen = (): JSX.Element => {
       getDevice();
 
       return () => subscription?.remove();
-    }, [brakeProgress, deviceUUID, speedProgress, throttleProgress]),
+    }, [
+      deviceUUID,
+      velocity,
+      acceleration,
+      brake,
+      battPercentage,
+      battVoltage,
+      battCurrent,
+      battTemperature,
+    ]),
   );
 
   const renderItem = useCallback(
@@ -222,17 +247,22 @@ const DashboardScreen = (): JSX.Element => {
       <TopIndicator style={styles.topIndicator} />
       <View style={[StyleSheet.absoluteFill, styles.analogIndicators]}>
         <View style={styles.leftTachometer}>
-          <LeftTachometer progress={brakeProgress} />
+          <LeftTachometer progress={brake} />
         </View>
         <View style={styles.rightTachometer}>
-          <RightTachometer progress={throttleProgress} />
+          <RightTachometer progress={acceleration} />
         </View>
       </View>
       <View style={[StyleSheet.absoluteFill, styles.speedIndicator]}>
-        <SpeedIndicator progress={speedProgress} />
+        <SpeedIndicator progress={velocity} />
       </View>
       <View style={styles.batteryContainer}>
-        <BatteryStatistics />
+        <BatteryStatistics
+          percentage={battPercentage}
+          voltage={battVoltage}
+          current={battCurrent}
+          temperature={battTemperature}
+        />
       </View>
       <View style={styles.menuContainer}>
         <DashboardButtonGroup />

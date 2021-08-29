@@ -32,9 +32,7 @@ interface SpeedIndicatorProps {
 const SpeedIndicator: React.FC<SpeedIndicatorProps> = ({ progress }) => {
   const animatedProps = useAnimatedProps(() => {
     return {
-      text: interpolate(progress.value, [0, 99], [0, 99], Extrapolate.CLAMP)
-        .toFixed(1)
-        .padStart(4, '0'),
+      text: progress.value.toFixed(1).padStart(4, '0'),
     };
   });
   return (

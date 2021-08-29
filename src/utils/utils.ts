@@ -2,7 +2,7 @@ import { PermissionsAndroid } from 'react-native';
 import { decode as btoa } from 'base-64';
 import { Characteristic } from 'react-native-ble-plx';
 import { bleManagerRef } from './BleHelper';
-import { SERVICE_UUID } from './constants';
+import { SERVICE_UUID } from './config';
 
 export const decodeBleString = (value: string | undefined | null): string => {
   if (!value) {

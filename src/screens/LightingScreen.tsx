@@ -11,12 +11,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Subscription } from 'react-native-ble-plx';
 
-import { MENU_ICON_SIZE } from '../utils/config';
+import { MENU_ICON_SIZE, LIGHTING_CHARACTERISTIC_UUID } from '../utils/config';
 import { RootStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
-import { LIGHTING_CHARACTERISTIC_UUID } from '../utils/constants';
 
 const styles = StyleSheet.create({
   screen: {

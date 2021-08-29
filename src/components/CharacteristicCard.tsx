@@ -13,14 +13,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  measureContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   measure: {
     color: 'red',
-    fontSize: 64,
+    fontSize: 16,
   },
 });
 
@@ -28,7 +23,13 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
   char,
   style,
 }) => {
-  const [measure, setMeasure] = useState(0);
+  const [velocity, setVelocity] = useState(0);
+  const [acceleration, setAcceleration] = useState(0);
+  const [brake, setBrake] = useState(0);
+  // const [batteryPercentage, setBatteryPercentage] = useState(0);
+  // const [batteryVoltage, setBatteryVoltage] = useState(0);
+  // const [batteryCurrent, setBatteryCurrent] = useState(0);
+  // const [batteryTemperature, setBatteryTemperature] = useState(0);
   const [descriptor, setDescriptor] = useState('');
 
   useEffect(() => {
@@ -40,13 +41,22 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
       });
     });
 
-    char.monitor((err, cha) => {
+    const subscription = char.monitor((err, cha) => {
       if (err) {
         console.error(err);
         return;
       }
-      setMeasure(decodeBleString(cha?.value).charCodeAt(0));
+      const temp = decodeBleString(cha?.value);
+      setVelocity(temp.charCodeAt(0));
+      setAcceleration(temp.charCodeAt(1));
+      setBrake(temp.charCodeAt(2));
+      // setBatteryPercentage(temp.charCodeAt(3));
+      // setBatteryVoltage(temp.charCodeAt(4));
+      // setBatteryCurrent(temp.charCodeAt(6) + 255);
+      // setBatteryTemperature(temp.charCodeAt(7));
     });
+
+    return () => subscription.remove();
   }, [char]);
 
   // write on a charactestic the number 6 (e.g.)
@@ -72,9 +82,17 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
           <Text>{`isReadable: ${char.isReadable}`}</Text>
           <Text>{`isWritableWithResponse: ${char.isWritableWithResponse}`}</Text>
           <Text>{`isWritableWithoutResponse: ${char.isWritableWithoutResponse}`}</Text>
-        </View>
-        <View style={styles.measureContainer}>
-          <Text style={styles.measure}>{measure}</Text>
+          <Text style={styles.measure}>{`Velocity: ${velocity}`}</Text>
+          <Text style={styles.measure}>{`Acceleration: ${acceleration}`}</Text>
+          <Text style={styles.measure}>{`Brake: ${brake}`}</Text>
+          {/* <Text style={styles.measure}>
+            {`Percentage: ${batteryPercentage}`}
+          </Text>
+          <Text style={styles.measure}>{`Voltage: ${batteryVoltage}`}</Text>
+          <Text style={styles.measure}>{`Current: ${batteryCurrent}`}</Text>
+          <Text style={styles.measure}>
+            {`Temperature: ${batteryTemperature}`}
+          </Text> */}
         </View>
       </View>
     </View>

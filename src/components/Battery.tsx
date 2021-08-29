@@ -1,11 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedProps,
-  useSharedValue,
-  withRepeat,
-  withTiming,
 } from 'react-native-reanimated';
 import Svg, { Path, Rect, Mask, G } from 'react-native-svg';
 
@@ -14,26 +11,16 @@ import { FINAL_BATTERY_HEIGHT } from '../utils/config';
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 type BatteryProps = {
+  percentage: Animated.SharedValue<number>;
   style?: StyleProp<ViewStyle>;
 };
 
-const Battery = ({ style }: BatteryProps): JSX.Element => {
-  const batteryLevel = useSharedValue(0);
-
+const Battery = ({ percentage, style }: BatteryProps): JSX.Element => {
   const animatedProps = useAnimatedProps(() => {
     return {
-      y: interpolate(batteryLevel.value, [0, 1], [200, -20]),
+      y: interpolate(percentage.value, [0, 100], [200, -20]),
     };
   });
-
-  useEffect(() => {
-    batteryLevel.value = withRepeat(
-      withTiming(1, { duration: 2000 }),
-      -1,
-      true,
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Svg

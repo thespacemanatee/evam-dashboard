@@ -4,12 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Subscription } from 'react-native-ble-plx';
 
-import { MENU_ICON_SIZE } from '../utils/config';
+import { MENU_ICON_SIZE, STATUS_CHARACTERISTIC_UUID } from '../utils/config';
 import CarGraphic from '../components/CarGraphic';
 import { RootStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
-import { STATUS_CHARACTERISTIC_UUID } from '../utils/constants';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
 import BatteryStatistics from '../components/BatteryStatistics';
 import StatusIndicator from '../components/StatusIndicator';

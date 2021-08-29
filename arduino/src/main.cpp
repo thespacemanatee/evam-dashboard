@@ -206,7 +206,7 @@ void loop()
   //(since the car isn't expected to remain on for 50 days consecutively)
 
   //update and notify for core data
-  if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL) //200ms
+  if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)
   {
     updateCoreData();
     updateStatusData();
@@ -216,7 +216,7 @@ void loop()
   }
 
   //update and notify for additional low priority data (lighting)
-  if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL) //1000ms
+  if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)
   {
     setLightingCharacteristic();
     prevSlowMillis = currentMillis;
