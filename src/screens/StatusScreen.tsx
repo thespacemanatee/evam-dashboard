@@ -167,9 +167,9 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.batteryContainer}>
+      {/* <View style={styles.batteryContainer}>
         <BatteryStatistics />
-      </View>
+      </View> */}
     </View>
   );
 };

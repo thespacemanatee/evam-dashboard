@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: 'white',
     fontFamily: 'Gotham-Narrow',
+    fontWeight: 'bold',
     marginBottom: 16,
   },
   bottomSheetContentContainer: {
