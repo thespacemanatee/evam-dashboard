@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Animated, {
   Easing,
+  Extrapolate,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -71,6 +72,7 @@ const RadioPlayerUI = ({
   const progress = useSharedValue(0);
 
   const resetAnimation = useCallback(() => {
+    progress.value = 0;
     progress.value = withRepeat(
       withTiming(1, { duration: 10000, easing: Easing.linear }),
       -1,
@@ -86,8 +88,9 @@ const RadioPlayerUI = ({
     return {
       right: interpolate(
         progress.value,
-        [0, 0.33, 0.66, 1],
-        [-RADIO_LABEL_WIDTH, 0, 0, RADIO_LABEL_WIDTH],
+        [0.33, 0.66, 0.66, 1],
+        [0, RADIO_LABEL_WIDTH, -RADIO_LABEL_WIDTH, 0],
+        Extrapolate.CLAMP,
       ),
     };
   });
@@ -104,7 +107,11 @@ const RadioPlayerUI = ({
           </Animated.Text>
         </TouchableOpacity>
         <View style={styles.radioControls}>
-          <TouchableOpacity onPress={onPressSkipBack}>
+          <TouchableOpacity
+            onPress={() => {
+              resetAnimation();
+              onPressSkipBack();
+            }}>
             <Ionicons
               name='play-skip-back-circle'
               color='white'
@@ -118,7 +125,11 @@ const RadioPlayerUI = ({
               size={RADIO_BUTTON_SIZE + 16}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={onPressSkipForward}>
+          <TouchableOpacity
+            onPress={() => {
+              resetAnimation();
+              onPressSkipForward();
+            }}>
             <Ionicons
               name='play-skip-forward-circle'
               color='white'
