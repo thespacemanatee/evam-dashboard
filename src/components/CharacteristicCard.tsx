@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Characteristic } from 'react-native-ble-plx';
 import { encode as atob, decode as btoa } from 'base-64';
 import { decodeBleString } from '../utils/utils';
 
 interface CharacteristicCardProps {
   char: Characteristic;
+  style?: StyleProp<ViewStyle>;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
   },
   measureContainer: {
     flex: 1,
@@ -22,13 +22,12 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 64,
   },
-  descriptor: {
-    color: 'blue',
-    fontSize: 24,
-  },
 });
 
-const CharacteristicCard: React.FC<CharacteristicCardProps> = ({ char }) => {
+const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
+  char,
+  style,
+}) => {
   const [measure, setMeasure] = useState(0);
   const [descriptor, setDescriptor] = useState('');
 
@@ -62,18 +61,20 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({ char }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.descriptor}>{descriptor}</Text>
-        <Text>{`isIndicatable : ${char.isIndicatable}`}</Text>
-        <Text>{`isNotifiable : ${char.isNotifiable}`}</Text>
-        <Text>{`isNotifying : ${char.isNotifying}`}</Text>
-        <Text>{`isReadable : ${char.isReadable}`}</Text>
-        <Text>{`isWritableWithResponse : ${char.isWritableWithResponse}`}</Text>
-        <Text>{`isWritableWithoutResponse : ${char.isWritableWithoutResponse}`}</Text>
-      </View>
-      <View style={styles.measureContainer}>
-        <Text style={styles.measure}>{measure}</Text>
+    <View style={[styles.container, style]}>
+      <Text>{`Characteristic UUID: ${char.uuid}`}</Text>
+      <View style={{ flexDirection: 'row' }}>
+        <View>
+          <Text>{`isIndicatable: ${char.isIndicatable}`}</Text>
+          <Text>{`isNotifiable: ${char.isNotifiable}`}</Text>
+          <Text>{`isNotifying: ${char.isNotifying}`}</Text>
+          <Text>{`isReadable: ${char.isReadable}`}</Text>
+          <Text>{`isWritableWithResponse: ${char.isWritableWithResponse}`}</Text>
+          <Text>{`isWritableWithoutResponse: ${char.isWritableWithoutResponse}`}</Text>
+        </View>
+        <View style={styles.measureContainer}>
+          <Text style={styles.measure}>{measure}</Text>
+        </View>
       </View>
     </View>
   );

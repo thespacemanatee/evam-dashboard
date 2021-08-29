@@ -88,15 +88,15 @@ const DeviceScreen = ({
       <Button onPress={disconnectDevice} title='DISCONNECT' />
       <View style={styles.container}>
         <BaseCard disabled>
-          <Text>{`Id : ${device.id}`}</Text>
-          <Text>{`Name : ${device.name}`}</Text>
-          <Text>{`Is connected : ${isConnected}`}</Text>
+          <Text>{`Id: ${device.id}`}</Text>
+          <Text>{`Name: ${device.name}`}</Text>
+          <Text>{`Is connected: ${isConnected}`}</Text>
           <Text>{`RSSI : ${device.rssi}`}</Text>
           {device.manufacturerData && (
-            <Text>{`Manufacturer : ${btoa(device.manufacturerData)}`}</Text>
+            <Text>{`Manufacturer: ${btoa(device.manufacturerData)}`}</Text>
           )}
-          <Text>{`ServiceData : ${device.serviceData}`}</Text>
-          <Text>{`UUIDS : ${device.serviceUUIDs}`}</Text>
+          <Text>{`ServiceData: ${device.serviceData}`}</Text>
+          <Text>{`UUIDS: ${device.serviceUUIDs}`}</Text>
         </BaseCard>
         <FlatList
           data={services}

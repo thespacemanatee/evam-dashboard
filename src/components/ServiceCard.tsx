@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { StyleProp, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 import { Characteristic, Service } from 'react-native-ble-plx';
 
 import BaseCard from './BaseCard';
 import CharacteristicCard from './CharacteristicCard';
+
+const styles = StyleSheet.create({
+  characteristicCard: {
+    marginTop: 16,
+  },
+});
 
 interface ServiceCardProps {
   service: Service;
@@ -30,13 +42,17 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, style }) => {
         onPress={() => {
           setAreCharacteristicsVisible((prev) => !prev);
         }}>
-        <Text>{`UUID : ${service.uuid}`}</Text>
+        <Text>{`Service UUID: ${service.uuid}`}</Text>
       </TouchableOpacity>
 
       {areCharacteristicsVisible &&
         characteristics &&
         characteristics.map((char) => (
-          <CharacteristicCard key={char.id} char={char} />
+          <CharacteristicCard
+            key={char.id}
+            char={char}
+            style={styles.characteristicCard}
+          />
         ))}
     </BaseCard>
   );

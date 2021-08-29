@@ -24,9 +24,9 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onPress, style }) => {
       <Text>{`ID: ${device.id}`}</Text>
       <Text>{`Name: ${device.name}`}</Text>
       <Text>{`Connected: ${isConnected}`}</Text>
-      <Text>{`RSSI : ${device.rssi}`}</Text>
+      <Text>{`RSSI: ${device.rssi}`}</Text>
       {device.manufacturerData ? (
-        <Text>{`Manufacturer : ${btoa(device.manufacturerData)}`}</Text>
+        <Text>{`Manufacturer: ${btoa(device.manufacturerData)}`}</Text>
       ) : null}
       <Text>{`UUIDs: ${device.serviceUUIDs}`}</Text>
     </BaseCard>

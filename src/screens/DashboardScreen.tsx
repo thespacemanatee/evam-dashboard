@@ -16,7 +16,10 @@ import RightTachometer from '../components/RightTachometer';
 import BatteryStatistics from '../components/BatteryStatistics';
 import DashboardButtonGroup from '../components/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { CORE_CHARACTERISTIC_UUID } from '../utils/constants';
+import {
+  CORE_CHARACTERISTIC_UUID,
+  CORE_REFRESH_RATE,
+} from '../utils/constants';
 import { bleManagerRef } from '../utils/BleHelper';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
 import TopIndicator from '../components/TopIndicator';
@@ -187,13 +190,13 @@ const DashboardScreen = (): JSX.Element => {
               }
               const decodedString = decodeBleString(cha?.value);
               speedProgress.value = withTiming(decodedString.charCodeAt(0), {
-                duration: 1000,
+                duration: CORE_REFRESH_RATE,
               });
               throttleProgress.value = withTiming(decodedString.charCodeAt(1), {
-                duration: 1000,
+                duration: CORE_REFRESH_RATE,
               });
               brakeProgress.value = withTiming(decodedString.charCodeAt(2), {
-                duration: 1000,
+                duration: CORE_REFRESH_RATE,
               });
             });
           }
