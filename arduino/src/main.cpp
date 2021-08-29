@@ -34,6 +34,8 @@ bool oldDeviceConnected = false;
 unsigned long prevSendMillis = 0;
 unsigned long prevMillis = 0;
 
+/////////CORE MESSAGE////////////////
+uint8_t coreMessage[8];
 uint8_t vel = 35;
 uint8_t acc = 0;
 uint8_t brake = 0;
@@ -42,7 +44,32 @@ uint8_t battVol = 78;
 uint16_t battCurr = 10000;
 uint8_t battTemp = 35;
 
-uint8_t message[8];
+//////////NODE STATUS MESSAGE////////////////
+uint8_t statusMessage[8];
+uint8_t ecu = 0;
+uint8_t bms = 0;
+uint8_t tps = 0;
+uint8_t sas = 0;
+//wheels
+uint8_t flw = 255;
+uint8_t frw = 255;
+uint8_t rlw = 255;
+uint8_t rrw = 255;
+//lights
+
+/////////LIGHTING MESSAGE/////////////
+uint8_t lightingMessage[9];
+uint8_t frontR = 255;
+uint8_t frontG = 255;
+uint8_t frontB = 255;
+uint8_t rearR = 0;
+uint8_t rearG = 0;
+uint8_t rearB = 0;
+uint8_t intR = 0;
+uint8_t intG = 0;
+uint8_t intB = 0;
+
+////////////UUIDs////////////////////////////////
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -82,29 +109,35 @@ void setup()
   // Create a BLE Characteristic
   pCoreCharacteristic = pService->createCharacteristic(
       CORE_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ |
-          BLECharacteristic::PROPERTY_WRITE |
-          BLECharacteristic::PROPERTY_NOTIFY |
-          BLECharacteristic::PROPERTY_INDICATE);
+      BLECharacteristic::PROPERTY_READ
+      //| BLECharacteristic::PROPERTY_WRITE
+      | BLECharacteristic::PROPERTY_NOTIFY 
+      //| BLECharacteristic::PROPERTY_INDICATE
+      );
 
   pStatusCharacteristic = pService->createCharacteristic(
       STATUS_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ |
-          BLECharacteristic::PROPERTY_NOTIFY |
-          BLECharacteristic::PROPERTY_INDICATE);
+      BLECharacteristic::PROPERTY_READ
+      //| BLECharacteristic::PROPERTY_WRITE
+      | BLECharacteristic::PROPERTY_NOTIFY 
+      //| BLECharacteristic::PROPERTY_INDICATE
+      );
 
   pLightingCharacteristic = pService->createCharacteristic(
       LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ |
-          BLECharacteristic::PROPERTY_WRITE |
-          BLECharacteristic::PROPERTY_NOTIFY |
-          BLECharacteristic::PROPERTY_INDICATE);
+      BLECharacteristic::PROPERTY_READ
+      | BLECharacteristic::PROPERTY_WRITE
+      //| BLECharacteristic::PROPERTY_NOTIFY 
+      //| BLECharacteristic::PROPERTY_INDICATE
+      );
 
   // https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
   // Create a BLE Descriptor
+
   pCoreCharacteristic->addDescriptor(new BLE2902());
   pStatusCharacteristic->addDescriptor(new BLE2902());
   pLightingCharacteristic->addDescriptor(new BLE2902());
+
 
   // Start the service
   pService->start();
@@ -117,14 +150,12 @@ void setup()
   BLEDevice::startAdvertising();
   Serial.println("Waiting a client connection to notify...");
 }
+////////////////////////////UPDATE DATA FROM CAR///////////////////////////////////////////
 
-void loop()
-{
-  // notify changed value
-  unsigned long currentMillis = millis();
-  if (currentMillis - prevMillis > 100)
-  {
-    if (vel < 100)
+//updates core data for the core characteristic. Will eventually use CANBus data
+void updateCoreData(){
+  //for now is hardcoded data
+  if (vel < 100)
     {
       vel++;
     }
@@ -132,6 +163,7 @@ void loop()
     {
       vel = 0;
     }
+
     if (acc < 100)
     {
       acc++;
@@ -140,6 +172,7 @@ void loop()
     {
       acc = 0;
     }
+
     if (brake > 0)
     {
       brake--;
@@ -148,32 +181,83 @@ void loop()
     {
       brake = 100;
     }
+}
+
+//updates CAN Bus node status for the status characteristic. Will eventually use CANBus data
+void updateStatusData(){
+  //in progress
+
+}
+
+//updates lighting values for the status characteristic
+void updateLightingData(){
+  //in progress
+
+}
+////////////////////////////SET CHARACTERISTIC DATA/////////////////////////////////////////
+
+//sets new data for core characteristic and notifies
+void setCoreCharacteristic(){
+  coreMessage[0] = vel;
+  coreMessage[1] = acc;
+  coreMessage[2] = brake;
+  coreMessage[3] = battPercent;
+  coreMessage[4] = battVol;
+  coreMessage[5] = (uint8_t)(battCurr >> 8);
+  coreMessage[6] = (uint8_t)(battCurr & 0x00FF);
+  coreMessage[7] = battTemp;
+  pCoreCharacteristic->setValue((uint8_t *)coreMessage, sizeof(coreMessage));
+  pCoreCharacteristic->notify();
+}
+
+//sets new data for node characteristic and notifies
+void setStatusCharacteristic(){
+  statusMessage[0] = ecu;
+  statusMessage[1] = bms;
+  statusMessage[2] = tps;
+  statusMessage[3] = sas;
+  statusMessage[4] = flw;
+  statusMessage[5] = frw;
+  statusMessage[6] = rlw;
+  statusMessage[7] = rrw;
+  pStatusCharacteristic->setValue((uint8_t *)statusMessage, sizeof(statusMessage));
+  pStatusCharacteristic->notify();
+}
+
+void setLightingCharacteristic(){
+  lightingMessage[0] = frontR;
+  lightingMessage[1] = frontG;
+  lightingMessage[2] = frontB;
+  lightingMessage[3] = rearR;
+  lightingMessage[4] = rearG;
+  lightingMessage[5] = rearB;
+  lightingMessage[6] = intR;
+  lightingMessage[7] = intG;
+  lightingMessage[8] = intB;
+  pLightingCharacteristic->setValue((uint8_t *)lightingMessage, sizeof(lightingMessage));
+
+}
+
+void loop()
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillis > 100) //update once every 100ms
+  {
+    updateCoreData();
+    updateStatusData();
+    updateLightingData();
     prevMillis = currentMillis;
   }
-  //bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
-  if (deviceConnected && currentMillis - prevSendMillis > 1000)
+  
+  if (deviceConnected && currentMillis - prevSendMillis > 200) //publish
   {
-    message[0] = vel;
-    message[1] = acc;
-    message[2] = brake;
-    message[3] = battPercent;
-    message[4] = battVol;
-    message[5] = (uint8_t)(battCurr >> 8);
-    message[6] = (uint8_t)(battCurr & 0x00FF);
-    message[7] = battTemp;
-    pCoreCharacteristic->setValue((uint8_t *)message, sizeof(message));
-    pCoreCharacteristic->notify();
-    pStatusCharacteristic->setValue((uint8_t *)message, sizeof(message));
-    pStatusCharacteristic->notify();
-    pLightingCharacteristic->setValue((uint8_t *)message, sizeof(message));
-    pLightingCharacteristic->notify();
-    Serial.print(message[5]);
-    Serial.print(" | ");
-    Serial.println(message[6]);
+    setCoreCharacteristic();
+    setStatusCharacteristic();
+    setLightingCharacteristic();
     prevSendMillis = currentMillis;
   }
 
-  //Serial.println(combinedValue);
+ 
   // disconnecting
   if (!deviceConnected && oldDeviceConnected)
   {
@@ -189,3 +273,4 @@ void loop()
     oldDeviceConnected = deviceConnected;
   }
 }
+
