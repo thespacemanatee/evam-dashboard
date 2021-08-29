@@ -11,7 +11,7 @@
 #define STATUS_CHARACTERISTIC_UUID "5d2e6e74-31f0-445e-8088-827c53b71166"
 #define LIGHTING_CHARACTERISTIC_UUID "825eef3b-e3d0-4ca6-bef7-6428b7260f35"
 
-#define CORE_DATA_REFRESH_INTERVAL 100
+#define CORE_DATA_REFRESH_INTERVAL 200
 #define SLOW_DATA_REFRESH_INTERVAL 500
 
 
@@ -30,17 +30,17 @@ bool oldDeviceConnected = false;
 unsigned long prevCoreMillis = 0;   //timer for the important data service
 unsigned long prevSlowMillis = 0;   //timer for the less important data service
 
-/* CORE MESSAGE */
+/* Core message to be notified */
 uint8_t coreMessage[8];
-uint8_t vel = 35; //Velocity
-uint8_t acc = 0; //Acceleration
-uint8_t brake = 0; //Brake
-uint8_t battPercent = 95; //Battery percentage
-uint8_t battVol = 78; //Battery voltage
-uint16_t battCurr = 10000; //Battery current
-uint8_t battTemp = 35; //Battery Temperature
+uint8_t vel; //Velocity
+uint8_t acc; //Acceleration
+uint8_t brake; //Brake
+uint8_t battPercent; //Battery percentage
+uint8_t battVolt; //Battery voltage
+uint16_t battCurr; //Battery current
+uint8_t battTemp; //Battery Temperature
 
-/* NODE STATUS MESSAGE */
+/* Node status message to be notified */
 uint8_t statusMessage[8];
 uint8_t ecu = 0;
 uint8_t bms = 0;
@@ -51,7 +51,7 @@ uint8_t frw = 255; //Front right wheel
 uint8_t rlw = 255; //Rear left wheel
 uint8_t rrw = 255; //Rear right wheel
 
-/* LIGHTING MESSAGE  */
+/* Lighting message to be notified  */
 //format: frontR,frontG,frontB, rearR,rearG,rearB, interiorR,interiorG,interiorB
 uint8_t lightingMessage[9];
 /* //values are updated from the callback function

@@ -21,9 +21,9 @@
 */
 #include <EVAM.h>
 
-/*  CALLBACKS */
+/***************  CALLBACKS ***************/
 
-//callback for connection and disconnection of server
+/* Callback for connection and disconnection of server */
 class ConnectionCallbacks : public BLEServerCallbacks
 {
   void onConnect(BLEServer *pServer)
@@ -39,18 +39,20 @@ class ConnectionCallbacks : public BLEServerCallbacks
   }
 };
 
-//callback for updated lighting data written from client (phone)
-class LightingUpdateCallback: public BLECharacteristicCallbacks 
+/* Callback for updated lighting data written from client */
+class LightingUpdateCallback : public BLECharacteristicCallbacks
 {
-  void onWrite(BLECharacteristic *pCharacteristic) {
-    uint8_t* valPtr = pCharacteristic->getData();
+  void onWrite(BLECharacteristic *pCharacteristic)
+  {
+    uint8_t *valPtr = pCharacteristic->getData();
     //do stuff with <value>
     //note that array size of 9 is hardcoded, because there doesn't seem to be a way to determine the length of data in <pCharacteristic>
-    for (int i = 0; i < 9; i++){  //loop to set the individual bytes
+    for (int i = 0; i < 9; i++)
+    { //loop to set the individual bytes
       lightingMessage[i] = *(valPtr + i);
-      Serial.print(lightingMessage[i]);  //debug
+      Serial.print(lightingMessage[i]); //debug
     }
-    Serial.println();  //debug
+    Serial.println(); //debug
   }
 };
 
@@ -60,32 +62,13 @@ class LightingUpdateCallback: public BLECharacteristicCallbacks
 void updateCoreData()
 {
   //for now is hardcoded data
-  if (vel < 100)
-  {
-    vel++;
-  }
-  else
-  {
-    vel = 0;
-  }
-
-  if (acc < 100)
-  {
-    acc++;
-  }
-  else
-  {
-    acc = 0;
-  }
-
-  if (brake > 0)
-  {
-    brake--;
-  }
-  else
-  {
-    brake = 100;
-  }
+  vel = rand() % 50 + 50;
+  brake = rand() % 50;
+  acc = rand() % 50 + 50;
+  battPercent = rand() % 10 + 75;
+  battVolt = rand() % 5 + 75;
+  battCurr = rand() % 10 + 495;
+  battTemp = rand() % 10 + 40;
 }
 
 /* Updates CAN Bus node status for the status characteristic. Will eventually use CANBus data */
@@ -112,7 +95,7 @@ void setCoreCharacteristic()
   coreMessage[1] = acc;
   coreMessage[2] = brake;
   coreMessage[3] = battPercent;
-  coreMessage[4] = battVol;
+  coreMessage[4] = battVolt;
   coreMessage[5] = (uint8_t)(battCurr >> 8);
   coreMessage[6] = (uint8_t)(battCurr & 0x00FF);
   coreMessage[7] = battTemp;
@@ -136,7 +119,8 @@ void setStatusCharacteristic()
 }
 
 /* Sets new data for lighting characteristic */
-void setLightingCharacteristic(){
+void setLightingCharacteristic()
+{
   /*  //values are changed from the <LightingUpdateCallback> function
   lightingMessage[0] = frontR;
   lightingMessage[1] = frontG;
@@ -190,7 +174,6 @@ void setup()
   );
   pLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
 
-
   // Create BLE Descriptors
   pCoreDescriptor = new BLE2902();
   //pCoreDescriptor->setValue("Core Data");
@@ -223,7 +206,7 @@ void loop()
   //(since the car isn't expected to remain on for 50 days consecutively)
 
   //update and notify for core data
-  if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)  //100ms
+  if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL) //200ms
   {
     updateCoreData();
     updateStatusData();
@@ -233,7 +216,7 @@ void loop()
   }
 
   //update and notify for additional low priority data (lighting)
-  if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)  //1000ms
+  if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL) //1000ms
   {
     setLightingCharacteristic();
     prevSlowMillis = currentMillis;
