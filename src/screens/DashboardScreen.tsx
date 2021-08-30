@@ -19,10 +19,11 @@ import {
   CORE_CHARACTERISTIC_UUID,
   CORE_REFRESH_RATE,
   CORE_SERVICE_UUID,
+  STATUS_CHARACTERISTIC_UUID,
+  STATUS_SERVICE_UUID,
 } from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
-import TopIndicator from '../components/TopIndicator';
 import { channelsSelector } from '../features/radio/channelsSlice';
 import SheetHandle from '../components/SheetHandle';
 import { setCurrentChannel } from '../features/radio/playerSlice';
@@ -30,23 +31,19 @@ import RadioPlayerUI from '../components/RadioPlayerUI';
 import RadioChannelItem from '../components/RadioChannelItem';
 import { RadioChannel } from '../types';
 import colors from '../utils/colors';
+import TopIndicator from '../components/TopIndicator';
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'black',
   },
-  topIndicator: {
-    position: 'absolute',
-    width: '100%',
-    top: 0,
-  },
-  menuContainer: {
+  menu: {
     position: 'absolute',
     top: 32,
     left: 32,
   },
-  batteryContainer: {
+  battery: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
@@ -113,6 +110,7 @@ const DashboardScreen = (): JSX.Element => {
   );
   const channels = useAppSelector(channelsSelector.selectAll);
   const currentChannel = useAppSelector((state) => state.player.currentChannel);
+  const [isPlaying, setIsPlaying] = useState(false);
   const velocity = useSharedValue(0);
   const acceleration = useSharedValue(0);
   const brake = useSharedValue(0);
@@ -120,7 +118,11 @@ const DashboardScreen = (): JSX.Element => {
   const battVoltage = useSharedValue(0);
   const battCurrent = useSharedValue(0);
   const battTemperature = useSharedValue(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const tps = useSharedValue(-1);
+  const sas = useSharedValue(-1);
+  const ecu = useSharedValue(-1);
+  const bms = useSharedValue(-1);
+  const whl = useSharedValue(-1);
   const sheetRef = useRef<BottomSheet>(null);
 
   const dispatch = useAppDispatch();
@@ -178,17 +180,18 @@ const DashboardScreen = (): JSX.Element => {
   );
 
   useEffect(() => {
-    let subscription: Subscription | undefined;
+    let coreSubscription: Subscription | undefined;
+    let statusSubscription: Subscription | undefined;
     const getDevice = async () => {
       try {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
         if (device) {
-          const characteristic = await getCharacteristic(
+          const coreCharacteristic = await getCharacteristic(
             CORE_SERVICE_UUID,
             deviceUUID,
             CORE_CHARACTERISTIC_UUID,
           );
-          subscription = characteristic?.monitor((err, cha) => {
+          coreSubscription = coreCharacteristic?.monitor((err, cha) => {
             if (err) {
               console.error(err);
               return;
@@ -222,6 +225,31 @@ const DashboardScreen = (): JSX.Element => {
               duration: CORE_REFRESH_RATE,
             });
           });
+          const statusCharacteristic = await getCharacteristic(
+            STATUS_SERVICE_UUID,
+            deviceUUID,
+            STATUS_CHARACTERISTIC_UUID,
+          );
+
+          statusSubscription = statusCharacteristic?.monitor((err, cha) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            const decodedString = decodeBleString(cha?.value);
+            tps.value = decodedString.charCodeAt(2);
+            sas.value = decodedString.charCodeAt(3);
+            ecu.value = decodedString.charCodeAt(0);
+            bms.value = decodedString.charCodeAt(1);
+            whl.value =
+              decodedString.charCodeAt(6) +
+                decodedString.charCodeAt(7) +
+                decodedString.charCodeAt(8) +
+                decodedString.charCodeAt(9) ===
+              4
+                ? 1
+                : 0;
+          });
         }
       } catch (err) {
         console.error(err);
@@ -229,7 +257,10 @@ const DashboardScreen = (): JSX.Element => {
     };
     getDevice();
 
-    return () => subscription?.remove();
+    return () => {
+      coreSubscription?.remove();
+      statusSubscription?.remove();
+    };
   }, [
     deviceUUID,
     velocity,
@@ -239,6 +270,11 @@ const DashboardScreen = (): JSX.Element => {
     battVoltage,
     battCurrent,
     battTemperature,
+    tps,
+    sas,
+    ecu,
+    bms,
+    whl,
   ]);
 
   const renderItem = useCallback(
@@ -250,29 +286,26 @@ const DashboardScreen = (): JSX.Element => {
 
   return (
     <View style={styles.screen}>
-      <TopIndicator style={styles.topIndicator} />
+      <TopIndicator tps={tps} sas={sas} ecu={ecu} bms={bms} whl={whl} />
       <View style={[StyleSheet.absoluteFill, styles.analogIndicators]}>
-        <View style={styles.leftTachometer}>
-          <LeftTachometer progress={brake} />
-        </View>
-        <View style={styles.rightTachometer}>
-          <RightTachometer progress={acceleration} />
-        </View>
-      </View>
-      <View style={[StyleSheet.absoluteFill, styles.speedIndicator]}>
-        <SpeedIndicator progress={velocity} />
-      </View>
-      <View style={styles.batteryContainer}>
-        <BatteryStatistics
-          percentage={battPercentage}
-          voltage={battVoltage}
-          current={battCurrent}
-          temperature={battTemperature}
+        <LeftTachometer progress={brake} style={styles.leftTachometer} />
+        <RightTachometer
+          progress={acceleration}
+          style={styles.rightTachometer}
         />
       </View>
-      <View style={styles.menuContainer}>
-        <DashboardButtonGroup />
-      </View>
+      <SpeedIndicator
+        progress={velocity}
+        style={[StyleSheet.absoluteFill, styles.speedIndicator]}
+      />
+      <BatteryStatistics
+        percentage={battPercentage}
+        voltage={battVoltage}
+        current={battCurrent}
+        temperature={battTemperature}
+        style={styles.battery}
+      />
+      <DashboardButtonGroup style={styles.menu} />
       <RadioPlayerUI
         onPressRadioLabel={() => sheetRef.current?.snapToIndex(1)}
         onPressSkipBack={handleSkipBack}

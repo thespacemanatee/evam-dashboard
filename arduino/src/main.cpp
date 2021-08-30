@@ -123,11 +123,6 @@ void setCoreCharacteristic()
   coreMessage[5] = (uint8_t)(battCurr >> 8);
   coreMessage[6] = (uint8_t)(battCurr & 0x00FF);
   coreMessage[7] = battTemp;
-  coreMessage[8] = tps;
-  coreMessage[9] = sas;
-  coreMessage[10] = ecu;
-  coreMessage[11] = bms;
-  coreMessage[12] = frw + flw + rlw + rrw == 4 ? 1 : 0;
   pCoreCharacteristic->setValue((uint8_t *)coreMessage, sizeof(coreMessage));
   pCoreCharacteristic->notify();
 }

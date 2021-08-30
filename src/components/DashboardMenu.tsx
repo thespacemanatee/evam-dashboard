@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
@@ -45,7 +45,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const DashboardMenu = (): JSX.Element => {
+type DashboardMenuProps = {
+  style?: StyleProp<ViewStyle>;
+};
+
+const DashboardMenu = ({ style }: DashboardMenuProps): JSX.Element => {
   const [open, setOpen] = useState(false);
   const mainProgress = useSharedValue(0);
   const menuProgress = useSharedValue(0);
@@ -130,46 +134,56 @@ const DashboardMenu = (): JSX.Element => {
   }, [open, mainProgress, menuProgress]);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        containerStyle={styles.mainButton}
-        onPress={handleMenuPress}>
-        <Animated.View style={cogAnimatedStyle}>
-          <Ionicons name='cog-outline' size={MENU_ICON_SIZE} color='white' />
-        </Animated.View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        containerStyle={styles.mainButton}
-        onPress={handleMenuPress}>
-        <Animated.View style={closeAnimatedStyle}>
-          <Ionicons name='close-outline' size={MENU_ICON_SIZE} color='white' />
-        </Animated.View>
-      </TouchableOpacity>
-      <View style={styles.menuButtons}>
-        <MenuButton
-          iconName='bluetooth-outline'
-          iconSize={MENU_ICON_SIZE}
-          label='Bluetooth'
-          style={[styles.bluetoothButton, bluetoothAnimatedStyle]}
-          onPress={handleSettings}
-        />
-        <MenuButton
-          iconName='thermometer-outline'
-          iconSize={MENU_ICON_SIZE}
-          label='Vehicle Status'
-          style={[styles.temperatureButton, temperatureAnimatedStyle]}
-          onPress={handleTemperature}
-        />
-        <MenuButton
-          iconName='sunny-outline'
-          iconSize={MENU_ICON_SIZE}
-          label='Lighting'
-          style={[styles.lightingButton, lightingAnimatedStyle]}
-          onPress={handleLighting}
-        />
+    <View style={style}>
+      <View style={styles.container}>
+        <TouchableOpacity
+          containerStyle={styles.mainButton}
+          onPress={handleMenuPress}>
+          <Animated.View style={cogAnimatedStyle}>
+            <Ionicons name='cog-outline' size={MENU_ICON_SIZE} color='white' />
+          </Animated.View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          containerStyle={styles.mainButton}
+          onPress={handleMenuPress}>
+          <Animated.View style={closeAnimatedStyle}>
+            <Ionicons
+              name='close-outline'
+              size={MENU_ICON_SIZE}
+              color='white'
+            />
+          </Animated.View>
+        </TouchableOpacity>
+        <View style={styles.menuButtons}>
+          <MenuButton
+            iconName='bluetooth-outline'
+            iconSize={MENU_ICON_SIZE}
+            label='Bluetooth'
+            style={[styles.bluetoothButton, bluetoothAnimatedStyle]}
+            onPress={handleSettings}
+          />
+          <MenuButton
+            iconName='thermometer-outline'
+            iconSize={MENU_ICON_SIZE}
+            label='Vehicle Status'
+            style={[styles.temperatureButton, temperatureAnimatedStyle]}
+            onPress={handleTemperature}
+          />
+          <MenuButton
+            iconName='sunny-outline'
+            iconSize={MENU_ICON_SIZE}
+            label='Lighting'
+            style={[styles.lightingButton, lightingAnimatedStyle]}
+            onPress={handleLighting}
+          />
+        </View>
       </View>
     </View>
   );
+};
+
+DashboardMenu.defaultProps = {
+  style: undefined,
 };
 
 export default DashboardMenu;

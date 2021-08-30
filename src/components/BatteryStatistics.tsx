@@ -60,22 +60,24 @@ const BatteryStatistics = ({
   });
 
   return (
-    <View style={[styles.container, style]}>
-      <Battery percentage={percentage} />
-      <View style={styles.statsContainer}>
-        <AnimateableText animatedProps={voltageProps} style={styles.stats} />
-        <Text style={styles.units}>V</Text>
-      </View>
-      <View style={styles.statsContainer}>
-        <AnimateableText animatedProps={ampereProps} style={styles.stats} />
-        <Text style={styles.units}>A</Text>
-      </View>
-      <View style={styles.statsContainer}>
-        <AnimateableText
-          animatedProps={temperatureProps}
-          style={styles.stats}
-        />
-        <Text style={styles.units}>°C</Text>
+    <View style={style}>
+      <View style={styles.container}>
+        <Battery percentage={percentage} />
+        <View style={styles.statsContainer}>
+          <AnimateableText animatedProps={voltageProps} style={styles.stats} />
+          <Text style={styles.units}>V</Text>
+        </View>
+        <View style={styles.statsContainer}>
+          <AnimateableText animatedProps={ampereProps} style={styles.stats} />
+          <Text style={styles.units}>A</Text>
+        </View>
+        <View style={styles.statsContainer}>
+          <AnimateableText
+            animatedProps={temperatureProps}
+            style={styles.stats}
+          />
+          <Text style={styles.units}>°C</Text>
+        </View>
       </View>
     </View>
   );

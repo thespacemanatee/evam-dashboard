@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -27,21 +27,24 @@ const styles = StyleSheet.create({
 
 interface SpeedIndicatorProps {
   progress: Animated.SharedValue<number>;
+  style?: StyleProp<ViewStyle>;
 }
 
-const SpeedIndicator: React.FC<SpeedIndicatorProps> = ({ progress }) => {
+const SpeedIndicator: React.FC<SpeedIndicatorProps> = ({ progress, style }) => {
   const animatedProps = useAnimatedProps(() => {
     return {
       text: progress.value.toFixed(1).padStart(4, '0'),
     };
   });
   return (
-    <View style={styles.container}>
-      <AnimateableText
-        animatedProps={animatedProps}
-        style={styles.speedIndicator}
-      />
-      <Text style={styles.units}>KM/H</Text>
+    <View style={style}>
+      <View style={styles.container}>
+        <AnimateableText
+          animatedProps={animatedProps}
+          style={styles.speedIndicator}
+        />
+        <Text style={styles.units}>KM/H</Text>
+      </View>
     </View>
   );
 };

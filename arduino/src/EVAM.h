@@ -35,7 +35,7 @@ unsigned long prevCoreMillis = 0; //timer for the important data service
 unsigned long prevSlowMillis = 0; //timer for the less important data service
 
 /* Core message to be notified */
-uint8_t coreMessage[13];
+uint8_t coreMessage[8];
 uint8_t vel;         //Velocity
 uint8_t acc;         //Acceleration
 uint8_t brake;       //Brake
