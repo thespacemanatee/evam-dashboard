@@ -159,10 +159,16 @@ void setLightingCharacteristic()
   pInteriorLightingCharacteristic->setValue((uint8_t *)interiorLightingMessage, sizeof(interiorLightingMessage));
 }
 
+
 //set up the BLE device
 void setup()
 {
   Serial.begin(115200);
+
+/* CAN Setup */
+//TODO
+
+/* BLE Setup */
 
   // Create the BLE Device
   BLEDevice::init("EVAM");
@@ -173,6 +179,7 @@ void setup()
 
   // Create the BLE Service
   BLEService *pCoreService = pServer->createService(CORE_SERVICE_UUID);
+  BLEService *pStatusService = pServer->createService(STATUS_SERVICE_UUID);
   BLEService *pLightingService = pServer->createService(LIGHTING_SERVICE_UUID);
 
   // Create BLE Characteristics
@@ -183,7 +190,7 @@ void setup()
       //| BLECharacteristic::PROPERTY_INDICATE
   );
 
-  pStatusCharacteristic = pCoreService->createCharacteristic(
+  pStatusCharacteristic = pStatusService->createCharacteristic(
       STATUS_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_WRITE
@@ -229,6 +236,7 @@ void setup()
 
   // Start the service
   pCoreService->start();
+  pStatusService->start();
   pLightingService->start();
 
   // Start advertising

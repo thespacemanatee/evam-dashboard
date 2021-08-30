@@ -6,6 +6,7 @@
 
 /* UUIDs */
 #define CORE_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define STATUS_SERVICE_UUID "4ee1bbf0-5e71-4d58-9ce4-e3e45cb8d8f9"
 #define LIGHTING_SERVICE_UUID "1cbef3f2-12d5-4490-8a80-7f7970b51b54"
 #define CORE_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define STATUS_CHARACTERISTIC_UUID "5d2e6e74-31f0-445e-8088-827c53b71166"
@@ -14,25 +15,20 @@
 #define INTERIOR_LIGHTING_CHARACTERISTIC_UUID "8ecaaefa-f62f-4376-a4c8-32c74f62d950"
 
 
-#define CORE_DATA_REFRESH_INTERVAL 200
+#define CORE_DATA_REFRESH_INTERVAL 100
 #define SLOW_DATA_REFRESH_INTERVAL 500
 
 
-BLEServer *pServer;
-BLEService *pCoreService;
-BLEService *pLightingService;
+BLEServer *pServer; //main BLE server
+BLEService *pCoreService;   //service for core data
+BLEService *pStatusService; //service for CANBus node status data
+BLEService *pLightingService;   //service for lighting data
 BLECharacteristic *pCoreCharacteristic;
 BLECharacteristic *pStatusCharacteristic;
 BLECharacteristic *pFrontLightingCharacteristic;
 BLECharacteristic *pRearLightingCharacteristic;
 BLECharacteristic *pInteriorLightingCharacteristic;
-BLEDescriptor *pDescriptor;
-/*  //to remove
-BLEDescriptor *pStatusDescriptor;
-BLEDescriptor *pFrontLDescriptor;
-BLEDescriptor *pRearLDescriptor;
-BLEDescriptor *pInteriorLDescriptor;
-*/
+BLEDescriptor *pDescriptor; //generic descriptor used by all characteristics
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
