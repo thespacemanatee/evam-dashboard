@@ -67,12 +67,15 @@ void updateCoreData()
   vel = acc;
   brake = rand() % 50;
   //acc = rand() % 50 + 50;
-  acc = (uint8_t)(float(analogRead(ACC_PIN))/40.95);
-  Serial.println(acc);
-
+  uint16_t accTemp = analogRead(ACC_PIN);
+  acc = (uint8_t)(float(accTemp)/34.00);
+  Serial.print(acc);
+  Serial.print(" | ");
+  Serial.println(accTemp);
   battPercent = rand() % 10 + 75;
   battVolt = rand() % 5 + 75;
-  battCurr = rand() % 10 + 495;
+  uint16_t battPhysicalCurr = rand() % 100 + 5;
+  battCurr = (battPhysicalCurr * 10) + 320;
   battTemp = rand() % 10 + 40;
 }
 
