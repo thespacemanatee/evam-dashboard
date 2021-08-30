@@ -1947,10 +1947,10 @@
     lodash.pick "^4.4.0"
     lodash.template "^4.5.0"
 
-"@gorhom/bottom-sheet@^4.0.0-alpha.30":
-  version "4.0.0-alpha.30"
-  resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-4.0.0-alpha.30.tgz#0b35036110bc83d262231d4ce46e48b4daf258eb"
-  integrity sha512-uq4dI+P3cDfWWsf5ReiLxOXr2iFoyupaOPJiZFKm6Cvbf/WOp+bh0sJcomF7SWM65zqx16rtiBLcGkZZFfnlRw==
+"@gorhom/bottom-sheet@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-4.0.0.tgz#524ccc3cffd6c3c0f6ef994cf5d01a5df02f5e02"
+  integrity sha512-iG4ZY16co3KsVl6zPrfG6VJuGGv4ml+dDduK9EtudWxTnZMMkFQxc5shGvu2Hbv+N15EhwelyLqZmxFzGXYZqQ==
   dependencies:
     "@gorhom/portal" "^1.0.7"
     invariant "^2.2.4"
@@ -7314,12 +7314,7 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-nanoid@^3.1.15:
-  version "3.1.23"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.23.tgz#f744086ce7c2bc47ee0a8472574d5c78e4183a81"
-  integrity sha512-FiB0kzdP0FFVGDKlRLEQ1BgDzU87dy5NnzjeW9YZNt+/c3+q82EQDUwniSAUxp/F0gFNI1ZhKU1FqYsMuqZVnw==
-
-nanoid@^3.1.20, nanoid@^3.1.23:
+nanoid@^3.1.15, nanoid@^3.1.20, nanoid@^3.1.23:
   version "3.1.25"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.25.tgz#09ca32747c0e543f0e1814b7d3793477f9c8e152"
   integrity sha512-rdwtIXaXCLFAQbnfqDRnI6jaRHp9fTcYBjtFKE8eezcZ7LuLjhUaQGNeMXf1HmRoCH32CLz6XwX0TtxEOS/A3Q==
