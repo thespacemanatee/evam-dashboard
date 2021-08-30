@@ -75,7 +75,7 @@ void updateCoreData()
   battPercent = rand() % 10 + 75;
   battVolt = rand() % 5 + 75;
   uint16_t battPhysicalCurr = rand() % 100 + 5;
-  battCurr = (battPhysicalCurr * 10) + 320;
+  battCurr = (battPhysicalCurr + 320) * 10 ;
   battTemp = rand() % 10 + 40;
 }
 
