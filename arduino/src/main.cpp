@@ -21,7 +21,6 @@
 */
 #include <EVAM.h>
 
-
 /***************  CALLBACKS ***************/
 
 /* Callback for connection and disconnection of server */
@@ -46,36 +45,41 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
   void onWrite(BLECharacteristic *pCharacteristic)
   {
     uint8_t *valPtr = pCharacteristic->getData();
-    
-    if(pCharacteristic == pFrontLightingCharacteristic){
-      for (int i = 0; i < 3; i++)
-      { //loop to set the individual bytes
-        frontLightingMessage[i] = *(valPtr + i);
-        Serial.print(frontLightingMessage[i]); //debug
-      }
-      Serial.println(); //debug
+
+    if (pCharacteristic == pFrontLightingCharacteristic)
+    {
+      setVehicleLights(frontLightingMessage, valPtr);
     }
-    else if(pCharacteristic == pRearLightingCharacteristic){
-      for (int i = 0; i < 3; i++)
-      { //loop to set the individual bytes
-        rearLightingMessage[i] = *(valPtr + i);
-        Serial.print(rearLightingMessage[i]); //debug
-      }
-      Serial.println(); //debug
+    else if (pCharacteristic == pRearLightingCharacteristic)
+    {
+      setVehicleLights(rearLightingMessage, valPtr);
     }
-    else if(pCharacteristic == pInteriorLightingCharacteristic){
-      for (int i = 0; i < 3; i++)
-      { //loop to set the individual bytes
-        interiorLightingMessage[i] = *(valPtr + i);
-        Serial.print(interiorLightingMessage[i]); //debug
-      }
-      Serial.println(); //debug
+    else if (pCharacteristic == pInteriorLightingCharacteristic)
+    {
+      setVehicleLights(interiorLightingMessage, valPtr);
     }
-    else{
-      Serial.println("No mathcing characteristic");
+    else
+    {
+      Serial.println("No matching characteristic");
     }
   }
 };
+
+/**
+ * @brief Sets the vehicle light data
+ * @param [in] lightArr The light data to modify
+ * @param [in] value The rgb value to be set
+ */ 
+void setVehicleLights(uint8_t *lightArr, uint8_t *value)
+{
+  //loop to set the individual bytes
+  for (int i = 0; i < 3; i++)
+  {
+    lightArr[i] = *(value + i);
+    Serial.print(lightArr[i]); //debug
+  }
+  Serial.println(); //debug
+}
 
 /*************** UPDATE DATA FROM CAR ***************/
 
@@ -83,20 +87,14 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
 void updateCoreData()
 {
   //for now is hardcoded data
-
-  //vel = rand() % 50 + 50;
-  vel = acc;
-  brake = rand() % 50;
-  //acc = rand() % 50 + 50;
   uint16_t accTemp = analogRead(ACC_PIN);
-  acc = (uint8_t)(float(accTemp)/34.00);
-  Serial.print(acc);
-  Serial.print(" | ");
-  Serial.println(accTemp);
+  vel = acc;
+  acc = (uint8_t)(float(accTemp) / 34.00);
+  brake = rand() % 50;
   battPercent = rand() % 10 + 75;
   battVolt = rand() % 5 + 75;
   uint16_t battPhysicalCurr = rand() % 100 + 5;
-  battCurr = (battPhysicalCurr + 320) * 10 ;
+  battCurr = (battPhysicalCurr + 320) * 10;
   battTemp = rand() % 10 + 40;
 }
 
@@ -106,13 +104,11 @@ void updateStatusData()
   //TODO
 }
 
-
 /* Updates CANBus with new lighting data received through Bluetooth */
-void updateLights()
+void updateLightingData()
 {
   //TODO
 }
-
 
 /*************** SET CHARACTERISTICS TO NEW VALUES ***************/
 
@@ -127,6 +123,11 @@ void setCoreCharacteristic()
   coreMessage[5] = (uint8_t)(battCurr >> 8);
   coreMessage[6] = (uint8_t)(battCurr & 0x00FF);
   coreMessage[7] = battTemp;
+  coreMessage[8] = tps;
+  coreMessage[9] = sas;
+  coreMessage[10] = ecu;
+  coreMessage[11] = bms;
+  coreMessage[12] = frw + flw + rlw + rrw == 4 ? 1 : 0;
   pCoreCharacteristic->setValue((uint8_t *)coreMessage, sizeof(coreMessage));
   pCoreCharacteristic->notify();
 }
@@ -160,27 +161,26 @@ void setLightingCharacteristic()
   pInteriorLightingCharacteristic->setValue((uint8_t *)interiorLightingMessage, sizeof(interiorLightingMessage));
 }
 
-
 //set up the BLE device
 void setup()
 {
   //set lights to max for debug
   frontLightingMessage[0] = 255;
   frontLightingMessage[1] = 255;
-  frontLightingMessage[2] = 255; 
+  frontLightingMessage[2] = 255;
   rearLightingMessage[0] = 255;
   rearLightingMessage[1] = 255;
-  rearLightingMessage[2] = 255; 
+  rearLightingMessage[2] = 255;
   interiorLightingMessage[0] = 255;
   interiorLightingMessage[1] = 255;
-  interiorLightingMessage[2] = 255; 
+  interiorLightingMessage[2] = 255;
 
   Serial.begin(115200);
 
-/* CAN Setup */
-//TODO
+  /* CAN Setup */
+  //TODO
 
-/* BLE Setup */
+  /* BLE Setup */
 
   // Create the BLE Device
   BLEDevice::init("EVAM");
@@ -197,48 +197,30 @@ void setup()
   // Create BLE Characteristics
   pCoreCharacteristic = pCoreService->createCharacteristic(
       CORE_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
-      //| BLECharacteristic::PROPERTY_WRITE
-      //| BLECharacteristic::PROPERTY_INDICATE
-  );
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
 
   pStatusCharacteristic = pStatusService->createCharacteristic(
       STATUS_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY
-      //| BLECharacteristic::PROPERTY_WRITE
-      //| BLECharacteristic::PROPERTY_INDICATE
-  );
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
 
   pFrontLightingCharacteristic = pLightingService->createCharacteristic(
       FRONT_LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
-      //| BLECharacteristic::PROPERTY_NOTIFY
-      //| BLECharacteristic::PROPERTY_INDICATE
-  );
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
   pRearLightingCharacteristic = pLightingService->createCharacteristic(
       REAR_LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
-      //| BLECharacteristic::PROPERTY_NOTIFY
-      //| BLECharacteristic::PROPERTY_INDICATE
-  );
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
   pInteriorLightingCharacteristic = pLightingService->createCharacteristic(
       INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
-      //| BLECharacteristic::PROPERTY_NOTIFY
-      //| BLECharacteristic::PROPERTY_INDICATE
-  );
-  pFrontLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
-  pRearLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
-  pInteriorLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+
+  lightingCallback = new LightingUpdateCallback();
+
+  pFrontLightingCharacteristic->setCallbacks(lightingCallback);
+  pRearLightingCharacteristic->setCallbacks(lightingCallback);
+  pInteriorLightingCharacteristic->setCallbacks(lightingCallback);
 
   // Create BLE Descriptors
   pDescriptor = new BLE2902();
-  /*
-  pStatusDescriptor = new BLE2902();
-  pFrontLDescriptor = new BLE2902();
-  pRearLDescriptor = new BLE2902();
-  pInteriorLDescriptor = new BLE2902();  
-  */
 
   pCoreCharacteristic->addDescriptor(pDescriptor);
   pStatusCharacteristic->addDescriptor(pDescriptor);

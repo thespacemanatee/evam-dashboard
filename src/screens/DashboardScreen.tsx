@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
-import { useFocusEffect } from '@react-navigation/native';
 import { Subscription } from 'react-native-ble-plx';
 import { LinearGradient } from 'expo-linear-gradient';
 import RadioPlayer from 'react-native-radio-player';
