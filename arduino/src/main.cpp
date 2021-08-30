@@ -62,9 +62,14 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
 void updateCoreData()
 {
   //for now is hardcoded data
-  vel = rand() % 50 + 50;
+
+  //vel = rand() % 50 + 50;
+  vel = acc;
   brake = rand() % 50;
-  acc = rand() % 50 + 50;
+  //acc = rand() % 50 + 50;
+  acc = (uint8_t)(float(analogRead(ACC_PIN))/40.95);
+  Serial.println(acc);
+
   battPercent = rand() % 10 + 75;
   battVolt = rand() % 5 + 75;
   battCurr = rand() % 10 + 495;

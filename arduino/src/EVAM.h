@@ -42,11 +42,11 @@ uint8_t battTemp; //Battery Temperature
 
 /* Node status message to be notified */
 uint8_t statusMessage[8];
-uint8_t ecu = 0;
-uint8_t bms = 0;
-uint8_t tps = 0;
+uint8_t ecu = 1;
+uint8_t bms = 1;
+uint8_t tps = 1;
 uint8_t sas = 0;
-uint8_t flw = 255; //Front left wheel
+uint8_t flw = 0; //Front left wheel
 uint8_t frw = 255; //Front right wheel
 uint8_t rlw = 255; //Rear left wheel
 uint8_t rrw = 255; //Rear right wheel
@@ -72,3 +72,6 @@ void updateStatusData();
 void setCoreCharacteristic();
 void setStatusCharacteristic();
 void setLightingCharacteristic();
+
+/* For Debug */
+#define ACC_PIN 34
