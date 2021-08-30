@@ -26,11 +26,13 @@ BLECharacteristic *pStatusCharacteristic;
 BLECharacteristic *pFrontLightingCharacteristic;
 BLECharacteristic *pRearLightingCharacteristic;
 BLECharacteristic *pInteriorLightingCharacteristic;
-BLEDescriptor *pCoreDescriptor;
+BLEDescriptor *pDescriptor;
+/*  //to remove
 BLEDescriptor *pStatusDescriptor;
 BLEDescriptor *pFrontLDescriptor;
 BLEDescriptor *pRearLDescriptor;
 BLEDescriptor *pInteriorLDescriptor;
+*/
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
@@ -52,17 +54,17 @@ uint8_t statusMessage[14];
 uint8_t ecu = 1;
 uint8_t bms = 1;
 uint8_t tps = 1;
-uint8_t sas = 0;
+uint8_t sas = 1;
 uint8_t imu = 255;
 uint8_t interior = 255; //interior lighting status
-uint8_t flw = 0; //Front left wheel
-uint8_t frw = 255; //Front right wheel
-uint8_t rlw = 255; //Rear left wheel
-uint8_t rrw = 255; //Rear right wheel
-uint8_t flw = 0; //Front left wheel
-uint8_t frw = 255; //Front right wheel
-uint8_t rlw = 255; //Rear left wheel
-uint8_t rrw = 255; //Rear right wheel
+uint8_t flw = 1; //Front left wheel
+uint8_t frw = 0; //Front right wheel
+uint8_t rlw = 0; //Rear left wheel
+uint8_t rrw = 0; //Rear right wheel
+uint8_t fll = 255; //Front left light
+uint8_t frl = 255; //Front right light
+uint8_t rll = 255; //Rear left light
+uint8_t rrl = 255; //Rear right light
 
 /* Lighting messages  */
 //format: red, green, blue

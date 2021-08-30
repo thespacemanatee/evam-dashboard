@@ -45,14 +45,34 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
   void onWrite(BLECharacteristic *pCharacteristic)
   {
     uint8_t *valPtr = pCharacteristic->getData();
-    //do stuff with <value>
-    //note that array size of 9 is hardcoded, because there doesn't seem to be a way to determine the length of data in <pCharacteristic>
-    for (int i = 0; i < 3; i++)
-    { //loop to set the individual bytes
-      lightingMessage[i] = *(valPtr + i);
-      Serial.print(lightingMessage[i]); //debug
+    
+    if(pCharacteristic == pFrontLightingCharacteristic){
+      for (int i = 0; i < 3; i++)
+      { //loop to set the individual bytes
+        frontLightingMessage[i] = *(valPtr + i);
+        Serial.print(frontLightingMessage[i]); //debug
+      }
+      Serial.println(); //debug
     }
-    Serial.println(); //debug
+    else if(pCharacteristic == pRearLightingCharacteristic){
+      for (int i = 0; i < 3; i++)
+      { //loop to set the individual bytes
+        rearLightingMessage[i] = *(valPtr + i);
+        Serial.print(rearLightingMessage[i]); //debug
+      }
+      Serial.println(); //debug
+    }
+    else if(pCharacteristic == pInteriorLightingCharacteristic){
+      for (int i = 0; i < 3; i++)
+      { //loop to set the individual bytes
+        interiorLightingMessage[i] = *(valPtr + i);
+        Serial.print(interiorLightingMessage[i]); //debug
+      }
+      Serial.println(); //debug
+    }
+    else{
+      Serial.println("No mathcing characteristic");
+    }
   }
 };
 
@@ -117,10 +137,16 @@ void setStatusCharacteristic()
   statusMessage[1] = bms;
   statusMessage[2] = tps;
   statusMessage[3] = sas;
-  statusMessage[4] = flw;
-  statusMessage[5] = frw;
-  statusMessage[6] = rlw;
-  statusMessage[7] = rrw;
+  statusMessage[4] = imu;
+  statusMessage[5] = interior;
+  statusMessage[6] = flw;
+  statusMessage[7] = frw;
+  statusMessage[8] = rlw;
+  statusMessage[9] = rrw;
+  statusMessage[10] = fll;
+  statusMessage[11] = frl;
+  statusMessage[12] = rll;
+  statusMessage[13] = rrl;
   pStatusCharacteristic->setValue((uint8_t *)statusMessage, sizeof(statusMessage));
   pStatusCharacteristic->notify();
 }
@@ -129,7 +155,8 @@ void setStatusCharacteristic()
 void setLightingCharacteristic()
 {
   pFrontLightingCharacteristic->setValue((uint8_t *)frontLightingMessage, sizeof(frontLightingMessage));
-  pFrontLightingCharacteristic->setValue((uint8_t *)frontLightingMessage, sizeof(frontLightingMessage));
+  pRearLightingCharacteristic->setValue((uint8_t *)rearLightingMessage, sizeof(rearLightingMessage));
+  pInteriorLightingCharacteristic->setValue((uint8_t *)interiorLightingMessage, sizeof(interiorLightingMessage));
 }
 
 //set up the BLE device
@@ -186,16 +213,19 @@ void setup()
   pInteriorLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
 
   // Create BLE Descriptors
-  pCoreDescriptor = new BLE2902();
+  pDescriptor = new BLE2902();
+  /*
   pStatusDescriptor = new BLE2902();
   pFrontLDescriptor = new BLE2902();
   pRearLDescriptor = new BLE2902();
   pInteriorLDescriptor = new BLE2902();  
+  */
 
-  pCoreCharacteristic->addDescriptor(pCoreDescriptor);
-  pStatusCharacteristic->addDescriptor(pStatusDescriptor);
-  pFrontLightingCharacteristic->addDescriptor(pFrontLDescriptor);
-  pFrontLightingCharacteristic->addDescriptor(pFrontLDescriptor);
+  pCoreCharacteristic->addDescriptor(pDescriptor);
+  pStatusCharacteristic->addDescriptor(pDescriptor);
+  pFrontLightingCharacteristic->addDescriptor(pDescriptor);
+  pRearLightingCharacteristic->addDescriptor(pDescriptor);
+  pInteriorLightingCharacteristic->addDescriptor(pDescriptor);
 
   // Start the service
   pCoreService->start();
