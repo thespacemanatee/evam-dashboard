@@ -5,6 +5,7 @@
 #include <BLE2902.h>
 
 /* UUIDs */
+
 #define CORE_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define STATUS_SERVICE_UUID "4ee1bbf0-5e71-4d58-9ce4-e3e45cb8d8f9"
 #define LIGHTING_SERVICE_UUID "1cbef3f2-12d5-4490-8a80-7f7970b51b54"

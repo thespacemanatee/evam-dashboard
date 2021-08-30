@@ -21,6 +21,7 @@
 */
 #include <EVAM.h>
 
+
 /***************  CALLBACKS ***************/
 
 /* Callback for connection and disconnection of server */
@@ -163,6 +164,17 @@ void setLightingCharacteristic()
 //set up the BLE device
 void setup()
 {
+  //set lights to max for debug
+  frontLightingMessage[0] = 255;
+  frontLightingMessage[1] = 255;
+  frontLightingMessage[2] = 255; 
+  rearLightingMessage[0] = 255;
+  rearLightingMessage[1] = 255;
+  rearLightingMessage[2] = 255; 
+  interiorLightingMessage[0] = 255;
+  interiorLightingMessage[1] = 255;
+  interiorLightingMessage[2] = 255; 
+
   Serial.begin(115200);
 
 /* CAN Setup */
