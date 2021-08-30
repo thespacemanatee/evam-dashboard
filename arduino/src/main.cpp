@@ -47,7 +47,7 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
     uint8_t *valPtr = pCharacteristic->getData();
     //do stuff with <value>
     //note that array size of 9 is hardcoded, because there doesn't seem to be a way to determine the length of data in <pCharacteristic>
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < 3; i++)
     { //loop to set the individual bytes
       lightingMessage[i] = *(valPtr + i);
       Serial.print(lightingMessage[i]); //debug
@@ -85,14 +85,13 @@ void updateStatusData()
   //TODO
 }
 
-//not used
-/* Updates lighting values for the status characteristic */
-/*  
-void updateLightingData()
+
+/* Updates CANBus with new lighting data received through Bluetooth */
+void updateLights()
 {
-  
+  //TODO
 }
-*/
+
 
 /*************** SET CHARACTERISTICS TO NEW VALUES ***************/
 
@@ -129,18 +128,8 @@ void setStatusCharacteristic()
 /* Sets new data for lighting characteristic */
 void setLightingCharacteristic()
 {
-  /*  //values are changed from the <LightingUpdateCallback> function
-  lightingMessage[0] = frontR;
-  lightingMessage[1] = frontG;
-  lightingMessage[2] = frontB;
-  lightingMessage[3] = rearR;
-  lightingMessage[4] = rearG;
-  lightingMessage[5] = rearB;
-  lightingMessage[6] = intR;
-  lightingMessage[7] = intG;
-  lightingMessage[8] = intB;
-  */
-  pLightingCharacteristic->setValue((uint8_t *)lightingMessage, sizeof(lightingMessage));
+  pFrontLightingCharacteristic->setValue((uint8_t *)frontLightingMessage, sizeof(frontLightingMessage));
+  pFrontLightingCharacteristic->setValue((uint8_t *)frontLightingMessage, sizeof(frontLightingMessage));
 }
 
 //set up the BLE device
@@ -174,25 +163,39 @@ void setup()
       //| BLECharacteristic::PROPERTY_INDICATE
   );
 
-  pLightingCharacteristic = pLightingService->createCharacteristic(
-      LIGHTING_CHARACTERISTIC_UUID,
+  pFrontLightingCharacteristic = pLightingService->createCharacteristic(
+      FRONT_LIGHTING_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
       //| BLECharacteristic::PROPERTY_NOTIFY
       //| BLECharacteristic::PROPERTY_INDICATE
   );
-  pLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
+  pRearLightingCharacteristic = pLightingService->createCharacteristic(
+      REAR_LIGHTING_CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
+      //| BLECharacteristic::PROPERTY_NOTIFY
+      //| BLECharacteristic::PROPERTY_INDICATE
+  );
+  pInteriorLightingCharacteristic = pLightingService->createCharacteristic(
+      INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
+      //| BLECharacteristic::PROPERTY_NOTIFY
+      //| BLECharacteristic::PROPERTY_INDICATE
+  );
+  pFrontLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
+  pRearLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
+  pInteriorLightingCharacteristic->setCallbacks(new LightingUpdateCallback());
 
   // Create BLE Descriptors
   pCoreDescriptor = new BLE2902();
-  //pCoreDescriptor->setValue("Core Data");
   pStatusDescriptor = new BLE2902();
-  //pStatusDescriptor->setValue("Status Data");
-  pLightingDescriptor = new BLE2902();
-  //pLightingDescriptor->setValue("Lights Data");
+  pFrontLDescriptor = new BLE2902();
+  pRearLDescriptor = new BLE2902();
+  pInteriorLDescriptor = new BLE2902();  
 
   pCoreCharacteristic->addDescriptor(pCoreDescriptor);
   pStatusCharacteristic->addDescriptor(pStatusDescriptor);
-  pLightingCharacteristic->addDescriptor(pLightingDescriptor);
+  pFrontLightingCharacteristic->addDescriptor(pFrontLDescriptor);
+  pFrontLightingCharacteristic->addDescriptor(pFrontLDescriptor);
 
   // Start the service
   pCoreService->start();
