@@ -6,8 +6,12 @@ export const LIGHTING_SERVICE_UUID = '1cbef3f2-12d5-4490-8a80-7f7970b51b54';
 export const CORE_CHARACTERISTIC_UUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
 export const STATUS_CHARACTERISTIC_UUID =
   '5d2e6e74-31f0-445e-8088-827c53b71166';
-export const LIGHTING_CHARACTERISTIC_UUID =
+export const FRONT_LIGHTING_CHARACTERISTIC_UUID =
   '825eef3b-e3d0-4ca6-bef7-6428b7260f35';
+export const REAR_LIGHTING_CHARACTERISTIC_UUID =
+  'db598591-bffe-46dd-9967-fbf869e88b3f';
+export const INTERIOR_LIGHTING_CHARACTERISTIC_UUID =
+  '8ecaaefa-f62f-4376-a4c8-32c74f62d950';
 export const CORE_REFRESH_RATE = 200;
 
 export const MAX_WIDTH = Dimensions.get('window').width;

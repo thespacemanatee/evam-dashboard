@@ -27,6 +27,14 @@ export const getCharacteristic = async (
   return undefined;
 };
 
+export const getRGBString = (decodedRGBString: string): string => {
+  return (
+    decodedRGBString.charCodeAt(0).toString(16) +
+    decodedRGBString.charCodeAt(1).toString(16) +
+    decodedRGBString.charCodeAt(2).toString(16)
+  );
+};
+
 export const requestLocationPermissions = async (): Promise<boolean> => {
   try {
     const granted = await PermissionsAndroid.check(

@@ -3,23 +3,29 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import ColorPicker from 'react-native-wheel-color-picker';
 import AnimateableText from 'react-native-animateable-text';
+import { encode as atob } from 'base-64';
 import {
   useAnimatedProps,
   useSharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { Subscription } from 'react-native-ble-plx';
 
 import {
   MENU_ICON_SIZE,
-  LIGHTING_CHARACTERISTIC_UUID,
+  FRONT_LIGHTING_CHARACTERISTIC_UUID,
   LIGHTING_SERVICE_UUID,
+  REAR_LIGHTING_CHARACTERISTIC_UUID,
+  INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
 } from '../utils/config';
 import { RootStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
-import { decodeBleString, getCharacteristic } from '../utils/utils';
+import {
+  decodeBleString,
+  getCharacteristic,
+  getRGBString,
+} from '../utils/utils';
 
 const styles = StyleSheet.create({
   screen: {
@@ -53,32 +59,50 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
   const colorAnim = useSharedValue('#ffffff');
 
   useEffect(() => {
-    let subscription: Subscription | undefined;
     const getDevice = async () => {
       try {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
         if (device) {
-          const characteristic = await getCharacteristic(
+          const frontLightChar = await getCharacteristic(
             LIGHTING_SERVICE_UUID,
             deviceUUID,
-            LIGHTING_CHARACTERISTIC_UUID,
+            FRONT_LIGHTING_CHARACTERISTIC_UUID,
           );
-          subscription = characteristic?.monitor((err, cha) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            const decodedString = decodeBleString(cha?.value);
-            console.log(decodedString);
-          });
+          const rearLightChar = await getCharacteristic(
+            LIGHTING_SERVICE_UUID,
+            deviceUUID,
+            REAR_LIGHTING_CHARACTERISTIC_UUID,
+          );
+          const interiorLightChar = await getCharacteristic(
+            LIGHTING_SERVICE_UUID,
+            deviceUUID,
+            INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
+          );
+          const decodedFrontRGB = decodeBleString(
+            (await frontLightChar?.read())?.value,
+          );
+          const decodedRearRgb = decodeBleString(
+            (await rearLightChar?.read())?.value,
+          );
+          const decodedInteriorRGB = decodeBleString(
+            (await interiorLightChar?.read())?.value,
+          );
+
+          const frontRgb = getRGBString(decodedFrontRGB);
+          const rearRgb = getRGBString(decodedRearRgb);
+          const interiorRGB = getRGBString(decodedInteriorRGB);
+
+          console.log(frontRgb, rearRgb, interiorRGB);
+
+          const res = await rearLightChar?.writeWithResponse(
+            atob(String.fromCharCode(0xff, 0xf0, 0xff)),
+          );
         }
       } catch (err) {
         console.error(err);
       }
     };
     getDevice();
-
-    return () => subscription?.remove();
   }, [deviceUUID]);
 
   const animatedProps = useAnimatedProps(() => {
