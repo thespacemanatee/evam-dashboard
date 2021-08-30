@@ -1,6 +1,8 @@
 import { Dimensions } from 'react-native';
 
-export const SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+export const CORE_SERVICE_UUID = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+export const STATUS_SERVICE_UUID = '4ee1bbf0-5e71-4d58-9ce4-e3e45cb8d8f9';
+export const LIGHTING_SERVICE_UUID = '1cbef3f2-12d5-4490-8a80-7f7970b51b54';
 export const CORE_CHARACTERISTIC_UUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
 export const STATUS_CHARACTERISTIC_UUID =
   '5d2e6e74-31f0-445e-8088-827c53b71166';
