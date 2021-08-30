@@ -11,7 +11,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Subscription } from 'react-native-ble-plx';
 
-import { MENU_ICON_SIZE, LIGHTING_CHARACTERISTIC_UUID } from '../utils/config';
+import {
+  MENU_ICON_SIZE,
+  LIGHTING_CHARACTERISTIC_UUID,
+  LIGHTING_SERVICE_UUID,
+} from '../utils/config';
 import { RootStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
@@ -55,6 +59,7 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
         if (device) {
           const characteristic = await getCharacteristic(
+            LIGHTING_SERVICE_UUID,
             deviceUUID,
             LIGHTING_CHARACTERISTIC_UUID,
           );
@@ -64,6 +69,7 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
               return;
             }
             const decodedString = decodeBleString(cha?.value);
+            console.log(decodedString);
           });
         }
       } catch (err) {

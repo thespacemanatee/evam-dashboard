@@ -1,26 +1,24 @@
 package com.evam;
 
-import com.evam.generated.BasePackageList;
-
 import android.app.Application;
 import android.content.Context;
 
+import com.evam.generated.BasePackageList;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.soloader.SoLoader;
 import com.facebook.react.bridge.JSIModulePackage;
+import com.facebook.soloader.SoLoader;
 import com.swmansion.reanimated.ReanimatedJSIModulePackage;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Arrays;
 
 import org.unimodules.adapters.react.ModuleRegistryAdapter;
 import org.unimodules.adapters.react.ReactModuleRegistryProvider;
-import org.unimodules.core.interfaces.SingletonModule;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
     private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(new BasePackageList().getPackageList(), null);
@@ -34,13 +32,12 @@ public class MainApplication extends Application implements ReactApplication {
 
                 @Override
                 protected List<ReactPackage> getPackages() {
-                    @SuppressWarnings("UnnecessaryLocalVariable")
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Packages that cannot be autolinked yet can be added manually here, for example:
                     // packages.add(new MyReactNativePackage());
 
                     // Add unimodules
-                    List<ReactPackage> unimodules = Arrays.<ReactPackage>asList(
+                    List<ReactPackage> unimodules = Arrays.asList(
                             new ModuleRegistryAdapter(mModuleRegistryProvider)
                     );
                     packages.addAll(unimodules);
@@ -71,7 +68,7 @@ public class MainApplication extends Application implements ReactApplication {
     }
 
     /**
-     * Loads Flipper in React Native evam. Call this in the onCreate method with something like
+     * Loads Flipper in React Native app. Call this in the onCreate method with something like
      * initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
      *
      * @param context

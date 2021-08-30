@@ -16,7 +16,11 @@ import RightTachometer from '../components/RightTachometer';
 import BatteryStatistics from '../components/BatteryStatistics';
 import DashboardButtonGroup from '../components/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { CORE_CHARACTERISTIC_UUID, CORE_REFRESH_RATE } from '../utils/config';
+import {
+  CORE_CHARACTERISTIC_UUID,
+  CORE_REFRESH_RATE,
+  CORE_SERVICE_UUID,
+} from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
 import TopIndicator from '../components/TopIndicator';
@@ -174,67 +178,69 @@ const DashboardScreen = (): JSX.Element => {
     [dispatch, isPlaying],
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      let subscription: Subscription | undefined;
-      const getDevice = async () => {
-        try {
-          const device = await bleManagerRef.current?.devices([deviceUUID]);
-          if (device) {
-            const characteristic = await getCharacteristic(
-              deviceUUID,
-              CORE_CHARACTERISTIC_UUID,
-            );
-            subscription = characteristic?.monitor((err, cha) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              const decodedString = decodeBleString(cha?.value);
-              velocity.value = withTiming(decodedString.charCodeAt(0), {
-                duration: CORE_REFRESH_RATE,
-              });
-              acceleration.value = withTiming(decodedString.charCodeAt(1), {
-                duration: CORE_REFRESH_RATE,
-              });
-              brake.value = withTiming(decodedString.charCodeAt(2), {
-                duration: CORE_REFRESH_RATE,
-              });
-              battPercentage.value = withTiming(decodedString.charCodeAt(3), {
-                duration: CORE_REFRESH_RATE,
-              });
-              battVoltage.value = withTiming(decodedString.charCodeAt(4), {
-                duration: CORE_REFRESH_RATE,
-              });
-              battCurrent.value = withTiming(
-                decodedString.charCodeAt(6) + 255,
-                {
-                  duration: CORE_REFRESH_RATE,
-                },
-              );
-              battTemperature.value = withTiming(decodedString.charCodeAt(7), {
-                duration: CORE_REFRESH_RATE,
-              });
+  useEffect(() => {
+    let subscription: Subscription | undefined;
+    const getDevice = async () => {
+      try {
+        const device = await bleManagerRef.current?.devices([deviceUUID]);
+        if (device) {
+          const characteristic = await getCharacteristic(
+            CORE_SERVICE_UUID,
+            deviceUUID,
+            CORE_CHARACTERISTIC_UUID,
+          );
+          subscription = characteristic?.monitor((err, cha) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            const decodedString = decodeBleString(cha?.value);
+            velocity.value = withTiming(decodedString.charCodeAt(0), {
+              duration: CORE_REFRESH_RATE,
             });
-          }
-        } catch (err) {
-          console.error(err);
+            acceleration.value = withTiming(decodedString.charCodeAt(1), {
+              duration: CORE_REFRESH_RATE,
+            });
+            brake.value = withTiming(decodedString.charCodeAt(2), {
+              duration: CORE_REFRESH_RATE,
+            });
+            battPercentage.value = withTiming(decodedString.charCodeAt(3), {
+              duration: CORE_REFRESH_RATE,
+            });
+            battVoltage.value = withTiming(decodedString.charCodeAt(4), {
+              duration: CORE_REFRESH_RATE,
+            });
+            battCurrent.value = withTiming(
+              (decodedString.charCodeAt(5) * 256 +
+                decodedString.charCodeAt(6)) /
+                10 -
+                320,
+              {
+                duration: CORE_REFRESH_RATE,
+              },
+            );
+            battTemperature.value = withTiming(decodedString.charCodeAt(7), {
+              duration: CORE_REFRESH_RATE,
+            });
+          });
         }
-      };
-      getDevice();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getDevice();
 
-      return () => subscription?.remove();
-    }, [
-      deviceUUID,
-      velocity,
-      acceleration,
-      brake,
-      battPercentage,
-      battVoltage,
-      battCurrent,
-      battTemperature,
-    ]),
-  );
+    return () => subscription?.remove();
+  }, [
+    deviceUUID,
+    velocity,
+    acceleration,
+    brake,
+    battPercentage,
+    battVoltage,
+    battCurrent,
+    battTemperature,
+  ]);
 
   const renderItem = useCallback(
     ({ item }) => (

@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Subscription } from 'react-native-ble-plx';
 
-import { MENU_ICON_SIZE, STATUS_CHARACTERISTIC_UUID } from '../utils/config';
+import {
+  MENU_ICON_SIZE,
+  STATUS_CHARACTERISTIC_UUID,
+  STATUS_SERVICE_UUID,
+} from '../utils/config';
 import CarGraphic from '../components/CarGraphic';
 import { RootStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
-import BatteryStatistics from '../components/BatteryStatistics';
 import StatusIndicator from '../components/StatusIndicator';
 
 const styles = StyleSheet.create({
@@ -95,13 +98,13 @@ const styles = StyleSheet.create({
   },
   TPS: {
     position: 'absolute',
-    top: 80,
-    left: 16,
+    top: 90,
+    right: 16,
   },
   SAS: {
     position: 'absolute',
-    top: 130,
-    left: 16,
+    top: 140,
+    right: 16,
   },
 });
 
@@ -111,6 +114,20 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
   const deviceUUID = useAppSelector(
     (state) => state.settings.selectedDeviceUUID,
   );
+  const [ECU, setECU] = useState(-1);
+  const [BMS, setBMS] = useState(-1);
+  const [TPS, setTPS] = useState(-1);
+  const [SAS, setSAS] = useState(-1);
+  const [FLW, setFLW] = useState(-1);
+  const [IMU, setIMU] = useState(-1);
+  const [INT, setINT] = useState(-1);
+  const [FRW, setFRW] = useState(-1);
+  const [RLW, setRLW] = useState(-1);
+  const [RRW, setRRW] = useState(-1);
+  const [FLL, setFLL] = useState(-1);
+  const [FRL, setFRL] = useState(-1);
+  const [RLL, setRLL] = useState(-1);
+  const [RRL, setRRL] = useState(-1);
 
   useEffect(() => {
     let subscription: Subscription | undefined;
@@ -119,6 +136,7 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
         if (device) {
           const characteristic = await getCharacteristic(
+            STATUS_SERVICE_UUID,
             deviceUUID,
             STATUS_CHARACTERISTIC_UUID,
           );
@@ -128,6 +146,20 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
               return;
             }
             const decodedString = decodeBleString(cha?.value);
+            setECU(decodedString.charCodeAt(0));
+            setBMS(decodedString.charCodeAt(1));
+            setTPS(decodedString.charCodeAt(2));
+            setSAS(decodedString.charCodeAt(3));
+            setIMU(decodedString.charCodeAt(4));
+            setINT(decodedString.charCodeAt(5));
+            setFLW(decodedString.charCodeAt(6));
+            setFRW(decodedString.charCodeAt(7));
+            setRLW(decodedString.charCodeAt(8));
+            setRRW(decodedString.charCodeAt(9));
+            setFLL(decodedString.charCodeAt(10));
+            setFRL(decodedString.charCodeAt(11));
+            setRLL(decodedString.charCodeAt(12));
+            setRRL(decodedString.charCodeAt(13));
           });
         }
       } catch (err) {
@@ -143,20 +175,20 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
     <View style={styles.screen}>
       <View style={[StyleSheet.absoluteFill, styles.carGraphicContainer]}>
         <CarGraphic />
-        <StatusIndicator label='FRL' style={styles.FRL} />
-        <StatusIndicator label='FRW' style={styles.FRW} />
-        <StatusIndicator label='FLL' style={styles.FLL} />
-        <StatusIndicator label='FLW' style={styles.FLW} />
-        <StatusIndicator label='INT' style={styles.INT} />
-        <StatusIndicator label='ECU' style={styles.ECU} />
-        <StatusIndicator label='IMU' style={styles.IMU} />
-        <StatusIndicator label='RRL' style={styles.RRL} />
-        <StatusIndicator label='RRW' style={styles.RRW} />
-        <StatusIndicator label='RLL' style={styles.RLL} />
-        <StatusIndicator label='RLW' style={styles.RLW} />
-        <StatusIndicator label='BMS' style={styles.BMS} />
-        <StatusIndicator label='TPS' style={styles.TPS} />
-        <StatusIndicator label='SAS' style={styles.SAS} />
+        <StatusIndicator status={FRL} label='FRL' style={styles.FRL} />
+        <StatusIndicator status={FRW} label='FRW' style={styles.FRW} />
+        <StatusIndicator status={FLL} label='FLL' style={styles.FLL} />
+        <StatusIndicator status={FLW} label='FLW' style={styles.FLW} />
+        <StatusIndicator status={INT} label='INT' style={styles.INT} />
+        <StatusIndicator status={ECU} label='ECU' style={styles.ECU} />
+        <StatusIndicator status={IMU} label='IMU' style={styles.IMU} />
+        <StatusIndicator status={RRL} label='RRL' style={styles.RRL} />
+        <StatusIndicator status={RRW} label='RRW' style={styles.RRW} />
+        <StatusIndicator status={RLL} label='RLL' style={styles.RLL} />
+        <StatusIndicator status={RLW} label='RLW' style={styles.RLW} />
+        <StatusIndicator status={BMS} label='BMS' style={styles.BMS} />
+        <StatusIndicator status={TPS} label='TPS' style={styles.TPS} />
+        <StatusIndicator status={SAS} label='SAS' style={styles.SAS} />
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -167,9 +199,6 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
           />
         </TouchableOpacity>
       </View>
-      {/* <View style={styles.batteryContainer}>
-        <BatteryStatistics />
-      </View> */}
     </View>
   );
 };

@@ -2,7 +2,6 @@ import { PermissionsAndroid } from 'react-native';
 import { decode as btoa } from 'base-64';
 import { Characteristic } from 'react-native-ble-plx';
 import { bleManagerRef } from './BleHelper';
-import { SERVICE_UUID } from './config';
 
 export const decodeBleString = (value: string | undefined | null): string => {
   if (!value) {
@@ -12,6 +11,7 @@ export const decodeBleString = (value: string | undefined | null): string => {
 };
 
 export const getCharacteristic = async (
+  serviceUUID: string,
   deviceUUID: string,
   characteristicUUID: string,
 ): Promise<Characteristic | undefined> => {
@@ -20,7 +20,7 @@ export const getCharacteristic = async (
     const services = await (
       await device[0].discoverAllServicesAndCharacteristics()
     ).services();
-    const service = services.find((e) => e.uuid === SERVICE_UUID);
+    const service = services.find((e) => e.uuid === serviceUUID);
     const characteristics = await service?.characteristics();
     return characteristics?.find((e) => e.uuid === characteristicUUID);
   }
