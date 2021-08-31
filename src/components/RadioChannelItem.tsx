@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-import { RadioChannel } from '../types';
+import { RadioChannel } from '../index';
 
 const styles = StyleSheet.create({
   container: {

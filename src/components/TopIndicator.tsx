@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-import { TopIndicatorData } from '../types';
+import { TopIndicatorData } from '../index';
 
 import { MAX_WIDTH } from '../utils/config';
 import Indicator from './Indicator';

@@ -32,7 +32,7 @@ import { channelsSelector } from '../features/radio/channelsSlice';
 import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioPlayerUI from '../components/RadioPlayerUI';
 import TopIndicator from '../components/TopIndicator';
-import { TopIndicatorData } from '../types';
+import { TopIndicatorData } from '../index';
 import RadioPlayerSheet from './RadioPlayerSheet';
 
 const styles = StyleSheet.create({

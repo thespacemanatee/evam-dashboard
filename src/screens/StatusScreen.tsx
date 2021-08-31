@@ -15,7 +15,7 @@ import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
 import { decodeBleString, getCharacteristic } from '../utils/utils';
 import StatusIndicator from '../components/StatusIndicator';
-import { StatusIndicatorData } from '../types';
+import { StatusIndicatorData } from '../index';
 
 const styles = StyleSheet.create({
   screen: {

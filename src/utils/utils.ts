@@ -5,7 +5,7 @@ import { decode as btoa } from 'base-64';
 import { Characteristic } from 'react-native-ble-plx';
 
 import { bleManagerRef } from './BleHelper';
-import { TopIndicatorData } from '../types';
+import { TopIndicatorData } from '../index';
 
 export const decodeBleString = (value: string | undefined | null): string => {
   if (!value) {

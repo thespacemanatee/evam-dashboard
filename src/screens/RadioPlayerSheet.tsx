@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { channelsSelector } from '../features/radio/channelsSlice';
 import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioChannelItem from '../components/RadioChannelItem';
-import { RadioChannel } from '../types';
+import { RadioChannel } from '../index';
 
 const styles = StyleSheet.create({
   bottomSheetBackdrop: {
