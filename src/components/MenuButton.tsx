@@ -9,8 +9,6 @@ import {
 } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -40,10 +38,12 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   onPress,
 }) => {
   return (
-    <AnimatedTouchable onPress={onPress} style={[styles.container, style]}>
-      <Ionicons name={iconName} size={iconSize} color='white' />
-      <Text style={styles.labelText}>{label}</Text>
-    </AnimatedTouchable>
+    <Animated.View style={style}>
+      <TouchableOpacity onPress={onPress} style={styles.container}>
+        <Ionicons name={iconName} size={iconSize} color='white' />
+        <Text style={styles.labelText}>{label}</Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 

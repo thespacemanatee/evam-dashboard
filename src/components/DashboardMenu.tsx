@@ -31,17 +31,14 @@ const styles = StyleSheet.create({
   bluetoothButton: {
     position: 'absolute',
     top: MENU_ICON_SIZE + SPACING,
-    left: -MENU_SIZE,
   },
   temperatureButton: {
     position: 'absolute',
     top: (MENU_ICON_SIZE + SPACING) * 2,
-    left: -MENU_SIZE,
   },
   lightingButton: {
     position: 'absolute',
     top: (MENU_ICON_SIZE + SPACING) * 3,
-    left: -MENU_SIZE,
   },
 });
 
@@ -94,37 +91,31 @@ const DashboardMenu = ({ style }: DashboardMenuProps): JSX.Element => {
   });
 
   const bluetoothAnimatedStyle = useAnimatedStyle(() => {
-    const translateX = interpolate(menuProgress.value, [0, 1], [0, MENU_SIZE]);
-    const opacity = interpolate(menuProgress.value, [0, 0.5, 1], [0, 0, 1]);
+    const translateX = interpolate(menuProgress.value, [0, 1], [-MENU_SIZE, 0]);
     return {
       transform: [{ translateX }],
-      opacity,
     };
   });
 
   const temperatureAnimatedStyle = useAnimatedStyle(() => {
     const translateX = interpolate(
       menuProgress.value,
-      [0.3, 1],
-      [0, MENU_SIZE],
+      [0.33, 1],
+      [-MENU_SIZE, 0],
     );
-    const opacity = interpolate(menuProgress.value, [0.5, 1], [0, 1]);
     return {
       transform: [{ translateX }],
-      opacity,
     };
   });
 
   const lightingAnimatedStyle = useAnimatedStyle(() => {
     const translateX = interpolate(
       menuProgress.value,
-      [0.6, 1],
-      [0, MENU_SIZE],
+      [0.66, 1],
+      [-MENU_SIZE, 0],
     );
-    const opacity = interpolate(menuProgress.value, [0.5, 1], [0, 0, 1]);
     return {
       transform: [{ translateX }],
-      opacity,
     };
   });
 

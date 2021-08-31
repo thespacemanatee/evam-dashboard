@@ -1,3 +1,19 @@
+diff --git a/node_modules/react-native-wheel-color-picker/ColorPicker.js b/node_modules/react-native-wheel-color-picker/ColorPicker.js
+index c723340..a876f9f 100644
+--- a/node_modules/react-native-wheel-color-picker/ColorPicker.js
++++ b/node_modules/react-native-wheel-color-picker/ColorPicker.js
+@@ -619,8 +619,9 @@ const ss = StyleSheet.create({
+ 		position: 'relative',
+ 		overflow: 'visible',
+ 		width: '100%',
+-		minWidth: 200,
+-		minHeight: 200,
++		height: '100%',
++		// minWidth: 200,
++		// minHeight: 200,
+ 		// aspectRatio: 1,
+ 		// backgroundColor: '#ffccff',
+ 	},
 diff --git a/node_modules/react-native-wheel-color-picker/types.d.ts b/node_modules/react-native-wheel-color-picker/types.d.ts
 index 365aab5..6fec768 100644
 --- a/node_modules/react-native-wheel-color-picker/types.d.ts
