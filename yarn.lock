@@ -8191,10 +8191,10 @@ react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-animateable-text@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/react-native-animateable-text/-/react-native-animateable-text-0.6.2.tgz#ff43d0478010f1cd73042db4b150afeb1d346999"
-  integrity sha512-BtUDrvTY00NRffu9DGBmscuTZi2rBQ4xLwE7b/7atiXY5sPItY6z2FWB3XacneChfTU15U6euCTMVd4+edSxvA==
+react-native-animateable-text@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-native-animateable-text/-/react-native-animateable-text-0.7.0.tgz#a542522fdf05975598c11036bc050bb06968c8b0"
+  integrity sha512-Ej7sL9tRaJZslhlg/bnA0wrpmjACD3ywpb84EWvVlUTn8kP4GXVlsw2uFDE6/xzCRvJxg/uc8hJdzDTYtiflXA==
 
 react-native-ble-plx@^2.0.2:
   version "2.0.2"
