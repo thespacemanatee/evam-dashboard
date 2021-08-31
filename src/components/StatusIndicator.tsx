@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
+
 import colors from '../utils/colors';
 import Indicator from './Indicator';
 

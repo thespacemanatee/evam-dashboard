@@ -63,4 +63,8 @@ const LeftTachometer: React.FC<LeftTachometerProps> = ({ progress, style }) => {
   );
 };
 
+LeftTachometer.defaultProps = {
+  style: undefined,
+};
+
 export default LeftTachometer;

@@ -143,4 +143,8 @@ const SheetHandle: React.FC<HandleProps> = ({ style, animatedIndex }) => {
   );
 };
 
+SheetHandle.defaultProps = {
+  style: undefined,
+};
+
 export default SheetHandle;

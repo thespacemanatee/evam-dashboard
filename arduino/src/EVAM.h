@@ -16,7 +16,7 @@
 #define INTERIOR_LIGHTING_CHARACTERISTIC_UUID "8ecaaefa-f62f-4376-a4c8-32c74f62d950"
 
 #define CORE_DATA_REFRESH_INTERVAL 200
-#define SLOW_DATA_REFRESH_INTERVAL 500
+#define SLOW_DATA_REFRESH_INTERVAL 1000
 
 BLEServer *pServer;           //main BLE server
 BLEService *pCoreService;     //service for core data

@@ -15,7 +15,6 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onPress, style }) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // is the device connected?
     device.isConnected().then(setIsConnected);
   }, [device]);
 
@@ -31,6 +30,10 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device, onPress, style }) => {
       <Text>{`UUIDs: ${device.serviceUUIDs}`}</Text>
     </BaseCard>
   );
+};
+
+DeviceCard.defaultProps = {
+  style: undefined,
 };
 
 export default DeviceCard;

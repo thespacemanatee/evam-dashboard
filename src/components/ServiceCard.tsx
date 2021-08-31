@@ -58,4 +58,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, style }) => {
   );
 };
 
+ServiceCard.defaultProps = {
+  style: undefined,
+};
+
 export default ServiceCard;

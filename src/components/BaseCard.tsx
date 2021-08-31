@@ -40,4 +40,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
   );
 };
 
+BaseCard.defaultProps = {
+  onPress: undefined,
+  style: undefined,
+  disabled: false,
+};
+
 export default BaseCard;

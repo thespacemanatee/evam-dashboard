@@ -66,4 +66,8 @@ const RightTachometer: React.FC<RightTachometerProps> = ({
   );
 };
 
+RightTachometer.defaultProps = {
+  style: undefined,
+};
+
 export default RightTachometer;
