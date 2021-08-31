@@ -69,7 +69,7 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
  * @brief Sets the vehicle light data
  * @param [in] lightArr The light data to modify
  * @param [in] value The rgb value to be set
- */ 
+ */
 void setVehicleLights(uint8_t *lightArr, uint8_t *value)
 {
   //loop to set the individual bytes
@@ -88,20 +88,38 @@ void updateCoreData()
 {
   //for now is hardcoded data
   uint16_t accTemp = analogRead(ACC_PIN);
-  vel = acc;
-  acc = (uint8_t)(float(accTemp) / 34.00);
-  brake = rand() % 50;
-  battPercent = rand() % 10 + 75;
-  battVolt = rand() % 5 + 75;
-  uint16_t battPhysicalCurr = rand() % 100 + 5;
-  battCurr = (battPhysicalCurr + 320) * 10;
-  battTemp = rand() % 10 + 40;
+  uint8_t accFinal = accTemp / 34.00;
+  vel = accFinal;
+  acc = accFinal;
+  brake = accFinal;
 }
 
 /* Updates CAN Bus node status for the status characteristic. Will eventually use CANBus data */
 void updateStatusData()
 {
-  //TODO
+  ecu = 1;
+  bms = 1;
+  tps = 1;
+  sas = 1;
+  imu = 255;
+  interior = 255;
+  flw = 1;
+  frw = 0;
+  rlw = 0;
+  rrw = 0;
+  fll = 255;
+  frl = 255;
+  rll = 255;
+  rrl = 255;
+}
+
+void updateBatteryData()
+{
+  uint16_t battPhysicalCurr = rand() % 100 + 5;
+  battPercent = rand() % 10 + 75;
+  battVolt = rand() % 5 + 75;
+  battCurr = (battPhysicalCurr + 320) * 10;
+  battTemp = rand() % 10 + 40;
 }
 
 /* Updates CANBus with new lighting data received through Bluetooth */
@@ -115,37 +133,74 @@ void updateLightingData()
 /* Sets new data for core characteristic and notifies */
 void setCoreCharacteristic()
 {
-  coreMessage[0] = vel;
-  coreMessage[1] = acc;
-  coreMessage[2] = brake;
-  coreMessage[3] = battPercent;
-  coreMessage[4] = battVolt;
-  coreMessage[5] = (uint8_t)(battCurr >> 8);
-  coreMessage[6] = (uint8_t)(battCurr & 0x00FF);
-  coreMessage[7] = battTemp;
-  pCoreCharacteristic->setValue((uint8_t *)coreMessage, sizeof(coreMessage));
-  pCoreCharacteristic->notify();
+  if (!(coreMessage[0] == vel && coreMessage[1] == acc && coreMessage[2] == brake) && deviceConnected)
+  {
+
+    coreMessage[0] = vel;
+    coreMessage[1] = acc;
+    coreMessage[2] = brake;
+    pCoreCharacteristic->setValue((uint8_t *)coreMessage, sizeof(coreMessage));
+    pCoreCharacteristic->notify();
+  }
 }
 
 /* Sets new data for node status characteristic and notifies */
 void setStatusCharacteristic()
 {
-  statusMessage[0] = ecu;
-  statusMessage[1] = bms;
-  statusMessage[2] = tps;
-  statusMessage[3] = sas;
-  statusMessage[4] = imu;
-  statusMessage[5] = interior;
-  statusMessage[6] = flw;
-  statusMessage[7] = frw;
-  statusMessage[8] = rlw;
-  statusMessage[9] = rrw;
-  statusMessage[10] = fll;
-  statusMessage[11] = frl;
-  statusMessage[12] = rll;
-  statusMessage[13] = rrl;
-  pStatusCharacteristic->setValue((uint8_t *)statusMessage, sizeof(statusMessage));
-  pStatusCharacteristic->notify();
+  if (!(statusMessage[0] == ecu &&
+        statusMessage[1] == bms &&
+        statusMessage[2] == tps &&
+        statusMessage[3] == sas &&
+        statusMessage[4] == imu &&
+        statusMessage[5] == interior &&
+        statusMessage[6] == flw &&
+        statusMessage[7] == frw &&
+        statusMessage[8] == rlw &&
+        statusMessage[9] == rrw &&
+        statusMessage[10] == fll &&
+        statusMessage[11] == frl &&
+        statusMessage[12] == rll &&
+        statusMessage[13] == rrl) &&
+      deviceConnected)
+  {
+    statusMessage[0] = ecu;
+    statusMessage[1] = bms;
+    statusMessage[2] = tps;
+    statusMessage[3] = sas;
+    statusMessage[4] = imu;
+    statusMessage[5] = interior;
+    statusMessage[6] = flw;
+    statusMessage[7] = frw;
+    statusMessage[8] = rlw;
+    statusMessage[9] = rrw;
+    statusMessage[10] = fll;
+    statusMessage[11] = frl;
+    statusMessage[12] = rll;
+    statusMessage[13] = rrl;
+    pStatusCharacteristic->setValue((uint8_t *)statusMessage, sizeof(statusMessage));
+    pStatusCharacteristic->notify();
+  }
+}
+
+void setBatteryCharacteristic()
+{
+  uint8_t battCurr_1 = battCurr >> 8;
+  uint8_t battCurr_2 = battCurr & 0x00FF;
+  if (!(batteryMessage[0] == battPercent &&
+        batteryMessage[1] == battVolt &&
+        batteryMessage[2] == battCurr_1 &&
+        batteryMessage[3] == battCurr_2 &&
+        batteryMessage[4] == battTemp) &&
+      deviceConnected)
+  {
+    batteryMessage[0] = battPercent;
+    batteryMessage[1] = battVolt;
+    batteryMessage[2] = battCurr_1;
+    batteryMessage[3] = battCurr_2;
+    batteryMessage[4] = battTemp;
+    pBatteryCharacteristic->setValue((uint8_t *)batteryMessage, sizeof(batteryMessage));
+    pBatteryCharacteristic->notify();
+  }
 }
 
 /* Sets new data for lighting characteristic */
@@ -198,6 +253,10 @@ void setup()
       STATUS_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
 
+  pBatteryCharacteristic = pStatusService->createCharacteristic(
+      BATTERY_CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+
   pFrontLightingCharacteristic = pLightingService->createCharacteristic(
       FRONT_LIGHTING_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
@@ -219,6 +278,7 @@ void setup()
 
   pCoreCharacteristic->addDescriptor(pDescriptor);
   pStatusCharacteristic->addDescriptor(pDescriptor);
+  pBatteryCharacteristic->addDescriptor(pDescriptor);
   pFrontLightingCharacteristic->addDescriptor(pDescriptor);
   pRearLightingCharacteristic->addDescriptor(pDescriptor);
   pInteriorLightingCharacteristic->addDescriptor(pDescriptor);
@@ -247,15 +307,17 @@ void loop()
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)
   {
     updateCoreData();
-    updateStatusData();
     setCoreCharacteristic();
-    setStatusCharacteristic();
     prevCoreMillis = currentMillis;
   }
 
   //update and notify for additional low priority data (lighting)
   if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)
   {
+    updateStatusData();
+    updateBatteryData();
+    setStatusCharacteristic();
+    setBatteryCharacteristic();
     setLightingCharacteristic();
     prevSlowMillis = currentMillis;
   }
