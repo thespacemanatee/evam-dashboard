@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { useSharedValue, withTiming } from 'react-native-reanimated';
+import { Easing, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Subscription } from 'react-native-ble-plx';
 import { LinearGradient } from 'expo-linear-gradient';
 import RadioPlayer from 'react-native-radio-player';
@@ -8,6 +8,7 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlatList,
 } from '@gorhom/bottom-sheet';
+import { useFocusEffect } from '@react-navigation/native';
 
 import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
@@ -16,9 +17,11 @@ import BatteryStatistics from '../components/BatteryStatistics';
 import DashboardButtonGroup from '../components/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
+  BATTERY_CHARACTERISTIC_UUID,
   CORE_CHARACTERISTIC_UUID,
   CORE_REFRESH_RATE,
   CORE_SERVICE_UUID,
+  SLOW_REFRESH_RATE,
   STATUS_CHARACTERISTIC_UUID,
   STATUS_SERVICE_UUID,
 } from '../utils/config';
@@ -104,6 +107,15 @@ const styles = StyleSheet.create({
   },
 });
 
+const fastAnimationConfig = {
+  duration: CORE_REFRESH_RATE,
+};
+
+const slowAnimationConfig = {
+  duration: SLOW_REFRESH_RATE,
+  easing: Easing.linear,
+};
+
 const DashboardScreen = (): JSX.Element => {
   const deviceUUID = useAppSelector(
     (state) => state.settings.selectedDeviceUUID,
@@ -179,77 +191,134 @@ const DashboardScreen = (): JSX.Element => {
     [dispatch, isPlaying],
   );
 
+  const readAndUpdateStatusValues = useCallback(async () => {
+    const statusCharacteristic = await getCharacteristic(
+      STATUS_SERVICE_UUID,
+      deviceUUID,
+      STATUS_CHARACTERISTIC_UUID,
+    );
+
+    const decodedString = decodeBleString(
+      (await statusCharacteristic?.read())?.value,
+    );
+    tps.value = decodedString.charCodeAt(2);
+    sas.value = decodedString.charCodeAt(3);
+    ecu.value = decodedString.charCodeAt(0);
+    bms.value = decodedString.charCodeAt(1);
+    whl.value =
+      decodedString.charCodeAt(6) +
+        decodedString.charCodeAt(7) +
+        decodedString.charCodeAt(8) +
+        decodedString.charCodeAt(9) ===
+      4
+        ? 1
+        : 0;
+  }, [bms, deviceUUID, ecu, sas, tps, whl]);
+
+  const monitorAndUpdateCoreValues = useCallback(async () => {
+    const coreCharacteristic = await getCharacteristic(
+      CORE_SERVICE_UUID,
+      deviceUUID,
+      CORE_CHARACTERISTIC_UUID,
+    );
+    return coreCharacteristic?.monitor((err, cha) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      const decodedString = decodeBleString(cha?.value);
+      velocity.value = withTiming(
+        decodedString.charCodeAt(0),
+        fastAnimationConfig,
+      );
+      acceleration.value = withTiming(
+        decodedString.charCodeAt(1),
+        fastAnimationConfig,
+      );
+      brake.value = withTiming(
+        decodedString.charCodeAt(2),
+        fastAnimationConfig,
+      );
+    });
+  }, [acceleration, brake, deviceUUID, velocity]);
+
+  const monitorAndUpdateStatusValues = useCallback(async () => {
+    const statusCharacteristic = await getCharacteristic(
+      STATUS_SERVICE_UUID,
+      deviceUUID,
+      STATUS_CHARACTERISTIC_UUID,
+    );
+
+    return statusCharacteristic?.monitor((err, cha) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      const decodedString = decodeBleString(cha?.value);
+      tps.value = decodedString.charCodeAt(2);
+      sas.value = decodedString.charCodeAt(3);
+      ecu.value = decodedString.charCodeAt(0);
+      bms.value = decodedString.charCodeAt(1);
+      whl.value =
+        decodedString.charCodeAt(6) +
+          decodedString.charCodeAt(7) +
+          decodedString.charCodeAt(8) +
+          decodedString.charCodeAt(9) ===
+        4
+          ? 1
+          : 0;
+    });
+  }, [bms, deviceUUID, ecu, sas, tps, whl]);
+
+  const monitorAndUpdateBatteryValues = useCallback(async () => {
+    const batteryCharacteristic = await getCharacteristic(
+      STATUS_SERVICE_UUID,
+      deviceUUID,
+      BATTERY_CHARACTERISTIC_UUID,
+    );
+
+    return batteryCharacteristic?.monitor((err, cha) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      const decodedString = decodeBleString(cha?.value);
+      battPercentage.value = withTiming(
+        decodedString.charCodeAt(0),
+        slowAnimationConfig,
+      );
+      battVoltage.value = withTiming(decodedString.charCodeAt(1), {
+        duration: SLOW_REFRESH_RATE,
+      });
+      battCurrent.value = withTiming(
+        (decodedString.charCodeAt(2) * 256 + decodedString.charCodeAt(3)) / 10 -
+          320,
+        slowAnimationConfig,
+      );
+      battTemperature.value = withTiming(
+        decodedString.charCodeAt(4),
+        slowAnimationConfig,
+      );
+    });
+  }, [battCurrent, battPercentage, battTemperature, battVoltage, deviceUUID]);
+
+  useFocusEffect(
+    useCallback(() => {
+      readAndUpdateStatusValues();
+    }, [readAndUpdateStatusValues]),
+  );
+
   useEffect(() => {
     let coreSubscription: Subscription | undefined;
     let statusSubscription: Subscription | undefined;
+    let batterySubscription: Subscription | undefined;
     const getDevice = async () => {
       try {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
         if (device) {
-          const coreCharacteristic = await getCharacteristic(
-            CORE_SERVICE_UUID,
-            deviceUUID,
-            CORE_CHARACTERISTIC_UUID,
-          );
-          coreSubscription = coreCharacteristic?.monitor((err, cha) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            const decodedString = decodeBleString(cha?.value);
-            velocity.value = withTiming(decodedString.charCodeAt(0), {
-              duration: CORE_REFRESH_RATE,
-            });
-            acceleration.value = withTiming(decodedString.charCodeAt(1), {
-              duration: CORE_REFRESH_RATE,
-            });
-            brake.value = withTiming(decodedString.charCodeAt(2), {
-              duration: CORE_REFRESH_RATE,
-            });
-            battPercentage.value = withTiming(decodedString.charCodeAt(3), {
-              duration: CORE_REFRESH_RATE,
-            });
-            battVoltage.value = withTiming(decodedString.charCodeAt(4), {
-              duration: CORE_REFRESH_RATE,
-            });
-            battCurrent.value = withTiming(
-              (decodedString.charCodeAt(5) * 256 +
-                decodedString.charCodeAt(6)) /
-                10 -
-                320,
-              {
-                duration: CORE_REFRESH_RATE,
-              },
-            );
-            battTemperature.value = withTiming(decodedString.charCodeAt(7), {
-              duration: CORE_REFRESH_RATE,
-            });
-          });
-          const statusCharacteristic = await getCharacteristic(
-            STATUS_SERVICE_UUID,
-            deviceUUID,
-            STATUS_CHARACTERISTIC_UUID,
-          );
-
-          statusSubscription = statusCharacteristic?.monitor((err, cha) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            const decodedString = decodeBleString(cha?.value);
-            tps.value = decodedString.charCodeAt(2);
-            sas.value = decodedString.charCodeAt(3);
-            ecu.value = decodedString.charCodeAt(0);
-            bms.value = decodedString.charCodeAt(1);
-            whl.value =
-              decodedString.charCodeAt(6) +
-                decodedString.charCodeAt(7) +
-                decodedString.charCodeAt(8) +
-                decodedString.charCodeAt(9) ===
-              4
-                ? 1
-                : 0;
-          });
+          coreSubscription = await monitorAndUpdateCoreValues();
+          statusSubscription = await monitorAndUpdateStatusValues();
+          batterySubscription = await monitorAndUpdateBatteryValues();
         }
       } catch (err) {
         console.error(err);
@@ -260,21 +329,13 @@ const DashboardScreen = (): JSX.Element => {
     return () => {
       coreSubscription?.remove();
       statusSubscription?.remove();
+      batterySubscription?.remove();
     };
   }, [
+    monitorAndUpdateCoreValues,
+    monitorAndUpdateStatusValues,
+    monitorAndUpdateBatteryValues,
     deviceUUID,
-    velocity,
-    acceleration,
-    brake,
-    battPercentage,
-    battVoltage,
-    battCurrent,
-    battTemperature,
-    tps,
-    sas,
-    ecu,
-    bms,
-    whl,
   ]);
 
   const renderItem = useCallback(

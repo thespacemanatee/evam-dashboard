@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -130,45 +130,29 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
   const rll = useSharedValue(-1);
   const rrl = useSharedValue(-1);
 
-  useEffect(() => {
-    let subscription: Subscription | undefined;
-    const getDevice = async () => {
-      try {
-        const device = await bleManagerRef.current?.devices([deviceUUID]);
-        if (device) {
-          const characteristic = await getCharacteristic(
-            STATUS_SERVICE_UUID,
-            deviceUUID,
-            STATUS_CHARACTERISTIC_UUID,
-          );
-          subscription = characteristic?.monitor((err, cha) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            const decodedString = decodeBleString(cha?.value);
-            ecu.value = decodedString.charCodeAt(0);
-            bms.value = decodedString.charCodeAt(1);
-            tps.value = decodedString.charCodeAt(2);
-            sas.value = decodedString.charCodeAt(3);
-            imu.value = decodedString.charCodeAt(4);
-            int.value = decodedString.charCodeAt(5);
-            flw.value = decodedString.charCodeAt(6);
-            frw.value = decodedString.charCodeAt(7);
-            rlw.value = decodedString.charCodeAt(8);
-            rrw.value = decodedString.charCodeAt(9);
-            fll.value = decodedString.charCodeAt(10);
-            frl.value = decodedString.charCodeAt(11);
-            rll.value = decodedString.charCodeAt(12);
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    getDevice();
+  const readAndUpdateStatusValues = useCallback(async () => {
+    const statusCharacteristic = await getCharacteristic(
+      STATUS_SERVICE_UUID,
+      deviceUUID,
+      STATUS_CHARACTERISTIC_UUID,
+    );
 
-    return () => subscription?.remove();
+    const decodedString = decodeBleString(
+      (await statusCharacteristic?.read())?.value,
+    );
+    ecu.value = decodedString.charCodeAt(0);
+    bms.value = decodedString.charCodeAt(1);
+    tps.value = decodedString.charCodeAt(2);
+    sas.value = decodedString.charCodeAt(3);
+    imu.value = decodedString.charCodeAt(4);
+    int.value = decodedString.charCodeAt(5);
+    flw.value = decodedString.charCodeAt(6);
+    frw.value = decodedString.charCodeAt(7);
+    rlw.value = decodedString.charCodeAt(8);
+    rrw.value = decodedString.charCodeAt(9);
+    fll.value = decodedString.charCodeAt(10);
+    frl.value = decodedString.charCodeAt(11);
+    rll.value = decodedString.charCodeAt(12);
   }, [
     bms,
     deviceUUID,
@@ -185,6 +169,70 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
     sas,
     tps,
   ]);
+
+  const monitorAndUpdateStatusValues = useCallback(async () => {
+    const characteristic = await getCharacteristic(
+      STATUS_SERVICE_UUID,
+      deviceUUID,
+      STATUS_CHARACTERISTIC_UUID,
+    );
+    return characteristic?.monitor((err, cha) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      const decodedString = decodeBleString(cha?.value);
+      ecu.value = decodedString.charCodeAt(0);
+      bms.value = decodedString.charCodeAt(1);
+      tps.value = decodedString.charCodeAt(2);
+      sas.value = decodedString.charCodeAt(3);
+      imu.value = decodedString.charCodeAt(4);
+      int.value = decodedString.charCodeAt(5);
+      flw.value = decodedString.charCodeAt(6);
+      frw.value = decodedString.charCodeAt(7);
+      rlw.value = decodedString.charCodeAt(8);
+      rrw.value = decodedString.charCodeAt(9);
+      fll.value = decodedString.charCodeAt(10);
+      frl.value = decodedString.charCodeAt(11);
+      rll.value = decodedString.charCodeAt(12);
+    });
+  }, [
+    bms,
+    deviceUUID,
+    ecu,
+    fll,
+    flw,
+    frl,
+    frw,
+    imu,
+    int,
+    rll,
+    rlw,
+    rrw,
+    sas,
+    tps,
+  ]);
+
+  useEffect(() => {
+    readAndUpdateStatusValues();
+  }, [readAndUpdateStatusValues]);
+
+  useEffect(() => {
+    let subscription: Subscription | undefined;
+    const getDevice = async () => {
+      try {
+        const device = await bleManagerRef.current?.devices([deviceUUID]);
+        if (device) {
+          subscription = await monitorAndUpdateStatusValues();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getDevice();
+
+    return () => subscription?.remove();
+  }, [deviceUUID, monitorAndUpdateStatusValues]);
 
   return (
     <View style={styles.screen}>
