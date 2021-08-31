@@ -30,18 +30,18 @@ const styles = StyleSheet.create({
 });
 
 interface ThemedButtonProps {
+  label: string;
   onPress?: () => void;
   onPressIn?: () => void;
   onPressOut?: () => void;
-  children: ReactChild;
   style?: ViewStyle;
 }
 
 const ThemedButton: React.FC<ThemedButtonProps> = ({
+  label,
   onPress,
   onPressIn,
   onPressOut,
-  children,
   style,
 }) => {
   return (
@@ -52,7 +52,7 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         style={styles.button}>
-        <Text style={styles.buttonText}>{children}</Text>
+        <Text style={styles.buttonText}>{label}</Text>
       </Pressable>
     </View>
   );
