@@ -48,14 +48,17 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
 
     if (pCharacteristic == pFrontLightingCharacteristic)
     {
+      Serial.println("Setting front RGB...");
       setVehicleLights(frontLightingMessage, valPtr);
     }
     else if (pCharacteristic == pRearLightingCharacteristic)
     {
+      Serial.println("Setting rear RGB...");
       setVehicleLights(rearLightingMessage, valPtr);
     }
     else if (pCharacteristic == pInteriorLightingCharacteristic)
     {
+      Serial.println("Setting interior RGB...");
       setVehicleLights(interiorLightingMessage, valPtr);
     }
     else
@@ -73,12 +76,14 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
 void setVehicleLights(uint8_t *lightArr, uint8_t *value)
 {
   //loop to set the individual bytes
+  Serial.print("RGB set to: ");
   for (int i = 0; i < 3; i++)
   {
     lightArr[i] = *(value + i);
-    Serial.print(lightArr[i]); //debug
+    Serial.print(lightArr[i]);
+    Serial.print(" ");
   }
-  Serial.println(); //debug
+  Serial.println();
 }
 
 /*************** UPDATE DATA FROM CAR ***************/
@@ -87,20 +92,23 @@ void setVehicleLights(uint8_t *lightArr, uint8_t *value)
 void updateCoreData()
 {
   //for now is hardcoded data
-  uint16_t accTemp = analogRead(ACC_PIN);
-  uint8_t accFinal = accTemp / 34.00;
-  vel = accFinal;
-  acc = accFinal;
-  brake = accFinal;
+  // uint16_t accTemp = analogRead(ACC_PIN);
+  // uint8_t accFinal = accTemp / 34.00;
+  // vel = accFinal;
+  // acc = accFinal;
+  // brake = accFinal;
+  vel = rand() % 50 + 50;
+  acc = rand() % 50 + 50;
+  brake = rand() % 50 + 0;
 }
 
 /* Updates CAN Bus node status for the status characteristic. Will eventually use CANBus data */
 void updateStatusData()
 {
-  ecu = 1;
+  ecu = 255;
   bms = 1;
   tps = 1;
-  sas = 1;
+  sas = 0;
   imu = 255;
   interior = 255;
   flw = 1;
@@ -274,14 +282,12 @@ void setup()
   pInteriorLightingCharacteristic->setCallbacks(lightingCallback);
 
   // Create BLE Descriptors
-  pDescriptor = new BLE2902();
-
-  pCoreCharacteristic->addDescriptor(pDescriptor);
-  pStatusCharacteristic->addDescriptor(pDescriptor);
-  pBatteryCharacteristic->addDescriptor(pDescriptor);
-  pFrontLightingCharacteristic->addDescriptor(pDescriptor);
-  pRearLightingCharacteristic->addDescriptor(pDescriptor);
-  pInteriorLightingCharacteristic->addDescriptor(pDescriptor);
+  pCoreCharacteristic->addDescriptor(new BLE2902());
+  pStatusCharacteristic->addDescriptor(new BLE2902());
+  pBatteryCharacteristic->addDescriptor(new BLE2902());
+  pFrontLightingCharacteristic->addDescriptor(new BLE2902());
+  pRearLightingCharacteristic->addDescriptor(new BLE2902());
+  pInteriorLightingCharacteristic->addDescriptor(new BLE2902());
 
   // Start the service
   pCoreService->start();

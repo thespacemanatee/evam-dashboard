@@ -29,7 +29,6 @@ BLECharacteristic *pFrontLightingCharacteristic;
 BLECharacteristic *pRearLightingCharacteristic;
 BLECharacteristic *pInteriorLightingCharacteristic;
 BLECharacteristicCallbacks *lightingCallback;
-BLEDescriptor *pDescriptor; //generic descriptor used by all characteristics
 
 bool deviceConnected = false;
 bool oldDeviceConnected = false;

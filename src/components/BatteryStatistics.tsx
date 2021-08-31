@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'flex-end',
   },
+  battery: {
+    marginBottom: 8,
+  },
   statsContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -17,7 +20,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'Digital-Numbers',
     fontSize: 32,
-    marginTop: 5,
   },
   units: {
     fontFamily: 'Gotham-Narrow',
@@ -62,7 +64,7 @@ const BatteryStatistics = ({
   return (
     <View style={style}>
       <View style={styles.container}>
-        <Battery percentage={percentage} />
+        <Battery percentage={percentage} style={styles.battery} />
         <View style={styles.statsContainer}>
           <AnimateableText animatedProps={voltageProps} style={styles.stats} />
           <Text style={styles.units}>V</Text>

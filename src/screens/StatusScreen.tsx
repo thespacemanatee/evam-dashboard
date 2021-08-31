@@ -21,8 +21,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'black',
-  },
-  carGraphicContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -198,8 +196,8 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
   }, [deviceUUID, monitorAndUpdateStatusValues]);
 
   return (
-    <View style={styles.screen}>
-      <View style={[StyleSheet.absoluteFill, styles.carGraphicContainer]}>
+    <>
+      <View style={[StyleSheet.absoluteFill, styles.screen]}>
         <CarGraphic />
         <StatusIndicator status={data?.frl} label='FRL' style={styles.FRL} />
         <StatusIndicator status={data?.frw} label='FRW' style={styles.FRW} />
@@ -216,16 +214,16 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
         <StatusIndicator status={data?.tps} label='TPS' style={styles.TPS} />
         <StatusIndicator status={data?.sas} label='SAS' style={styles.SAS} />
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons
-            name='chevron-back-outline'
-            size={MENU_ICON_SIZE}
-            color='white'
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.buttonContainer}>
+        <Ionicons
+          name='chevron-back-outline'
+          size={MENU_ICON_SIZE}
+          color='white'
+        />
+      </TouchableOpacity>
+    </>
   );
 };
 
