@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 });
 
 type IndicatorProps = {
-  status?: Animated.SharedValue<number>;
+  status?: number;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -25,9 +25,9 @@ const Indicator = ({ status, style }: IndicatorProps): JSX.Element => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       backgroundColor:
-        status?.value === 1
+        status === 1
           ? colors.nodeActive
-          : status?.value === 0
+          : status === 0
           ? colors.nodeError
           : colors.nodeInactive,
     };

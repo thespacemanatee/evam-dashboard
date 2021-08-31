@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+/* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Easing, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -8,7 +10,6 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlatList,
 } from '@gorhom/bottom-sheet';
-import { useFocusEffect } from '@react-navigation/native';
 
 import SpeedIndicator from '../components/SpeedIndicator';
 import LeftTachometer from '../components/LeftTachometer';
@@ -26,13 +27,17 @@ import {
   STATUS_SERVICE_UUID,
 } from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
-import { decodeBleString, getCharacteristic } from '../utils/utils';
+import {
+  decodeBleString,
+  getCharacteristic,
+  getTopIndicatorData,
+} from '../utils/utils';
 import { channelsSelector } from '../features/radio/channelsSlice';
 import SheetHandle from '../components/SheetHandle';
 import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioPlayerUI from '../components/RadioPlayerUI';
 import RadioChannelItem from '../components/RadioChannelItem';
-import { RadioChannel } from '../types';
+import { RadioChannel, TopIndicatorData } from '../types';
 import colors from '../utils/colors';
 import TopIndicator from '../components/TopIndicator';
 
@@ -123,6 +128,7 @@ const DashboardScreen = (): JSX.Element => {
   const channels = useAppSelector(channelsSelector.selectAll);
   const currentChannel = useAppSelector((state) => state.player.currentChannel);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [indicatorData, setIndicatorData] = useState<TopIndicatorData>();
   const velocity = useSharedValue(0);
   const acceleration = useSharedValue(0);
   const brake = useSharedValue(0);
@@ -130,11 +136,6 @@ const DashboardScreen = (): JSX.Element => {
   const battVoltage = useSharedValue(0);
   const battCurrent = useSharedValue(0);
   const battTemperature = useSharedValue(0);
-  const tps = useSharedValue(-1);
-  const sas = useSharedValue(-1);
-  const ecu = useSharedValue(-1);
-  const bms = useSharedValue(-1);
-  const whl = useSharedValue(-1);
   const sheetRef = useRef<BottomSheet>(null);
 
   const dispatch = useAppDispatch();
@@ -191,30 +192,6 @@ const DashboardScreen = (): JSX.Element => {
     [dispatch, isPlaying],
   );
 
-  const readAndUpdateStatusValues = useCallback(async () => {
-    const statusCharacteristic = await getCharacteristic(
-      STATUS_SERVICE_UUID,
-      deviceUUID,
-      STATUS_CHARACTERISTIC_UUID,
-    );
-
-    const decodedString = decodeBleString(
-      (await statusCharacteristic?.read())?.value,
-    );
-    tps.value = decodedString.charCodeAt(2);
-    sas.value = decodedString.charCodeAt(3);
-    ecu.value = decodedString.charCodeAt(0);
-    bms.value = decodedString.charCodeAt(1);
-    whl.value =
-      decodedString.charCodeAt(6) +
-        decodedString.charCodeAt(7) +
-        decodedString.charCodeAt(8) +
-        decodedString.charCodeAt(9) ===
-      4
-        ? 1
-        : 0;
-  }, [bms, deviceUUID, ecu, sas, tps, whl]);
-
   const monitorAndUpdateCoreValues = useCallback(async () => {
     const coreCharacteristic = await getCharacteristic(
       CORE_SERVICE_UUID,
@@ -248,27 +225,21 @@ const DashboardScreen = (): JSX.Element => {
       deviceUUID,
       STATUS_CHARACTERISTIC_UUID,
     );
+    let decodedString: string;
+    decodedString = decodeBleString(
+      (await statusCharacteristic?.read())?.value,
+    );
+    setIndicatorData(getTopIndicatorData(decodedString));
 
     return statusCharacteristic?.monitor((err, cha) => {
       if (err) {
         console.error(err);
         return;
       }
-      const decodedString = decodeBleString(cha?.value);
-      tps.value = decodedString.charCodeAt(2);
-      sas.value = decodedString.charCodeAt(3);
-      ecu.value = decodedString.charCodeAt(0);
-      bms.value = decodedString.charCodeAt(1);
-      whl.value =
-        decodedString.charCodeAt(6) +
-          decodedString.charCodeAt(7) +
-          decodedString.charCodeAt(8) +
-          decodedString.charCodeAt(9) ===
-        4
-          ? 1
-          : 0;
+      decodedString = decodeBleString(cha?.value);
+      setIndicatorData(getTopIndicatorData(decodedString));
     });
-  }, [bms, deviceUUID, ecu, sas, tps, whl]);
+  }, [deviceUUID]);
 
   const monitorAndUpdateBatteryValues = useCallback(async () => {
     const batteryCharacteristic = await getCharacteristic(
@@ -301,12 +272,6 @@ const DashboardScreen = (): JSX.Element => {
       );
     });
   }, [battCurrent, battPercentage, battTemperature, battVoltage, deviceUUID]);
-
-  useFocusEffect(
-    useCallback(() => {
-      readAndUpdateStatusValues();
-    }, [readAndUpdateStatusValues]),
-  );
 
   useEffect(() => {
     let coreSubscription: Subscription | undefined;
@@ -347,7 +312,7 @@ const DashboardScreen = (): JSX.Element => {
 
   return (
     <View style={styles.screen}>
-      <TopIndicator tps={tps} sas={sas} ecu={ecu} bms={bms} whl={whl} />
+      <TopIndicator data={indicatorData} />
       <View style={[StyleSheet.absoluteFill, styles.analogIndicators]}>
         <LeftTachometer progress={brake} style={styles.leftTachometer} />
         <RightTachometer

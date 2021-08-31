@@ -49,4 +49,8 @@ const SpeedIndicator: React.FC<SpeedIndicatorProps> = ({ progress, style }) => {
   );
 };
 
+SpeedIndicator.defaultProps = {
+  style: undefined,
+};
+
 export default SpeedIndicator;

@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
 type StatusIndicatorProps = {
   label: string;
-  status: Animated.SharedValue<number>;
+  status?: number;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -43,6 +43,7 @@ const StatusIndicator = ({
 };
 
 StatusIndicator.defaultProps = {
+  status: -1,
   style: undefined,
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
+
+import { TopIndicatorData } from '../types';
 
 import { MAX_WIDTH } from '../utils/config';
 import Indicator from './Indicator';
@@ -38,30 +39,19 @@ const styles = StyleSheet.create({
 });
 
 type TopIndicatorProps = {
-  tps: Animated.SharedValue<number>;
-  sas: Animated.SharedValue<number>;
-  ecu: Animated.SharedValue<number>;
-  bms: Animated.SharedValue<number>;
-  whl: Animated.SharedValue<number>;
+  data?: TopIndicatorData;
   style?: StyleProp<ViewStyle>;
 };
 
-const TopIndicator = ({
-  tps,
-  sas,
-  ecu,
-  bms,
-  whl,
-  style,
-}: TopIndicatorProps): JSX.Element => {
+const TopIndicator = ({ data, style }: TopIndicatorProps): JSX.Element => {
   return (
     <View style={[styles.contentContainer, style]}>
       <View style={styles.topIndicator}>
-        <Indicator status={tps} style={styles.indicator} />
-        <Indicator status={sas} style={styles.indicator} />
-        <Indicator status={ecu} style={styles.indicator} />
-        <Indicator status={bms} style={styles.indicator} />
-        <Indicator status={whl} style={styles.indicator} />
+        <Indicator status={data?.tps} style={styles.indicator} />
+        <Indicator status={data?.sas} style={styles.indicator} />
+        <Indicator status={data?.ecu} style={styles.indicator} />
+        <Indicator status={data?.bms} style={styles.indicator} />
+        <Indicator status={data?.whl} style={styles.indicator} />
       </View>
       <View style={styles.divider} />
       <View style={styles.labelContainer}>
@@ -76,6 +66,7 @@ const TopIndicator = ({
 };
 
 TopIndicator.defaultProps = {
+  data: undefined,
   style: undefined,
 };
 

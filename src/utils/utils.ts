@@ -1,7 +1,11 @@
+/* eslint-disable indent */
+/* eslint-disable no-nested-ternary */
 import { PermissionsAndroid } from 'react-native';
 import { decode as btoa } from 'base-64';
 import { Characteristic } from 'react-native-ble-plx';
+
 import { bleManagerRef } from './BleHelper';
+import { TopIndicatorData } from '../types';
 
 export const decodeBleString = (value: string | undefined | null): string => {
   if (!value) {
@@ -33,6 +37,31 @@ export const getRGBString = (decodedRGBString: string): string => {
     decodedRGBString.charCodeAt(1).toString(16) +
     decodedRGBString.charCodeAt(2).toString(16)
   );
+};
+
+export const getTopIndicatorData = (
+  decodedString: string,
+): TopIndicatorData => {
+  const whl =
+    decodedString.charCodeAt(6) +
+    decodedString.charCodeAt(7) +
+    decodedString.charCodeAt(8) +
+    decodedString.charCodeAt(9);
+  return {
+    ecu: decodedString.charCodeAt(0),
+    bms: decodedString.charCodeAt(1),
+    tps: decodedString.charCodeAt(2),
+    sas: decodedString.charCodeAt(3),
+    whl:
+      decodedString.charCodeAt(6) === 0 ||
+      decodedString.charCodeAt(7) === 0 ||
+      decodedString.charCodeAt(8) === 0 ||
+      decodedString.charCodeAt(9) === 0
+        ? 0
+        : whl === 4
+        ? 1
+        : -1,
+  };
 };
 
 export const requestLocationPermissions = async (): Promise<boolean> => {
