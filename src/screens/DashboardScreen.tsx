@@ -259,7 +259,7 @@ const DashboardScreen = (): JSX.Element => {
         />
         <DashboardButtonGroup style={styles.menu} />
         <RadioPlayerUI
-          onPressRadioLabel={() => sheetRef.current?.snapToIndex(1)}
+          onPressRadioLabel={() => sheetRef.current?.expand()}
           onPressSkipBack={handleSkipBack}
           onPressPlayPause={handlePlayPause}
           onPressSkipForward={handleSkipForward}

@@ -25,3 +25,4 @@ export const MENU_ICON_SIZE = 32;
 export const RADIO_BUTTON_SIZE = 48;
 export const RADIO_LABEL_HEIGHT = 48;
 export const RADIO_LABEL_WIDTH = 240;
+export const RADIO_IMAGE_SIZE = 176;

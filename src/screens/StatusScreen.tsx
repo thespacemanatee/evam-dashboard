@@ -13,7 +13,7 @@ import CarGraphic from '../components/CarGraphic';
 import { RootStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
-import { decodeBleString, getCharacteristic } from '../utils/utils';
+import { decodeBleString, getStatusCharacteristic } from '../utils/utils';
 import StatusIndicator from '../components/StatusIndicator';
 import { StatusIndicatorData } from '../index';
 
@@ -116,11 +116,7 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
   const [data, setIndicatorData] = useState<StatusIndicatorData>();
 
   const readAndUpdateStatusValues = useCallback(async () => {
-    const statusCharacteristic = await getCharacteristic(
-      STATUS_SERVICE_UUID,
-      deviceUUID,
-      STATUS_CHARACTERISTIC_UUID,
-    );
+    const statusCharacteristic = await getStatusCharacteristic();
 
     const decodedString = decodeBleString(
       (await statusCharacteristic?.read())?.value,
@@ -141,14 +137,10 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
       rll: decodedString.charCodeAt(12),
       rrl: decodedString.charCodeAt(13),
     });
-  }, [deviceUUID]);
+  }, []);
 
   const monitorAndUpdateStatusValues = useCallback(async () => {
-    const characteristic = await getCharacteristic(
-      STATUS_SERVICE_UUID,
-      deviceUUID,
-      STATUS_CHARACTERISTIC_UUID,
-    );
+    const characteristic = await getStatusCharacteristic();
     return characteristic?.monitor((err, cha) => {
       if (err) {
         console.error(err);
@@ -172,7 +164,7 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
         rrl: decodedString.charCodeAt(13),
       });
     });
-  }, [deviceUUID]);
+  }, []);
 
   useEffect(() => {
     readAndUpdateStatusValues();

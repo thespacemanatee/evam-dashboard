@@ -4,7 +4,7 @@ const colors = {
   primaryDark: '#490000',
   nodeActive: '#66FF91',
   nodeError: '#FF0000',
-  nodeInactive: '#D4D4D4',
+  nodeInactive: '#838383',
   background: '#121212',
 };
 

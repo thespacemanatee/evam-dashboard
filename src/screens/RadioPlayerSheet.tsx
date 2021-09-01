@@ -6,7 +6,6 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import { LinearGradient } from 'expo-linear-gradient';
 import RadioPlayer from 'react-native-radio-player';
-import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import SheetHandle from '../components/SheetHandle';
 import RadioPlayerUI from '../components/RadioPlayerUI';
@@ -16,6 +15,7 @@ import { channelsSelector } from '../features/radio/channelsSlice';
 import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioChannelItem from '../components/RadioChannelItem';
 import { RadioChannel } from '../index';
+import { RADIO_IMAGE_SIZE } from '../utils/config';
 
 const styles = StyleSheet.create({
   bottomSheetBackdrop: {
@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   bottomSheetRadioPlayerContainer: {
     flex: 1,
     alignItems: 'center',
-    padding: 16,
   },
   imageBackground: {
     backgroundColor: 'black',
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
 });
 
 type RadioPlayerSheetProps = {
-  sheetRef: React.RefObject<BottomSheetMethods>;
+  sheetRef: React.RefObject<BottomSheet>;
 };
 
 const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
@@ -117,15 +116,15 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
   return (
     <BottomSheet
       ref={sheetRef}
-      index={-1}
-      snapPoints={['25%', '99.999%']}
+      index={0}
+      snapPoints={['1%', '90%']}
       enablePanDownToClose
       handleComponent={(props) => <SheetHandle {...props} />}
       backgroundComponent={(props) => (
         <View style={[props.style, styles.bottomSheetBackdrop]} />
       )}
       backdropComponent={(props) => (
-        <BottomSheetBackdrop {...props} opacity={1} />
+        <BottomSheetBackdrop {...props} opacity={0.8} />
       )}>
       <View style={styles.bottomSheetContentContainer}>
         <View style={styles.radioChannelList}>
@@ -144,8 +143,8 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
             <Image
               source={{
                 uri: currentChannel?.imageUrl,
-                width: 200,
-                height: 200,
+                width: RADIO_IMAGE_SIZE,
+                height: RADIO_IMAGE_SIZE,
               }}
               resizeMode='contain'
             />
