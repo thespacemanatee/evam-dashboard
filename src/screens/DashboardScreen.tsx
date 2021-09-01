@@ -7,11 +7,11 @@ import { Subscription } from 'react-native-ble-plx';
 import RadioPlayer from 'react-native-radio-player';
 import BottomSheet from '@gorhom/bottom-sheet';
 
-import SpeedIndicator from '../components/SpeedIndicator';
-import LeftTachometer from '../components/LeftTachometer';
-import RightTachometer from '../components/RightTachometer';
-import BatteryStatistics from '../components/BatteryStatistics';
-import DashboardButtonGroup from '../components/DashboardMenu';
+import SpeedIndicator from '../components/core/SpeedIndicator';
+import LeftTachometer from '../components/core/LeftTachometer';
+import RightTachometer from '../components/core/RightTachometer';
+import BatteryStatistics from '../components/battery/BatteryStatistics';
+import DashboardButtonGroup from '../components/ui/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { CORE_REFRESH_RATE, SLOW_REFRESH_RATE } from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
@@ -24,8 +24,8 @@ import {
 } from '../utils/utils';
 import { channelsSelector } from '../features/radio/channelsSlice';
 import { setCurrentChannel } from '../features/radio/playerSlice';
-import RadioPlayerUI from '../components/RadioPlayerUI';
-import TopIndicator from '../components/TopIndicator';
+import RadioPlayerUI from '../components/radio/RadioPlayerUI';
+import TopIndicator from '../components/status/TopIndicator';
 import { TopIndicatorData } from '../index';
 import RadioPlayerSheet from './RadioPlayerSheet';
 

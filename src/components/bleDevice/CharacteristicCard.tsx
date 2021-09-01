@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Characteristic } from 'react-native-ble-plx';
 import { decode as btoa } from 'base-64';
-import { decodeBleString } from '../utils/utils';
+import { decodeBleString } from '../../utils/utils';
 
 interface CharacteristicCardProps {
   char: Characteristic;

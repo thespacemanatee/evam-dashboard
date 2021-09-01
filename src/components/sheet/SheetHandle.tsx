@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { toRad } from 'react-native-redash';
 
-import colors from '../utils/colors';
+import colors from '../../utils/colors';
 
 const styles = StyleSheet.create({
   header: {

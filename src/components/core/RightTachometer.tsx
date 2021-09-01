@@ -6,7 +6,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Path, Rect, Defs, LinearGradient, Stop } from 'react-native-svg';
 
-import { FINAL_TACHOMETER_HEIGHT } from '../utils/config';
+import { FINAL_TACHOMETER_HEIGHT } from '../../utils/config';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 

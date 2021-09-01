@@ -6,7 +6,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Path, Rect, Mask, G } from 'react-native-svg';
 
-import { FINAL_BATTERY_HEIGHT } from '../utils/config';
+import { FINAL_BATTERY_HEIGHT } from '../../utils/config';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 

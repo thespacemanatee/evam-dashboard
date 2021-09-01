@@ -22,8 +22,8 @@ import {
   getRearLightingCharacteristic,
   getRGBString,
 } from '../utils/utils';
-import LightingOption from '../components/LightingOption';
-import ThemedButton from '../components/ThemedButton';
+import LightingOption from '../components/lighting/LightingOption';
+import ThemedButton from '../components/ui/ThemedButton';
 
 const styles = StyleSheet.create({
   screen: {

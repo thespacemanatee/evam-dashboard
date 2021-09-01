@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
-import colors from '../utils/colors';
+import colors from '../../utils/colors';
 
 const styles = StyleSheet.create({
   indicator: {

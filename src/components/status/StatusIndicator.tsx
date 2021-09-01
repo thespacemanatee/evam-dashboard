@@ -3,7 +3,7 @@
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-import colors from '../utils/colors';
+import colors from '../../utils/colors';
 import Indicator from './Indicator';
 
 const styles = StyleSheet.create({

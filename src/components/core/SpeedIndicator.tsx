@@ -3,7 +3,7 @@ import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { useAnimatedProps } from 'react-native-reanimated';
 import AnimateableText from 'react-native-animateable-text';
 
-import { MAX_HEIGHT } from '../utils/config';
+import { MAX_HEIGHT } from '../../utils/config';
 
 const styles = StyleSheet.create({
   container: {

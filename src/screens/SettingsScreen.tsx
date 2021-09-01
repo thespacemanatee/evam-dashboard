@@ -6,7 +6,7 @@ import { Device } from 'react-native-ble-plx';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addDevice, resetDevices } from '../features/settings/settingsSlice';
 import { requestLocationPermissions } from '../utils/utils';
-import DeviceCard from '../components/DeviceCard';
+import DeviceCard from '../components/bleDevice/DeviceCard';
 import { bleManagerRef } from '../utils/BleHelper';
 import { RootStackParamList } from '../navigation';
 

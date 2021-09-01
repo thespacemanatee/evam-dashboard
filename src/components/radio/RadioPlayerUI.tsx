@@ -22,7 +22,7 @@ import {
   RADIO_BUTTON_SIZE,
   RADIO_LABEL_HEIGHT,
   RADIO_LABEL_WIDTH,
-} from '../utils/config';
+} from '../../utils/config';
 
 const styles = StyleSheet.create({
   container: {

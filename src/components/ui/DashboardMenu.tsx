@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { MAX_HEIGHT, MENU_ICON_SIZE } from '../utils/config';
+import { MAX_HEIGHT, MENU_ICON_SIZE } from '../../utils/config';
 import MenuButton from './MenuButton';
 
 const SPACING = 20;

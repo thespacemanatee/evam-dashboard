@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import colors from '../utils/colors';
+import colors from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -60,12 +60,30 @@ const LightingOption = ({
             </Text>
           </View>
         </View>
-        <Switch
+        {/* <Switch
           value={value}
           onValueChange={onValueChange}
           thumbColor={colors.primary}
           trackColor={{ false: '#BBBBBB', true: colors.primaryLight }}
-        />
+        /> */}
+        <View
+          style={{
+            height: 32,
+            width: 64,
+            backgroundColor: colors.primaryLight,
+            borderRadius: 16,
+            justifyContent: 'center',
+            padding: 2,
+          }}>
+          <View
+            style={{
+              height: 28,
+              width: 28,
+              backgroundColor: 'white',
+              borderRadius: 14,
+            }}
+          />
+        </View>
       </View>
     </View>
   );

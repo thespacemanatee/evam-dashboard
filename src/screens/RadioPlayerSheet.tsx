@@ -7,13 +7,13 @@ import BottomSheet, {
 import { LinearGradient } from 'expo-linear-gradient';
 import RadioPlayer from 'react-native-radio-player';
 
-import SheetHandle from '../components/SheetHandle';
-import RadioPlayerUI from '../components/RadioPlayerUI';
+import SheetHandle from '../components/sheet/SheetHandle';
+import RadioPlayerUI from '../components/radio/RadioPlayerUI';
 import colors from '../utils/colors';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { channelsSelector } from '../features/radio/channelsSlice';
 import { setCurrentChannel } from '../features/radio/playerSlice';
-import RadioChannelItem from '../components/RadioChannelItem';
+import RadioChannelItem from '../components/radio/RadioChannelItem';
 import { RadioChannel } from '../index';
 import { RADIO_IMAGE_SIZE } from '../utils/config';
 
