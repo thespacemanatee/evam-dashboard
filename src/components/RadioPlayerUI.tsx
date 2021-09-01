@@ -100,6 +100,7 @@ const RadioPlayerUI = ({
       <View style={styles.container}>
         <TouchableOpacity
           onPress={onPressRadioLabel}
+          disabled={!onPressRadioLabel}
           style={styles.radioLabelContainer}>
           <Text style={styles.radioTitle}>Now Playing</Text>
           <Animated.Text style={[styles.radioLabel, labelAnimatedStyle]}>
