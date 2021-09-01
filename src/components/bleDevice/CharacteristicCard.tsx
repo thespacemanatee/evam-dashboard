@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Characteristic } from 'react-native-ble-plx';
 import { decode as btoa } from 'base-64';
-import { decodeBleString } from '../../utils/utils';
 
 interface CharacteristicCardProps {
   char: Characteristic;
@@ -23,9 +22,6 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
   char,
   style,
 }) => {
-  const [velocity, setVelocity] = useState(0);
-  const [acceleration, setAcceleration] = useState(0);
-  const [brake, setBrake] = useState(0);
   const [descriptor, setDescriptor] = useState('');
 
   useEffect(() => {
@@ -36,19 +32,6 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
         }
       });
     });
-
-    const subscription = char.monitor((err, cha) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      const temp = decodeBleString(cha?.value);
-      setVelocity(temp.charCodeAt(0));
-      setAcceleration(temp.charCodeAt(1));
-      setBrake(temp.charCodeAt(2));
-    });
-
-    return () => subscription.remove();
   }, [char]);
 
   return (
@@ -63,9 +46,6 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
           <Text>{`isReadable: ${char.isReadable}`}</Text>
           <Text>{`isWritableWithResponse: ${char.isWritableWithResponse}`}</Text>
           <Text>{`isWritableWithoutResponse: ${char.isWritableWithoutResponse}`}</Text>
-          <Text style={styles.measure}>{`Velocity: ${velocity}`}</Text>
-          <Text style={styles.measure}>{`Acceleration: ${acceleration}`}</Text>
-          <Text style={styles.measure}>{`Brake: ${brake}`}</Text>
         </View>
       </View>
     </View>

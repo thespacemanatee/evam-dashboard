@@ -14,8 +14,6 @@ export const REAR_LIGHTING_CHARACTERISTIC_UUID =
   'db598591-bffe-46dd-9967-fbf869e88b3f';
 export const INTERIOR_LIGHTING_CHARACTERISTIC_UUID =
   '8ecaaefa-f62f-4376-a4c8-32c74f62d950';
-export const CORE_REFRESH_RATE = 200;
-export const SLOW_REFRESH_RATE = 1000;
 
 export const MAX_WIDTH = Dimensions.get('window').width;
 export const MAX_HEIGHT = Dimensions.get('window').height;

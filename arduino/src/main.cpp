@@ -97,9 +97,24 @@ void updateCoreData()
   // vel = accFinal;
   // acc = accFinal;
   // brake = accFinal;
-  vel = rand() % 50 + 50;
-  acc = rand() % 50 + 50;
-  brake = rand() % 50 + 0;
+  // vel = rand() % 50 + 50;
+  // acc = rand() % 50 + 50;
+  // brake = rand() % 50 + 0;
+  if (vel < 100) {
+    vel++;
+  } else {
+    vel = 0;
+  }
+  if (acc < 100) {
+    acc++;
+  } else {
+    acc = 0;
+  }
+  if (brake > 1) {
+    brake--;
+  } else {
+    brake = 100;
+  }
 }
 
 /* Updates CAN Bus node status for the status characteristic. Will eventually use CANBus data */
@@ -313,7 +328,9 @@ void loop()
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)
   {
     updateCoreData();
+    updateBatteryData();
     setCoreCharacteristic();
+    setBatteryCharacteristic();
     prevCoreMillis = currentMillis;
   }
 
@@ -321,9 +338,7 @@ void loop()
   if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)
   {
     updateStatusData();
-    updateBatteryData();
     setStatusCharacteristic();
-    setBatteryCharacteristic();
     setLightingCharacteristic();
     prevSlowMillis = currentMillis;
   }

@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Easing, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Easing, useSharedValue } from 'react-native-reanimated';
 import { Subscription } from 'react-native-ble-plx';
 import RadioPlayer from 'react-native-radio-player';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -13,7 +13,7 @@ import RightTachometer from '../components/core/RightTachometer';
 import BatteryStatistics from '../components/battery/BatteryStatistics';
 import DashboardButtonGroup from '../components/ui/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { CORE_REFRESH_RATE, SLOW_REFRESH_RATE } from '../utils/config';
+import { SLOW_REFRESH_RATE } from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
 import {
   decodeBleString,
@@ -67,15 +67,6 @@ const styles = StyleSheet.create({
     bottom: 32,
   },
 });
-
-const fastAnimationConfig = {
-  duration: CORE_REFRESH_RATE,
-};
-
-const slowAnimationConfig = {
-  duration: SLOW_REFRESH_RATE,
-  easing: Easing.linear,
-};
 
 const DashboardScreen = (): JSX.Element => {
   const deviceUUID = useAppSelector(
@@ -144,18 +135,9 @@ const DashboardScreen = (): JSX.Element => {
         return;
       }
       const decodedString = decodeBleString(cha?.value);
-      velocity.value = withTiming(
-        decodedString.charCodeAt(0),
-        fastAnimationConfig,
-      );
-      acceleration.value = withTiming(
-        decodedString.charCodeAt(1),
-        fastAnimationConfig,
-      );
-      brake.value = withTiming(
-        decodedString.charCodeAt(2),
-        fastAnimationConfig,
-      );
+      velocity.value = decodedString.charCodeAt(0);
+      acceleration.value = decodedString.charCodeAt(1);
+      brake.value = decodedString.charCodeAt(2);
     });
   }, [acceleration, brake, velocity]);
 
@@ -186,22 +168,12 @@ const DashboardScreen = (): JSX.Element => {
         return;
       }
       const decodedString = decodeBleString(cha?.value);
-      battPercentage.value = withTiming(
-        decodedString.charCodeAt(0),
-        slowAnimationConfig,
-      );
-      battVoltage.value = withTiming(decodedString.charCodeAt(1), {
-        duration: SLOW_REFRESH_RATE,
-      });
-      battCurrent.value = withTiming(
+      battPercentage.value = decodedString.charCodeAt(0);
+      battVoltage.value = decodedString.charCodeAt(1);
+      battCurrent.value =
         (decodedString.charCodeAt(2) * 256 + decodedString.charCodeAt(3)) / 10 -
-          320,
-        slowAnimationConfig,
-      );
-      battTemperature.value = withTiming(
-        decodedString.charCodeAt(4),
-        slowAnimationConfig,
-      );
+        320;
+      battTemperature.value = decodedString.charCodeAt(4);
     });
   }, [battCurrent, battPercentage, battTemperature, battVoltage]);
 

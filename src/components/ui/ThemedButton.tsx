@@ -44,15 +44,17 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   style,
 }) => {
   return (
-    <View style={[styles.container, style]}>
-      <Pressable
-        android_ripple={{ color: '#000000', borderless: true }}
-        onPress={onPress}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}
-        style={styles.button}>
-        <Text style={styles.buttonText}>{label}</Text>
-      </Pressable>
+    <View style={style}>
+      <View style={styles.container}>
+        <Pressable
+          android_ripple={{ color: '#000000', borderless: true }}
+          onPress={onPress}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          style={styles.button}>
+          <Text style={styles.buttonText}>{label}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };

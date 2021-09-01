@@ -5,7 +5,7 @@ import { Service, Subscription } from 'react-native-ble-plx';
 import { decode as btoa } from 'base-64';
 
 import { RootStackParamList } from '../navigation';
-import ServiceCard from '../components/bleDevice/DescriptorCard';
+import ServiceCard from '../components/bleDevice/ServiceCard';
 import { useAppDispatch } from '../app/hooks';
 import { setSelectedDeviceUUID } from '../features/settings/settingsSlice';
 import BaseCard from '../components/bleDevice/BaseCard';
