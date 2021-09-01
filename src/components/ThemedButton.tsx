@@ -1,9 +1,9 @@
-import React, { ReactChild } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import colors from '../utils/colors';
 
 const styles = StyleSheet.create({
-  buttonContainer: {
+  container: {
     borderRadius: 6,
     shadowColor: '#000',
     shadowOffset: {
@@ -17,9 +17,8 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: colors.primary,
-    padding: 10,
+    padding: 12,
     alignItems: 'center',
-    width: 125,
   },
   buttonText: {
     color: 'white',
@@ -45,7 +44,7 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   style,
 }) => {
   return (
-    <View style={[styles.buttonContainer, style]}>
+    <View style={[styles.container, style]}>
       <Pressable
         android_ripple={{ color: '#000000', borderless: true }}
         onPress={onPress}

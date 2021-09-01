@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonContainer: {
+  backButton: {
     position: 'absolute',
     top: 32,
     left: 32,
@@ -183,7 +183,7 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
     const getDevice = async () => {
       try {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
-        if (device) {
+        if (device && device.length > 0) {
           subscription = await monitorAndUpdateStatusValues();
         }
       } catch (err) {
@@ -216,7 +216,7 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
       </View>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
-        style={styles.buttonContainer}>
+        style={styles.backButton}>
         <Ionicons
           name='chevron-back-outline'
           size={MENU_ICON_SIZE}

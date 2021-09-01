@@ -6,6 +6,18 @@ import { Characteristic } from 'react-native-ble-plx';
 
 import { bleManagerRef } from './BleHelper';
 import { TopIndicatorData } from '../index';
+import {
+  BATTERY_CHARACTERISTIC_UUID,
+  CORE_CHARACTERISTIC_UUID,
+  CORE_SERVICE_UUID,
+  FRONT_LIGHTING_CHARACTERISTIC_UUID,
+  INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
+  LIGHTING_SERVICE_UUID,
+  REAR_LIGHTING_CHARACTERISTIC_UUID,
+  STATUS_CHARACTERISTIC_UUID,
+  STATUS_SERVICE_UUID,
+} from './config';
+import { store } from '../app/store';
 
 export const decodeBleString = (value: string | undefined | null): string => {
   if (!value) {
@@ -14,21 +26,84 @@ export const decodeBleString = (value: string | undefined | null): string => {
   return btoa(value);
 };
 
-export const getCharacteristic = async (
+const getCharacteristic = async (
   serviceUUID: string,
   deviceUUID: string,
   characteristicUUID: string,
 ): Promise<Characteristic | undefined> => {
+  let characteristic: Characteristic | undefined;
   const device = await bleManagerRef.current?.devices([deviceUUID]);
-  if (device && device[0]) {
+  if (device && device.length > 0) {
     const services = await (
       await device[0].discoverAllServicesAndCharacteristics()
     ).services();
     const service = services.find((e) => e.uuid === serviceUUID);
     const characteristics = await service?.characteristics();
-    return characteristics?.find((e) => e.uuid === characteristicUUID);
+    characteristic = characteristics?.find(
+      (e) => e.uuid === characteristicUUID,
+    );
   }
-  return undefined;
+  return characteristic;
+};
+
+export const getCoreCharacteristic = async (): Promise<
+  Characteristic | undefined
+> => {
+  return getCharacteristic(
+    CORE_SERVICE_UUID,
+    store.getState().settings.selectedDeviceUUID,
+    CORE_CHARACTERISTIC_UUID,
+  );
+};
+
+export const getStatusCharacteristic = async (): Promise<
+  Characteristic | undefined
+> => {
+  return getCharacteristic(
+    STATUS_SERVICE_UUID,
+    store.getState().settings.selectedDeviceUUID,
+    STATUS_CHARACTERISTIC_UUID,
+  );
+};
+
+export const getBatteryCharacteristic = async (): Promise<
+  Characteristic | undefined
+> => {
+  return getCharacteristic(
+    STATUS_SERVICE_UUID,
+    store.getState().settings.selectedDeviceUUID,
+    BATTERY_CHARACTERISTIC_UUID,
+  );
+};
+
+export const getFrontLightingCharacteristic = async (): Promise<
+  Characteristic | undefined
+> => {
+  return getCharacteristic(
+    LIGHTING_SERVICE_UUID,
+    store.getState().settings.selectedDeviceUUID,
+    FRONT_LIGHTING_CHARACTERISTIC_UUID,
+  );
+};
+
+export const getRearLightingCharacteristic = async (): Promise<
+  Characteristic | undefined
+> => {
+  return getCharacteristic(
+    LIGHTING_SERVICE_UUID,
+    store.getState().settings.selectedDeviceUUID,
+    REAR_LIGHTING_CHARACTERISTIC_UUID,
+  );
+};
+
+export const getInteriorLightingCharacteristic = async (): Promise<
+  Characteristic | undefined
+> => {
+  return getCharacteristic(
+    LIGHTING_SERVICE_UUID,
+    store.getState().settings.selectedDeviceUUID,
+    INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
+  );
 };
 
 export const getRGBString = (decodedRGBString: string): string => {

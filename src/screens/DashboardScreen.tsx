@@ -13,19 +13,13 @@ import RightTachometer from '../components/RightTachometer';
 import BatteryStatistics from '../components/BatteryStatistics';
 import DashboardButtonGroup from '../components/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import {
-  BATTERY_CHARACTERISTIC_UUID,
-  CORE_CHARACTERISTIC_UUID,
-  CORE_REFRESH_RATE,
-  CORE_SERVICE_UUID,
-  SLOW_REFRESH_RATE,
-  STATUS_CHARACTERISTIC_UUID,
-  STATUS_SERVICE_UUID,
-} from '../utils/config';
+import { CORE_REFRESH_RATE, SLOW_REFRESH_RATE } from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
 import {
   decodeBleString,
-  getCharacteristic,
+  getBatteryCharacteristic,
+  getCoreCharacteristic,
+  getStatusCharacteristic,
   getTopIndicatorData,
 } from '../utils/utils';
 import { channelsSelector } from '../features/radio/channelsSlice';
@@ -143,11 +137,7 @@ const DashboardScreen = (): JSX.Element => {
   };
 
   const monitorAndUpdateCoreValues = useCallback(async () => {
-    const coreCharacteristic = await getCharacteristic(
-      CORE_SERVICE_UUID,
-      deviceUUID,
-      CORE_CHARACTERISTIC_UUID,
-    );
+    const coreCharacteristic = await getCoreCharacteristic();
     return coreCharacteristic?.monitor((err, cha) => {
       if (err) {
         console.error(err);
@@ -167,14 +157,10 @@ const DashboardScreen = (): JSX.Element => {
         fastAnimationConfig,
       );
     });
-  }, [acceleration, brake, deviceUUID, velocity]);
+  }, [acceleration, brake, velocity]);
 
   const monitorAndUpdateStatusValues = useCallback(async () => {
-    const statusCharacteristic = await getCharacteristic(
-      STATUS_SERVICE_UUID,
-      deviceUUID,
-      STATUS_CHARACTERISTIC_UUID,
-    );
+    const statusCharacteristic = await getStatusCharacteristic();
     let decodedString: string;
     decodedString = decodeBleString(
       (await statusCharacteristic?.read())?.value,
@@ -189,14 +175,10 @@ const DashboardScreen = (): JSX.Element => {
       decodedString = decodeBleString(cha?.value);
       setIndicatorData(getTopIndicatorData(decodedString));
     });
-  }, [deviceUUID]);
+  }, []);
 
   const monitorAndUpdateBatteryValues = useCallback(async () => {
-    const batteryCharacteristic = await getCharacteristic(
-      STATUS_SERVICE_UUID,
-      deviceUUID,
-      BATTERY_CHARACTERISTIC_UUID,
-    );
+    const batteryCharacteristic = await getBatteryCharacteristic();
 
     return batteryCharacteristic?.monitor((err, cha) => {
       if (err) {
@@ -221,7 +203,7 @@ const DashboardScreen = (): JSX.Element => {
         slowAnimationConfig,
       );
     });
-  }, [battCurrent, battPercentage, battTemperature, battVoltage, deviceUUID]);
+  }, [battCurrent, battPercentage, battTemperature, battVoltage]);
 
   useEffect(() => {
     let coreSubscription: Subscription | undefined;
@@ -230,7 +212,7 @@ const DashboardScreen = (): JSX.Element => {
     const getDevice = async () => {
       try {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
-        if (device) {
+        if (device && device.length > 0) {
           coreSubscription = await monitorAndUpdateCoreValues();
           statusSubscription = await monitorAndUpdateStatusValues();
           batterySubscription = await monitorAndUpdateBatteryValues();
