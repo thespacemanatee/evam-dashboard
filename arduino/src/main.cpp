@@ -327,8 +327,6 @@ void loop()
   //update and notify for core data
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)
   {
-    updateCoreData();
-    updateBatteryData();
     setCoreCharacteristic();
     setBatteryCharacteristic();
     prevCoreMillis = currentMillis;
@@ -337,6 +335,8 @@ void loop()
   //update and notify for additional low priority data (lighting)
   if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)
   {
+    updateCoreData();
+    updateBatteryData();
     updateStatusData();
     setStatusCharacteristic();
     setLightingCharacteristic();
