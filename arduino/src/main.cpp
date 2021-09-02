@@ -20,6 +20,7 @@
    every couple of seconds.
 */
 #include <EVAM.h>
+#include <utils.h>
 
 /***************  CALLBACKS ***************/
 
@@ -100,19 +101,28 @@ void updateCoreData()
   // vel = rand() % 50 + 50;
   // acc = rand() % 50 + 50;
   // brake = rand() % 50 + 0;
-  if (vel < 100) {
+  if (vel < 100)
+  {
     vel++;
-  } else {
+  }
+  else
+  {
     vel = 0;
   }
-  if (acc < 100) {
+  if (acc < 100)
+  {
     acc++;
-  } else {
+  }
+  else
+  {
     acc = 0;
   }
-  if (brake > 1) {
+  if (brake > 0)
+  {
     brake--;
-  } else {
+  }
+  else
+  {
     brake = 100;
   }
 }
@@ -138,11 +148,11 @@ void updateStatusData()
 
 void updateBatteryData()
 {
-  uint16_t battPhysicalCurr = rand() % 100 + 5;
-  battPercent = rand() % 10 + 75;
-  battVolt = rand() % 5 + 75;
+  float battPhysicalCurr = randomFloatRange(300);
+  battPercent = randomFloatRange(100) * 10;
+  battVolt = randomFloatRange(75) * 10;
   battCurr = (battPhysicalCurr + 320) * 10;
-  battTemp = rand() % 10 + 40;
+  battTemp = randomFloatRange(50) * 10;
 }
 
 /* Updates CANBus with new lighting data received through Bluetooth */
@@ -237,16 +247,7 @@ void setLightingCharacteristic()
 //set up the BLE device
 void setup()
 {
-  //set lights to max for debug
-  frontLightingMessage[0] = 255;
-  frontLightingMessage[1] = 255;
-  frontLightingMessage[2] = 255;
-  rearLightingMessage[0] = 255;
-  rearLightingMessage[1] = 255;
-  rearLightingMessage[2] = 255;
-  interiorLightingMessage[0] = 255;
-  interiorLightingMessage[1] = 255;
-  interiorLightingMessage[2] = 255;
+  srand(static_cast<unsigned>(time(0)));
 
   Serial.begin(115200);
 
@@ -327,6 +328,8 @@ void loop()
   //update and notify for core data
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)
   {
+    updateCoreData();
+    updateBatteryData();
     setCoreCharacteristic();
     setBatteryCharacteristic();
     prevCoreMillis = currentMillis;
@@ -335,8 +338,6 @@ void loop()
   //update and notify for additional low priority data (lighting)
   if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)
   {
-    updateCoreData();
-    updateBatteryData();
     updateStatusData();
     setStatusCharacteristic();
     setLightingCharacteristic();

@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Easing, useSharedValue } from 'react-native-reanimated';
+import { useSharedValue } from 'react-native-reanimated';
 import { Subscription } from 'react-native-ble-plx';
 import RadioPlayer from 'react-native-radio-player';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -13,7 +13,6 @@ import RightTachometer from '../components/core/RightTachometer';
 import BatteryStatistics from '../components/battery/BatteryStatistics';
 import DashboardButtonGroup from '../components/ui/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { SLOW_REFRESH_RATE } from '../utils/config';
 import { bleManagerRef } from '../utils/BleHelper';
 import {
   decodeBleString,
@@ -168,12 +167,12 @@ const DashboardScreen = (): JSX.Element => {
         return;
       }
       const decodedString = decodeBleString(cha?.value);
-      battPercentage.value = decodedString.charCodeAt(0);
-      battVoltage.value = decodedString.charCodeAt(1);
+      battPercentage.value = decodedString.charCodeAt(0) / 10;
+      battVoltage.value = decodedString.charCodeAt(1) / 10;
       battCurrent.value =
         (decodedString.charCodeAt(2) * 256 + decodedString.charCodeAt(3)) / 10 -
         320;
-      battTemperature.value = decodedString.charCodeAt(4);
+      battTemperature.value = decodedString.charCodeAt(4) / 10;
     });
   }, [battCurrent, battPercentage, battTemperature, battVoltage]);
 
