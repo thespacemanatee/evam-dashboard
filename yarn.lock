@@ -8247,19 +8247,10 @@ react-native-reanimated@2.3.0-alpha.2:
     mockdate "^3.0.2"
     string-hash-64 "^1.0.3"
 
-react-native-redash@^16.1.1:
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-redash/-/react-native-redash-16.2.0.tgz#72204bdcdc5c48ccd8bd630e3a954ae5174809b3"
-  integrity sha512-4xRWT6sUTjTM7i7Yd6fEiuylzIPmjYl9XlhL7Tz/NJOPBs+ib6ku7ptF5PRgQIshbQ6kIFwXJWoQ9H71zOMwvA==
-  dependencies:
-    abs-svg-path "^0.1.1"
-    normalize-svg-path "^1.0.1"
-    parse-svg-path "^0.1.2"
-
-react-native-redash@^16.2.1:
-  version "16.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-redash/-/react-native-redash-16.2.1.tgz#9e7c1ff7cc0fe0b61619463d212e98b9d5556941"
-  integrity sha512-0j9lGVqed08ZZ5fYtQKag7JHAigls/pHHaRbcEsvgkK4aFXTTwJ+vzNCm8hakrwD0j0WazQ6NVSoqcFp2PFZOw==
+react-native-redash@^16.1.1, react-native-redash@^16.2.2:
+  version "16.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-redash/-/react-native-redash-16.2.2.tgz#99ecb49810aab8ed778b6d8c8726a29117065d96"
+  integrity sha512-febggvSI93H796DS1ufNNf/8FQMw21UTiMYBRscmhzyIamcC194oNamW1UtbreRSC1OweKBDEbyxPSugiuncmQ==
   dependencies:
     abs-svg-path "^0.1.1"
     normalize-svg-path "^1.0.1"
