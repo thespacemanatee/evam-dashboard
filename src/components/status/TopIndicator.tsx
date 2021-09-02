@@ -45,21 +45,23 @@ type TopIndicatorProps = {
 
 const TopIndicator = ({ data, style }: TopIndicatorProps): JSX.Element => {
   return (
-    <View style={[styles.contentContainer, style]}>
-      <View style={styles.topIndicator}>
-        <Indicator status={data?.tps} style={styles.indicator} />
-        <Indicator status={data?.sas} style={styles.indicator} />
-        <Indicator status={data?.ecu} style={styles.indicator} />
-        <Indicator status={data?.bms} style={styles.indicator} />
-        <Indicator status={data?.whl} style={styles.indicator} />
-      </View>
-      <View style={styles.divider} />
-      <View style={styles.labelContainer}>
-        <Text style={styles.labelText}>TPS</Text>
-        <Text style={styles.labelText}>SAS</Text>
-        <Text style={styles.labelText}>ECU</Text>
-        <Text style={styles.labelText}>BMS</Text>
-        <Text style={styles.labelText}>WHL</Text>
+    <View style={style}>
+      <View style={styles.contentContainer}>
+        <View style={styles.topIndicator}>
+          <Indicator status={data?.tps} style={styles.indicator} />
+          <Indicator status={data?.sas} style={styles.indicator} />
+          <Indicator status={data?.ecu} style={styles.indicator} />
+          <Indicator status={data?.bms} style={styles.indicator} />
+          <Indicator status={data?.whl} style={styles.indicator} />
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.labelContainer}>
+          <Text style={styles.labelText}>TPS</Text>
+          <Text style={styles.labelText}>SAS</Text>
+          <Text style={styles.labelText}>ECU</Text>
+          <Text style={styles.labelText}>BMS</Text>
+          <Text style={styles.labelText}>WHL</Text>
+        </View>
       </View>
     </View>
   );

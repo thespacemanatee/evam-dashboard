@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ViewStyle,
   StyleProp,
+  View,
 } from 'react-native';
 
 import colors from '../../utils/colors';
@@ -29,9 +30,11 @@ const ThemedIconButton: React.FC<ThemedIconButtonProps> = ({
   style,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-      <Ionicons name={iconName} size={32} color='white' />
-    </TouchableOpacity>
+    <View style={style}>
+      <TouchableOpacity onPress={onPress} style={styles.button}>
+        <Ionicons name={iconName} size={32} color='white' />
+      </TouchableOpacity>
+    </View>
   );
 };
 

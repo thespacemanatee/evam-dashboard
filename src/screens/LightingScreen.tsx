@@ -125,7 +125,9 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
     const decodedFrontRGB = decodeBleString(
       (await frontLightChar?.read())?.value,
     );
-    setFrontColor(getRGBString(decodedFrontRGB));
+    if (decodedFrontRGB) {
+      setFrontColor(getRGBString(decodedFrontRGB));
+    }
   }, []);
 
   const readAndUpdateRearRGBValues = useCallback(async () => {
@@ -133,16 +135,20 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
     const decodedRearRgb = decodeBleString(
       (await rearLightChar?.read())?.value,
     );
-    setRearColor(getRGBString(decodedRearRgb));
+    if (decodedRearRgb) {
+      setRearColor(getRGBString(decodedRearRgb));
+    }
   }, []);
 
   const readAndUpdateInteriorRGBValues = useCallback(async () => {
     const interiorLightChar = await getInteriorLightingCharacteristic();
-    const decodedRearRgb = decodeBleString(
+    const decodedInteriorRgb = decodeBleString(
       (await interiorLightChar?.read())?.value,
     );
 
-    setInteriorColor(getRGBString(decodedRearRgb));
+    if (decodedInteriorRgb) {
+      setInteriorColor(getRGBString(decodedInteriorRgb));
+    }
   }, []);
 
   const onFrontCheckedChange = (value: boolean) => {

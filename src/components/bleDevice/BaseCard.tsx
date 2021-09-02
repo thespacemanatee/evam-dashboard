@@ -3,6 +3,7 @@ import {
   StyleProp,
   StyleSheet,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from 'react-native';
 
@@ -31,12 +32,14 @@ const BaseCard: React.FC<BaseCardProps> = ({
   children,
 }) => {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.container, style]}
-      disabled={disabled}>
-      {children}
-    </TouchableOpacity>
+    <View style={style}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={styles.container}
+        disabled={disabled}>
+        {children}
+      </TouchableOpacity>
+    </View>
   );
 };
 

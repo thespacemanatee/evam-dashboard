@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import colors from '../../utils/colors';
@@ -32,7 +32,11 @@ const Indicator = ({ status, style }: IndicatorProps): JSX.Element => {
           : colors.nodeInactive,
     };
   });
-  return <Animated.View style={[styles.indicator, animatedStyle, style]} />;
+  return (
+    <View style={style}>
+      <Animated.View style={[styles.indicator, animatedStyle]} />
+    </View>
+  );
 };
 
 Indicator.defaultProps = {
