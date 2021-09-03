@@ -1947,10 +1947,10 @@
     lodash.pick "^4.4.0"
     lodash.template "^4.5.0"
 
-"@gorhom/bottom-sheet@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-4.0.2.tgz#0956d3e50338959ec2966315945644a151a13e60"
-  integrity sha512-5JB8Pz/oqAnDKLW1nXrAYOKmJ+6vqxBish5HceZpmeHeI6kFKWXfNws/6cahowkXlbCJklBtZMgx/n1W9kgqWg==
+"@gorhom/bottom-sheet@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-4.0.3.tgz#465d28bd39ff19e8ba248b514427c0d790d5de30"
+  integrity sha512-aIStbi8FxquhH4FRuzyQBau8QUPWQljkrq7kaSo+BFanuAoO0B/YpfakxlDSgum+m7p5jXDopj2GU6cLzw9+qw==
   dependencies:
     "@gorhom/portal" "^1.0.7"
     invariant "^2.2.4"
@@ -7402,12 +7402,7 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-nanoid@^3.1.15:
-  version "3.1.23"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.23.tgz#f744086ce7c2bc47ee0a8472574d5c78e4183a81"
-  integrity sha512-FiB0kzdP0FFVGDKlRLEQ1BgDzU87dy5NnzjeW9YZNt+/c3+q82EQDUwniSAUxp/F0gFNI1ZhKU1FqYsMuqZVnw==
-
-nanoid@^3.1.20, nanoid@^3.1.23:
+nanoid@^3.1.15, nanoid@^3.1.20, nanoid@^3.1.23:
   version "3.1.25"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.25.tgz#09ca32747c0e543f0e1814b7d3793477f9c8e152"
   integrity sha512-rdwtIXaXCLFAQbnfqDRnI6jaRHp9fTcYBjtFKE8eezcZ7LuLjhUaQGNeMXf1HmRoCH32CLz6XwX0TtxEOS/A3Q==
@@ -8247,16 +8242,7 @@ react-native-reanimated@2.3.0-alpha.2:
     mockdate "^3.0.2"
     string-hash-64 "^1.0.3"
 
-react-native-redash@^16.1.1:
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-redash/-/react-native-redash-16.2.0.tgz#72204bdcdc5c48ccd8bd630e3a954ae5174809b3"
-  integrity sha512-4xRWT6sUTjTM7i7Yd6fEiuylzIPmjYl9XlhL7Tz/NJOPBs+ib6ku7ptF5PRgQIshbQ6kIFwXJWoQ9H71zOMwvA==
-  dependencies:
-    abs-svg-path "^0.1.1"
-    normalize-svg-path "^1.0.1"
-    parse-svg-path "^0.1.2"
-
-react-native-redash@^16.2.1:
+react-native-redash@^16.1.1, react-native-redash@^16.2.1:
   version "16.2.1"
   resolved "https://registry.yarnpkg.com/react-native-redash/-/react-native-redash-16.2.1.tgz#9e7c1ff7cc0fe0b61619463d212e98b9d5556941"
   integrity sha512-0j9lGVqed08ZZ5fYtQKag7JHAigls/pHHaRbcEsvgkK4aFXTTwJ+vzNCm8hakrwD0j0WazQ6NVSoqcFp2PFZOw==
