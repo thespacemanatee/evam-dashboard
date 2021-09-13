@@ -1,25 +1,28 @@
+#define SERIAL_DEBUG    //flag to turn on/off Serial.print (not used for now)
+#define CAN_CONNECTED   //flag to turn on/off CANBus functions for testing
+
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <SPI.h>
-#include <mcp2515.h>  //arduino-mcp2515 by autowp: https://github.com/autowp/arduino-mcp2515/
-
-/* CAN Bus */
-#define CAN_CONNECTED
-#define MSG_INTERVAL 10  //timing delay in ms between messages sent by node
-unsigned long lastMessageTime = 0;  //keeps track of the timestamp of the last message sent
 
 #ifdef CAN_CONNECTED
-#endif //CAN_CONNECTED
+#include <SPI.h>
+#include <mcp2515.h>  //arduino-mcp2515 by autowp: https://github.com/autowp/arduino-mcp2515/
+#endif  //CAN_CONNECTED
 
-//lighting messages
-struct can_frame frontLightMsg;
-struct can_frame rearLightMsg;
-struct can_frame intLightMsg;
 
-/* UUIDs */
+
+/* CAN Bus */
+MCP2515 mcp2515(10);    //instantiate CANBus
+
+struct can_frame frontLightMsg; //front light CAN message
+struct can_frame rearLightMsg;  //rear light CAN message
+struct can_frame intLightMsg;   //interior light CAN message
+struct can_frame canMsg; //for reading messages from the CANBus
+
+/* BLE Services and Characteristics */
 #define CORE_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define STATUS_SERVICE_UUID "4ee1bbf0-5e71-4d58-9ce4-e3e45cb8d8f9"
 #define LIGHTING_SERVICE_UUID "1cbef3f2-12d5-4490-8a80-7f7970b51b54"
@@ -52,48 +55,82 @@ unsigned long prevSlowMillis = 0; //timer for the less important data service
 
 /* Core message to be notified */
 uint8_t coreMessage[3];
-uint8_t vel;   //Velocity
-uint8_t acc;   //Acceleration
-uint8_t brake; //Brake
+#ifndef CAN_CONNECTED
+uint8_t vel;   //Car velocity, 0-255km/h
+uint8_t acc;   //Accelerator percentage, 0-100%
+uint8_t brake; //Brake percentage, 0-100%
+#endif
 
-/* Node status message to be notified */
-uint8_t statusMessage[14];
-uint8_t ecu;
-uint8_t bms;
-uint8_t tps;
-uint8_t sas;
-uint8_t imu;
-uint8_t interior; //interior lighting status
-uint8_t flw;      //Front left wheel
-uint8_t frw;      //Front right wheel
-uint8_t rlw;      //Rear left wheel
-uint8_t rrw;      //Rear right wheel
-uint8_t fll;      //Front left light
-uint8_t frl;      //Front right light
-uint8_t rll;      //Rear left light
-uint8_t rrl;      //Rear right light
+/* Node status message to be notified:
+    statusMessage[0] = ecu;
+    statusMessage[1] = bms;
+    statusMessage[2] = tps;
+    statusMessage[3] = sas;
+    statusMessage[4] = imu;
+    statusMessage[5] = fw;
+    statusMessage[6] = rlw;
+    statusMessage[7] = rrw;
+    statusMessage[8] = fl;
+    statusMessage[9] = rl;
+    statusMessage[10] = interior; 
+    0: error, 1: ok, 255: offline
+*/
+uint8_t statusMessage[11];
+#ifndef CAN_CONNECTED
+uint8_t ecu;    //engine control unit
+uint8_t bms;    //battery management system
+uint8_t tps;    //throttle (and brake) position sensor
+uint8_t sas;    //steering angle sensor
+uint8_t imu;    //inertial measurment unit
+uint8_t fw;     //Front wheels
+uint8_t rlw;    //Rear left wheel
+uint8_t rrw;    //Rear right wheel
+uint8_t fl;     //Front lights
+uint8_t rl;     //Rear lights
+uint8_t interior; //interior lights
+#endif
 
-/* Battery status message to be notified */
+/* Battery status message to be notified 
+*/
 uint8_t batteryMessage[5];
+#ifndef CAN_CONNECTED
 uint8_t battPercent; //Battery percentage
 uint8_t battVolt;    //Battery voltage
 uint16_t battCurr;   //Battery current
 uint8_t battTemp;    //Battery Temperature
+#endif
 
-/* Lighting messages  */
-//format: red, green, blue
-uint8_t frontLightingMessage[3];
-uint8_t rearLightingMessage[3];
-uint8_t interiorLightingMessage[3];
+/*  Lighting messages, removed
+ *  format: red, green, blue
+ */
+// uint8_t frontLightingMessage[3];
+// uint8_t rearLightingMessage[3];
+// uint8_t interiorLightingMessage[3];
 
-void setVehicleLights(uint8_t *lightArr, uint8_t *value);
+#define FRONT_LIGHT 1
+#define REAR_LIGHT 2
+#define INT_LIGHT 3
+
+#ifdef CAN_CONNECTED
+void initCoreMsg();
+void initLightingMsg();
+void initBattMsg();
+void initStatusMsg();
+void readCAN();
+#endif
+
+void setVehicleLights(uint8_t *value, uint8_t location); //updates the CANBus on the new light data
 void updateCoreData();
 void updateStatusData();
 void updateBatteryData();
-void updateLightingData(); //to update CANBus
 void setCoreCharacteristic();
 void setStatusCharacteristic();
 void setBatteryCharacteristic();
+#ifndef CAN_CONNECTED
+void setCoreCharacteristicOld();    //for use without CANBus
+void setStatusCharacteristicOld();  //for use without CANBus
+void setBatteryCharacteristicOld(); //for use without CANBus
+#endif
 void setLightingCharacteristic();
 
 /* For Debug */

@@ -1,12 +1,12 @@
 /*
+  HUD NODE FOR EVAM
+
     Video: https://www.youtube.com/watch?v=oCMOYS71NIU
     Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleNotify.cpp
     Ported to Arduino ESP32 by Evandro Copercini
     updated by chegewara
 
    Create a BLE server that, once we receive a connection, will send periodic notifications.
-   The service advertises itself as: 4fafc201-1fb5-459e-8fcc-c5c9c331914b
-   And has a characteristic of: beb5483e-36e1-4688-b7f5-ea07361b26a8
 
    The design of creating the BLE server is:
    1. Create a BLE Server
@@ -15,12 +15,13 @@
    4. Create a BLE Descriptor on the characteristic
    5. Start the service.
    6. Start advertising.
-
-   A connect handler associated with the server starts a background task that performs notification
-   every couple of seconds.
 */
+
 #include <EVAM.h>
 #include <utils.h>
+
+/***************  INITIAL VALUES FOR MESSAGES ***************/
+
 
 /***************  CALLBACKS ***************/
 
@@ -50,17 +51,17 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
     if (pCharacteristic == pFrontLightingCharacteristic)
     {
       Serial.println("Setting front RGB...");
-      setVehicleLights(frontLightingMessage, valPtr);
+      setVehicleLights(valPtr, FRONT_LIGHT);
     }
     else if (pCharacteristic == pRearLightingCharacteristic)
     {
       Serial.println("Setting rear RGB...");
-      setVehicleLights(rearLightingMessage, valPtr);
+      setVehicleLights(valPtr, REAR_LIGHT);
     }
     else if (pCharacteristic == pInteriorLightingCharacteristic)
     {
       Serial.println("Setting interior RGB...");
-      setVehicleLights(interiorLightingMessage, valPtr);
+      setVehicleLights(valPtr, INT_LIGHT);
     }
     else
     {
@@ -70,14 +71,16 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
 };
 
 /**
- * @brief Sets the vehicle light data
- * @param [in] lightArr The light data to modify
+ * @brief Sets the vehicle light data and updates CANBus
  * @param [in] value The rgb value to be set
+ * @param [in] location which light to set (FRONT_LIGHT, REAR_LIGHT, INT_LIGHT)
  */
-void setVehicleLights(uint8_t *lightArr, uint8_t *value)
+void setVehicleLights(uint8_t *value, uint8_t location)
 {
-  //loop to set the individual bytes
   Serial.print("RGB set to: ");
+
+  //loop to set the individual bytes
+  uint8_t lightArr[3];
   for (int i = 0; i < 3; i++)
   {
     lightArr[i] = *(value + i);
@@ -85,11 +88,185 @@ void setVehicleLights(uint8_t *lightArr, uint8_t *value)
     Serial.print(" ");
   }
   Serial.println();
+  #ifdef CAN_CONNECTED
+  switch (location){
+    case FRONT_LIGHT:
+      for(int i = 0; i < 3; i++){
+        frontLightMsg.data[i] = lightArr[i];
+      }
+      mcp2515.sendMessage(&frontLightMsg);
+      break;
+    case REAR_LIGHT:
+      for(int i = 0; i < 3; i++){
+        rearLightMsg.data[i] = lightArr[i];
+      }
+      mcp2515.sendMessage(&rearLightMsg);
+      break;
+    case INT_LIGHT:
+      for(int i = 0; i < 3; i++){
+        intLightMsg.data[i] = lightArr[i];
+      }
+      mcp2515.sendMessage(&intLightMsg);
+      break;
+  } //switch
+  #endif  //CAN_CONNECTED
 }
 
-/*************** UPDATE DATA FROM CAR ***************/
+#ifdef CAN_CONNECTED
+/*************** INITIALISE MESSAGE CONTENTS ***************/
 
-/* Updates core data for the core characteristic. Will eventually use CANBus data*/
+void initCoreMsg()
+{
+  for(int i = 0; i < sizeof(coreMessage); i++)
+  {
+    coreMessage[i] = 0;
+  }
+}
+
+void initLightingMsg()
+{
+  //setup front light message for CAN Bus
+  frontLightMsg.can_id  = 0x60;
+  frontLightMsg.can_dlc = 5;
+  frontLightMsg.data[0] = 0;
+  frontLightMsg.data[1] = 0;
+  frontLightMsg.data[2] = 0;
+  frontLightMsg.data[3] = 0;
+  frontLightMsg.data[4] = 0;
+
+  //setup rear light message for CAN Bus
+  rearLightMsg.can_id  = 0x61;
+  rearLightMsg.can_dlc = 5;
+  rearLightMsg.data[0] = 0;
+  rearLightMsg.data[1] = 0;
+  rearLightMsg.data[2] = 0;
+  rearLightMsg.data[3] = 0;
+  rearLightMsg.data[4] = 0;
+
+  //setup interior light message for CAN Bus
+  intLightMsg.can_id  = 0x62;
+  intLightMsg.can_dlc = 5;
+  intLightMsg.data[0] = 0;  
+  intLightMsg.data[1] = 0;
+  intLightMsg.data[2] = 0;
+  intLightMsg.data[3] = 0;
+  intLightMsg.data[4] = 0;
+}
+
+void initBattMsg() 
+{
+  for(int i = 0; i < sizeof(batteryMessage); i++)
+  {
+    batteryMessage[i] = 0;  //everything 0
+  }
+}
+
+void initStatusMsg()
+{
+  for(int i = 0; i < sizeof(statusMessage); i++)
+  {
+    statusMessage[i] = 255; //all offline
+  }
+}
+
+/*************** UPDATE DATA FROM CAN BUS***************/
+
+/* Reads CAN Bus messages and updates the relevant data */
+void readCAN(){
+  if (mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK){ //message available
+
+    /* Core & Battery data */
+    if (canMsg.can_id == 0x08){ //ecu status
+      statusMessage[0] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x09){ //bms status
+      statusMessage[1] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x0A){ //tps status
+      statusMessage[2] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x0B){ //sas status
+      statusMessage[3] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x0C){ //imu status
+      statusMessage[4] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x0D){ //fw status
+      statusMessage[5] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x0F){ //rlw status
+      statusMessage[6] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x10){ //rrw status
+      statusMessage[7] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x11){ //fl status
+      statusMessage[8] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x12){ //rl status
+      statusMessage[9] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+    else if (canMsg.can_id == 0x13){ //int status
+      statusMessage[10] = (canMsg.data[0]);
+      setStatusCharacteristic();
+    }
+
+    /* Core & Battery data */
+    else if (canMsg.can_id == 0x20){  //throttle n brake position
+      coreMessage[1] = (canMsg.data[0])/4; //acc
+      coreMessage[2] = (canMsg.data[1])/4;  //brake
+    }
+    else if (canMsg.can_id == 0x24){  //battery stats message
+      float rawBattVolt = (canMsg.data[0] + (canMsg.data[1]<<8))*0.1;
+      batteryMessage[1] = (int)rawBattVolt; //battVolt
+
+      //float rawBattCurr = - 320 + (canMsg.data[2] + canMsg.data[3]<<8)*0.1;
+      batteryMessage[2] = canMsg.data[2]; //battCurr_1
+      batteryMessage[3] = canMsg.data[3]; //battCurr_2
+      batteryMessage[0] = canMsg.data[6]; //battPercent
+    }
+    else if (canMsg.can_id == 0x38){  //Vehicle Speed message
+      //vel = (canMsg.data[0] + (canMsg.data[1]<<8))/256; //16 bit precision
+      coreMessage[0] = canMsg.data[1]; //vel; 8 bit precision
+    }
+  } //if message available
+} //readCAN()
+
+/* Sets new data for core characteristic and notifies */
+void setCoreCharacteristic()
+{
+    pCoreCharacteristic->setValue((uint8_t *)coreMessage, sizeof(coreMessage));
+    pCoreCharacteristic->notify();
+}
+
+/* Sets new data for node status characteristic and notifies  */
+void setStatusCharacteristic()
+{
+    pStatusCharacteristic->setValue((uint8_t *)statusMessage, sizeof(statusMessage));
+    pStatusCharacteristic->notify();
+  }
+
+/* Sets new data for battery characteristic and notifies*/
+void setBatteryCharacteristic()
+{
+    pBatteryCharacteristic->setValue((uint8_t *)batteryMessage, sizeof(batteryMessage));
+    pBatteryCharacteristic->notify();
+}
+
+#else //CAN not connected
+/*************** UPDATE WITH RANDOM DATA, FOR TESTING W/O CAN BUS ***************/
+
+/* Manually update core data for the core characteristic. */
 void updateCoreData()
 {
   //for now is hardcoded data
@@ -101,7 +278,7 @@ void updateCoreData()
   // vel = rand() % 50 + 50;
   // acc = rand() % 50 + 50;
   // brake = rand() % 50 + 0;
-  if (vel < 100)
+    if (vel < 100)
   {
     vel++;
   }
@@ -127,7 +304,7 @@ void updateCoreData()
   }
 }
 
-/* Updates CAN Bus node status for the status characteristic. Will eventually use CANBus data */
+/* Manually update CAN Bus node status for the status characteristic. */
 void updateStatusData()
 {
   ecu = 255;
@@ -135,17 +312,15 @@ void updateStatusData()
   tps = 1;
   sas = 0;
   imu = 255;
-  interior = 255;
-  flw = 1;
-  frw = 0;
+  fw = 1;
   rlw = 0;
   rrw = 0;
-  fll = 255;
-  frl = 255;
-  rll = 255;
-  rrl = 255;
+  fl = 255;
+  rl = 255;
+  interior = 0;
 }
 
+/* Manually update battery data for the battery characteristic. */
 void updateBatteryData()
 {
   float battPhysicalCurr = randomFloatRange(300);
@@ -154,17 +329,13 @@ void updateBatteryData()
   battCurr = (battPhysicalCurr + 320) * 10;
   battTemp = randomFloatRange(50) * 10;
 }
-
-/* Updates CANBus with new lighting data received through Bluetooth */
-void updateLightingData()
-{
-  //TODO
-}
+#endif
 
 /*************** SET CHARACTERISTICS TO NEW VALUES ***************/
 
-/* Sets new data for core characteristic and notifies */
-void setCoreCharacteristic()
+#ifndef CAN_CONNECTED
+
+void setCoreCharacteristicOld()
 {
   if (!(coreMessage[0] == vel && coreMessage[1] == acc && coreMessage[2] == brake) && deviceConnected)
   {
@@ -177,23 +348,22 @@ void setCoreCharacteristic()
   }
 }
 
-/* Sets new data for node status characteristic and notifies */
-void setStatusCharacteristic()
+/* Sets new data for node status characteristic and notifies
+ * Used only for  testing without the canbus 
+ */
+void setStatusCharacteristicOld()
 {
   if (!(statusMessage[0] == ecu &&
         statusMessage[1] == bms &&
         statusMessage[2] == tps &&
         statusMessage[3] == sas &&
         statusMessage[4] == imu &&
-        statusMessage[5] == interior &&
-        statusMessage[6] == flw &&
-        statusMessage[7] == frw &&
-        statusMessage[8] == rlw &&
-        statusMessage[9] == rrw &&
-        statusMessage[10] == fll &&
-        statusMessage[11] == frl &&
-        statusMessage[12] == rll &&
-        statusMessage[13] == rrl) &&
+        statusMessage[5] == fw &&
+        statusMessage[6] == rlw &&
+        statusMessage[7] == rrw &&
+        statusMessage[8] == fl &&
+        statusMessage[9] == rl &&
+        statusMessage[10] == interior) &&
       deviceConnected)
   {
     statusMessage[0] = ecu;
@@ -201,21 +371,21 @@ void setStatusCharacteristic()
     statusMessage[2] = tps;
     statusMessage[3] = sas;
     statusMessage[4] = imu;
-    statusMessage[5] = interior;
-    statusMessage[6] = flw;
-    statusMessage[7] = frw;
-    statusMessage[8] = rlw;
-    statusMessage[9] = rrw;
-    statusMessage[10] = fll;
-    statusMessage[11] = frl;
-    statusMessage[12] = rll;
-    statusMessage[13] = rrl;
+    statusMessage[5] = fw;
+    statusMessage[6] = rlw;
+    statusMessage[7] = rrw;
+    statusMessage[8] = fl;
+    statusMessage[9] = rl;
+    statusMessage[10] = interior;
     pStatusCharacteristic->setValue((uint8_t *)statusMessage, sizeof(statusMessage));
     pStatusCharacteristic->notify();
   }
 }
 
-void setBatteryCharacteristic()
+/* Sets new data for battery characteristic and notifies
+ * Used only for  testing without the canbus 
+ */
+void setBatteryCharacteristicOld()
 {
   uint8_t battCurr_1 = battCurr >> 8;
   uint8_t battCurr_2 = battCurr & 0x00FF;
@@ -235,24 +405,33 @@ void setBatteryCharacteristic()
     pBatteryCharacteristic->notify();
   }
 }
+#else //CAN_CONNECTED
 
-/* Sets new data for lighting characteristic */
-void setLightingCharacteristic()
-{
-  pFrontLightingCharacteristic->setValue((uint8_t *)frontLightingMessage, sizeof(frontLightingMessage));
-  pRearLightingCharacteristic->setValue((uint8_t *)rearLightingMessage, sizeof(rearLightingMessage));
-  pInteriorLightingCharacteristic->setValue((uint8_t *)interiorLightingMessage, sizeof(interiorLightingMessage));
-}
+#endif
 
-//set up the BLE device
+/*************** SETUP ***************/
 void setup()
 {
-  srand(static_cast<unsigned>(time(0)));
+  #ifndef CAN_CONNECTED
+  srand(static_cast<unsigned>(time(0)));  //to create the random data
+  #endif
 
   Serial.begin(115200);
+  Serial.println("EVAM HUD (Dashboard) Node");
 
   /* CAN Setup */
-  //TODO
+  #ifdef CAN_CONNECTED
+  initCoreMsg();
+  initLightingMsg();
+  initBattMsg();
+  initStatusMsg();
+  
+  //start CAN Bus
+  SPI.begin();
+  mcp2515.reset();
+  mcp2515.setBitrate(CAN_500KBPS);
+  mcp2515.setNormalMode();
+  #endif  //CAN_CONNECTED
 
   /* BLE Setup */
 
@@ -316,31 +495,46 @@ void setup()
   pAdvertising->setScanResponse(false);
   pAdvertising->setMinPreferred(0x0); // set value to 0x00 to not advertise this parameter
   BLEDevice::startAdvertising();
-  Serial.println("Waiting a client connection...");
+  Serial.println("Connect to bluetooth device: 'EVAM'.");
+
+  setStatusCharacteristic();
 }
 
+
+/*************** MAIN LOOP ***************/
 void loop()
 {
   unsigned long currentMillis = millis();
-  //!!THIS CODE HAS NO OVERFLOW PROTECTION!!
-  //(since the car isn't expected to remain on for 50 days consecutively)
+  /*!!THIS CODE HAS NO OVERFLOW PROTECTION!!
+   *(since the car isn't expected to remain on for 50 days consecutively)
+   */
+
+  #ifdef CAN_CONNECTED
+  readCAN();
+  #endif  //CAN_CONNECTED
 
   //update and notify for core data
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)
   {
+    #ifndef CAN_CONNECTED
     updateCoreData();
     updateBatteryData();
-    setCoreCharacteristic();
+    setCoreCharacteristicOld();
+    setBatteryCharacteristicOld();
+    #else //CAN_CONNECTED
     setBatteryCharacteristic();
+    setCoreCharacteristic();
+    #endif
     prevCoreMillis = currentMillis;
   }
 
-  //update and notify for additional low priority data (lighting)
+  //update and notify for additional low priority data (status)
   if (currentMillis - prevSlowMillis > SLOW_DATA_REFRESH_INTERVAL)
   {
+    #ifndef CAN_CONNECTED //if CANbus is connected, characteristic is updated whenever the data comes in
     updateStatusData();
-    setStatusCharacteristic();
-    setLightingCharacteristic();
+    setStatusCharacteristicOld();
+    #endif  
     prevSlowMillis = currentMillis;
   }
 
