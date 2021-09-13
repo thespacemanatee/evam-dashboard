@@ -35,17 +35,19 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
   }, [char]);
 
   return (
-    <View style={[styles.container, style]}>
-      <Text>{`Characteristic UUID: ${char.uuid}`}</Text>
-      <Text>{`Descriptor: ${descriptor}`}</Text>
-      <View style={{ flexDirection: 'row' }}>
-        <View>
-          <Text>{`isIndicatable: ${char.isIndicatable}`}</Text>
-          <Text>{`isNotifiable: ${char.isNotifiable}`}</Text>
-          <Text>{`isNotifying: ${char.isNotifying}`}</Text>
-          <Text>{`isReadable: ${char.isReadable}`}</Text>
-          <Text>{`isWritableWithResponse: ${char.isWritableWithResponse}`}</Text>
-          <Text>{`isWritableWithoutResponse: ${char.isWritableWithoutResponse}`}</Text>
+    <View style={style}>
+      <View style={styles.container}>
+        <Text>{`Characteristic UUID: ${char.uuid}`}</Text>
+        <Text>{`Descriptor: ${descriptor}`}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <View>
+            <Text>{`isIndicatable: ${char.isIndicatable}`}</Text>
+            <Text>{`isNotifiable: ${char.isNotifiable}`}</Text>
+            <Text>{`isNotifying: ${char.isNotifying}`}</Text>
+            <Text>{`isReadable: ${char.isReadable}`}</Text>
+            <Text>{`isWritableWithResponse: ${char.isWritableWithResponse}`}</Text>
+            <Text>{`isWritableWithoutResponse: ${char.isWritableWithoutResponse}`}</Text>
+          </View>
         </View>
       </View>
     </View>

@@ -73,6 +73,27 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
   const pickerRef = useRef(null);
   const colorAnim = useSharedValue('#ffffff');
 
+  const sendFrontRGBData = async (payload: string) => {
+    const char = await getFrontLightingCharacteristic();
+    const newChar = await char?.writeWithResponse(payload);
+    const decodedFrontRGB = decodeBleString((await newChar?.read())?.value);
+    setFrontColor(getRGBString(decodedFrontRGB));
+  };
+
+  const sendRearRGBData = async (payload: string) => {
+    const char = await getRearLightingCharacteristic();
+    const newChar = await char?.writeWithResponse(payload);
+    const decodedRearRGB = decodeBleString((await newChar?.read())?.value);
+    setRearColor(getRGBString(decodedRearRGB));
+  };
+
+  const sendInteriorRGBData = async (payload: string) => {
+    const char = await getInteriorLightingCharacteristic();
+    const newChar = await char?.writeWithResponse(payload);
+    const decodedInteriorRGB = decodeBleString((await newChar?.read())?.value);
+    setInteriorColor(getRGBString(decodedInteriorRGB));
+  };
+
   const handleSendRGBData = async () => {
     const device = await bleManagerRef.current?.devices([deviceUUID]);
     if (device && device.length > 0 && colorPayload) {
@@ -84,31 +105,13 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
         ),
       );
       if (frontChecked) {
-        let frontLightChar;
-        frontLightChar = await getFrontLightingCharacteristic();
-        frontLightChar = await frontLightChar?.writeWithResponse(payload);
-        const decodedFrontRGB = decodeBleString(
-          (await frontLightChar?.read())?.value,
-        );
-        setFrontColor(getRGBString(decodedFrontRGB));
+        sendFrontRGBData(payload);
       }
       if (rearChecked) {
-        let rearLightChar;
-        rearLightChar = await getRearLightingCharacteristic();
-        rearLightChar = await rearLightChar?.writeWithResponse(payload);
-        const decodedRearRGB = decodeBleString(
-          (await rearLightChar?.read())?.value,
-        );
-        setRearColor(getRGBString(decodedRearRGB));
+        sendRearRGBData(payload);
       }
       if (interiorChecked) {
-        let interiorLightChar;
-        interiorLightChar = await getInteriorLightingCharacteristic();
-        interiorLightChar = await interiorLightChar?.writeWithResponse(payload);
-        const decodedInteriorRGB = decodeBleString(
-          (await interiorLightChar?.read())?.value,
-        );
-        setInteriorColor(getRGBString(decodedInteriorRGB));
+        sendInteriorRGBData(payload);
       }
     }
   };
@@ -122,7 +125,9 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
     const decodedFrontRGB = decodeBleString(
       (await frontLightChar?.read())?.value,
     );
-    setFrontColor(getRGBString(decodedFrontRGB));
+    if (decodedFrontRGB) {
+      setFrontColor(getRGBString(decodedFrontRGB));
+    }
   }, []);
 
   const readAndUpdateRearRGBValues = useCallback(async () => {
@@ -130,16 +135,20 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
     const decodedRearRgb = decodeBleString(
       (await rearLightChar?.read())?.value,
     );
-    setRearColor(getRGBString(decodedRearRgb));
+    if (decodedRearRgb) {
+      setRearColor(getRGBString(decodedRearRgb));
+    }
   }, []);
 
   const readAndUpdateInteriorRGBValues = useCallback(async () => {
     const interiorLightChar = await getInteriorLightingCharacteristic();
-    const decodedRearRgb = decodeBleString(
+    const decodedInteriorRgb = decodeBleString(
       (await interiorLightChar?.read())?.value,
     );
 
-    setInteriorColor(getRGBString(decodedRearRgb));
+    if (decodedInteriorRgb) {
+      setInteriorColor(getRGBString(decodedInteriorRgb));
+    }
   }, []);
 
   const onFrontCheckedChange = (value: boolean) => {
