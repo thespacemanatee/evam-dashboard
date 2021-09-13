@@ -3,6 +3,21 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <SPI.h>
+#include <mcp2515.h>  //arduino-mcp2515 by autowp: https://github.com/autowp/arduino-mcp2515/
+
+/* CAN Bus */
+#define CAN_CONNECTED
+#define MSG_INTERVAL 10  //timing delay in ms between messages sent by node
+unsigned long lastMessageTime = 0;  //keeps track of the timestamp of the last message sent
+
+#ifdef CAN_CONNECTED
+#endif //CAN_CONNECTED
+
+//lighting messages
+struct can_frame frontLightMsg;
+struct can_frame rearLightMsg;
+struct can_frame intLightMsg;
 
 /* UUIDs */
 #define CORE_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
