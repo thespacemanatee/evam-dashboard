@@ -19,7 +19,7 @@ MCP2515 evamMcp2515(9);
 //constants for printing battery values
 #ifdef DEBUG
 float V, I;
-int SOC, Th, Tl;
+int SOC, Th;
 #endif  //DEBUG
 
 #define BMS_CAN_TIMEOUT 1000  //timeout in ms before raising an error, if no message is received on the battery canbus
@@ -42,9 +42,13 @@ void sendStatus(uint8_t status = 0){
 
 void sendCanMessage(){
   evamMcp2515.sendMessage(&batteryMsg);
-  
+
   #ifdef DEBUG
-  Serial.print("Battery Message Sent");
+  V = (batteryMsg.data[1] * 256.0 + batteryMsg.data[0]) * 0.1;
+  I = (batteryMsg.data[3] * 256.0 + batteryMsg.data[2]) * 0.1 - 320.0;
+  SOC = batteryMsg.data[6];
+  Th = batteryMsg.data[7] - 40 ;
+  Serial.println("V = " + String(V) + " | " + "I = " + String(I) +  " | " + "SOC = " + String(SOC)+ " | " + "Th = " + String(Th));
   #endif  //DEBUG
 }
 
@@ -92,27 +96,15 @@ void loop() {
         batteryMsg.data[i]  = canMsg.data[i];
       }
     lastRcvMillis = millis();
-
-    #ifdef DEBUG
-      V = (batteryMsg.data[1] * 256.0 + batteryMsg.data[0]) * 0.1;
-      I = (batteryMsg.data[3] * 256.0 + batteryMsg.data[2]) * 0.1 - 320.0;
-      SOC = batteryMsg.data[6];
-      Serial.println("V = " + String(V) + " | " + "I = " + String(I) +  " | " + "SOC = " + String(SOC));
-    #endif  //DEBUG
     }
     
     if(canMsg.can_id == 2566002163){ //BMS4
       batteryMsg.data[7] = canMsg.data[0];  //highest cell temperature
-
-      #ifdef DEBUG
-      Th = String(canMsg.data[0],DEC).toInt() - 40 ;
-      Tl = String(canMsg.data[2],DEC).toInt() - 40;
-      Serial.println("Th = " + String(Th) + " | " + " Tl = " + String(Tl) );
-      #endif //DEBUG
     }   
   }
   if (millis() - lastSendMillis > MSG_INTERVAL){
     sendCanMessage(); 
+    lastSendMillis = millis();
   }
   if (millis() - lastRcvMillis > BMS_CAN_TIMEOUT){
     sendStatus(0);  //raise error
