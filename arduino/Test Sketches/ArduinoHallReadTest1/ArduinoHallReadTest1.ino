@@ -4,7 +4,7 @@ unsigned long lastHallMillis = 0;
 unsigned long interval = 0;
 float rpm = 0.0;
 unsigned long lastPrintMillis = 0;
-#define PRINT_INTERVAL 300
+#define PRINT_INTERVAL 500
 uint8_t buttonState = 0;
 uint8_t lastState = 0;
 
@@ -14,16 +14,15 @@ const int buttonPin = 2;     // the number of the pushbutton pin
 
 void setup() {
   // initialize the pushbutton pin as an input:
-  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(buttonPin, INPUT);
   Serial.begin(115200);
 }
 
 void loop() {
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
-  Serial.println(buttonState);
-/*
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  //Serial.println(buttonState);
+  
   if (buttonState == HIGH && lastState == 0) {
     interval = millis() - lastHallMillis;
     lastHallMillis = millis();
@@ -40,6 +39,6 @@ void loop() {
     //Serial.println(rpm);
     Serial.print("Interval: ");
     Serial.println(interval);
+    lastPrintMillis = millis();
   }
- */
 }

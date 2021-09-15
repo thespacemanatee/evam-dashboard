@@ -14,10 +14,15 @@ void setup() {
 
 void loop(){
  if (mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK){
-     int x = canMsg.data[0];
+     
      Serial.print("ID: ");
      Serial.print(canMsg.can_id); 
      Serial.print(" | Value: ");
-     Serial.println(x);     
+     for (int i = 0; i <8;i++){
+      int x = canMsg.data[i];
+      Serial.print(x);
+      Serial.print(" ");
+     }
+     Serial.println();
    }
 }

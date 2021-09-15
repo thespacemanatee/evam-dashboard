@@ -4,7 +4,7 @@
 
 struct can_frame canMsg1;
 //struct can_frame canMsg2;
-MCP2515 mcp2515(10);
+MCP2515 mcp2515(9);
 uint8_t potVal = 0;
 int rawPot = 0;
 void setup() {
@@ -42,11 +42,11 @@ void setup() {
 }
 
 void loop() {
-  readPot();
-  rawPot = analogRead(POT_PIN);
-  potVal = map(rawPot, 0, 1023, 0, 255);
+  //readPot();
+  //rawPot = analogRead(POT_PIN);
+  //potVal = map(rawPot, 0, 1023, 0, 255);
   
-  canMsg1.data[0] = potVal;
+  canMsg1.data[0] = 100;
   mcp2515.sendMessage(&canMsg1);
 //  mcp2515.sendMessage(&canMsg2);
 
@@ -54,5 +54,3 @@ void loop() {
   
   delay(10);
 }
-
-

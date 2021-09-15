@@ -41,8 +41,8 @@ void sendStatus(uint8_t status = 0){
 }
 
 void sendCanMessage(){
+  
   evamMcp2515.sendMessage(&batteryMsg);
-
   #ifdef DEBUG
   V = (batteryMsg.data[1] * 256.0 + batteryMsg.data[0]) * 0.1;
   I = (batteryMsg.data[3] * 256.0 + batteryMsg.data[2]) * 0.1 - 320.0;
@@ -96,6 +96,9 @@ void loop() {
         batteryMsg.data[i]  = canMsg.data[i];
       }
     lastRcvMillis = millis();
+    if (errorState == 0){
+      sendStatus(1);  //fix error
+    }
     }
     
     if(canMsg.can_id == 2566002163){ //BMS4
@@ -106,7 +109,7 @@ void loop() {
     sendCanMessage(); 
     lastSendMillis = millis();
   }
-  if (millis() - lastRcvMillis > BMS_CAN_TIMEOUT){
+  if ((millis() - lastRcvMillis > BMS_CAN_TIMEOUT) && (errorState != 0)){
     sendStatus(0);  //raise error
   }
 }
