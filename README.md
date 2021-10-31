@@ -29,7 +29,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://github.com/thespacemanatee/evam-dashboard">
     <img src="https://user-images.githubusercontent.com/6837599/138331854-9dfa00b7-021b-4b2a-a48f-78b1f74af131.png" alt="Logo" width="200" height="200">
   </a>
   
@@ -40,11 +40,11 @@ https://user-images.githubusercontent.com/6837599/138331069-868a454a-ab31-4313-9
   <p align="center">
     Dashboard application for the EVAM project written in React Native
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/thespacemanatee/evam-dashboard">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
+    <a href="https://github.com/thespacemanatee/evam-dashboard/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/thespacemanatee/evam-dashboard/issues">Request Feature</a>
   </p>
 </div>
 
