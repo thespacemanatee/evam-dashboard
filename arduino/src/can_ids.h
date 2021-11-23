@@ -40,4 +40,6 @@
 #define REAR_LIGHT_MSG_ID           97
 #define INT_LIGHT_MSG_ID            99
 
+#define PHONE_CONNECTED_MSG_ID      112
+
 #endif  //CAN_ID_H

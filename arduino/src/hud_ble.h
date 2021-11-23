@@ -12,6 +12,7 @@
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
+#include <EVAM.h>
 
 /* BLE Services and Characteristics */
 #define CORE_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -38,6 +39,10 @@ extern BLECharacteristicCallbacks *lightingCallback;
 
 extern bool deviceConnected;
 extern bool oldDeviceConnected;
+
+void setCoreCharacteristic();
+void setStatusCharacteristic();
+void setBatteryCharacteristic();
 
 
 

@@ -7,6 +7,9 @@
 
  *  !!THIS CODE HAS NO OVERFLOW PROTECTION!!
  *  (since the car isn't expected to remain on for 50 days consecutively)
+ * 
+ * TODO:  ECO/BOOST not enabled (probably not enabling)
+ *        Test
  *
  */
 
@@ -21,13 +24,25 @@ class ConnectionCallbacks : public BLEServerCallbacks
   void onConnect(BLEServer *pServer)
   {
     deviceConnected = true;
+
+    #ifdef SERIAL_DEBUG
     Serial.println("Connected");
+    #endif
+    
+    phoneConnectedMsg.data.u8[0]=deviceConnected;
+    ESP32Can.CANWriteFrame(&phoneConnectedMsg);
   };
 
   void onDisconnect(BLEServer *pServer)
   {
     deviceConnected = false;
+
+    #ifdef SERIAL_DEBUG
     Serial.println("Disconnected");
+    #endif
+
+    phoneConnectedMsg.data.u8[0]=deviceConnected;
+    ESP32Can.CANWriteFrame(&phoneConnectedMsg);
   }
 };
 
@@ -61,31 +76,6 @@ class LightingUpdateCallback : public BLECharacteristicCallbacks
 };
 
 
-/********** SETTING CHARACTERISTICS ***********/
-
-//plan to move to hud_ble.h
-/* Sets new data for core characteristic and notifies */
-void setCoreCharacteristic()
-{
-    pCoreCharacteristic->setValue((uint8_t *)coreMessage, sizeof(coreMessage));
-    pCoreCharacteristic->notify();
-}
-
-/* Sets new data for node status characteristic and notifies  */
-void setStatusCharacteristic()
-{
-    pStatusCharacteristic->setValue((uint8_t *)statusMessage, sizeof(statusMessage));
-    pStatusCharacteristic->notify();
-  }
-
-/* Sets new data for battery characteristic and notifies*/
-void setBatteryCharacteristic()
-{
-    pBatteryCharacteristic->setValue((uint8_t *)batteryMessage, sizeof(batteryMessage));
-    pBatteryCharacteristic->notify();
-}
-
-
 /*************** SETUP ***************/
 void setup()
 {
@@ -99,7 +89,21 @@ void setup()
   Serial.println("EVAM HUD (Dashboard) Node");
 
   /* CAN Setup */
-  canSetup();
+  int res = canSetup();
+
+  #ifdef SERIAL_DEBUG
+  if(res == 0){
+    Serial.println("CAN Set Up Successful");
+  }
+  else{
+    Serial.println("CAN Set Up Failed!");
+  }
+  #endif
+
+
+  /* Message Set up */
+  initMessageData();
+
 
   /* BLE Setup */
 
@@ -166,6 +170,15 @@ void setup()
   Serial.println("Connect to bluetooth device: 'EVAM'.");
 
   setStatusCharacteristic();
+
+  /* GPIO SETUP */
+  setSwitchesGPIO();  
+  attachInterrupts();
+  lightSwitchOn = checkLightSwitch();
+  #ifdef SERIAL_DEBUG
+  Serial.print("Lights: ");
+  Serial.println(lightSwitchOn);
+  #endif
 }
 
 
@@ -174,7 +187,11 @@ void loop()
 {
   unsigned long currentMillis = millis();
 
-  checkCanMessages(); 
+  sendButtonCanMessages();
+  checkIncomingCanMessages(); 
+
+  checkReEnableInterrupts(&currentMillis);
+
 
   //update BLE server and notify for core data
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)
@@ -197,7 +214,7 @@ void loop()
     //update and notify for additional low priority data
   if (currentMillis - prevMotorLockMillis > MOTOR_LOCK_MSG_REFRESH_INTERVAL)
   {
-    checkMotorLockout();
+    checkSendMotorLockout();
     prevMotorLockMillis = currentMillis;
   }
 
