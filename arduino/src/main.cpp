@@ -85,7 +85,7 @@ void loop()
 {
   unsigned long currentMillis = millis();
 
-  sendButtonCanMessages();
+  sendButtonCanMessages(&currentMillis);
   checkIncomingCanMessages(); 
 
   //update BLE server and notify for core data

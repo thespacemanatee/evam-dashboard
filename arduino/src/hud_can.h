@@ -19,7 +19,7 @@ enum lightLocation_t{
 int  canSetup();
 void checkIncomingCanMessages();
 void setVehicleLights(uint8_t *value, lightLocation_t location);
-void sendButtonCanMessages();
+void sendButtonCanMessages(unsigned long *_currentMillis);
 void sendAllLightingMessages();
 
 

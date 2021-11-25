@@ -8,9 +8,10 @@ volatile bool lightSwitchOn = false;
 volatile bool lightingISRFlag = false;
 volatile unsigned long lastLightSwitchEvent = 0;
 
-volatile bool driveMode = 0;
+volatile bool boostMode = 0;
 volatile bool revMode = 0;
 volatile bool reverseISRFlag = false;
+volatile bool boostISRFlag = false;
 volatile unsigned long lastDriveModeSwitchEvent = 0;
 
 //Sets the ESP32's GPIO Pins correctly for the connected switches
@@ -33,6 +34,7 @@ void setSwitchesGPIO(){
 void attachInterrupts(){
     attachInterrupt(LIGHTING_SWITCH_PIN, lightingISR, RISING); //light switch is a pushbutton
     attachInterrupt(REVERSE_SWITCH_PIN, reverseISR, CHANGE);
+    //attachInterrupt(BOOST_SWITCH_PIN, boostISR, CHANGE);
 }
 
 //Checks if the motor lock pin is used
@@ -52,22 +54,23 @@ void shutDown(){
     EEPROM.commit();
 }
 
-
 void IRAM_ATTR lightingISR(){
     if((millis() - lastLightSwitchEvent) > LIGHT_SWITCH_DEBOUNCE_INTERVAL){
         lightSwitchOn = !lightSwitchOn;
         lightingISRFlag = true;  
     }
-
     lastLightSwitchEvent = millis();
-
 }
-
 void IRAM_ATTR reverseISR(){
-    if((millis() - lastDriveModeSwitchEvent) > DEBOUNCE_INTERVAL){
-        revMode = digitalRead(REVERSE_SWITCH_PIN);
-        reverseISRFlag = true;  
-    }
+    // if((millis() - lastDriveModeSwitchEvent) > DEBOUNCE_INTERVAL){
+    //     revMode = digitalRead(REVERSE_SWITCH_PIN);
+    //     reverseISRFlag = true;  
+    // }
+    reverseISRFlag = true; 
+    lastDriveModeSwitchEvent = millis();
+}
+void IRAM_ATTR boostISR(){
+    boostISRFlag = true; 
     lastDriveModeSwitchEvent = millis();
 }
 

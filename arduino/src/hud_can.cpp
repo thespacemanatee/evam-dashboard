@@ -175,7 +175,7 @@ void sendAllLightingMessages(){
 }
 
 //checks for ISR flags of the various button presses, executes the logic, and sends the CAN messages
-void sendButtonCanMessages(){
+void sendButtonCanMessages(unsigned long *_currentMillis){
 
   //lighting
   if(lightingISRFlag){
@@ -198,16 +198,18 @@ void sendButtonCanMessages(){
   }
 
   //reverse
-  if(reverseISRFlag){
+  if(reverseISRFlag && ((*_currentMillis - lastDriveModeSwitchEvent) > DEBOUNCE_INTERVAL)){
+    revMode = digitalRead(REVERSE_SWITCH_PIN);
     reverseMsg.data.u8[0] = revMode;
     ESP32Can.CANWriteFrame(&reverseMsg);
     reverseISRFlag = false;
   }
   
-  //boost (not done)
+  //boost (template)
   /*
-  if(reverseISRFlag){
-    reverseMsg.data.u8[0] = revMode;
+  if(boostISRFlag && ((*_currentMillis - lastDriveModeSwitchEvent) > DEBOUNCE_INTERVAL)){
+    boostMode = digitalRead(BOOST_SWITCH_PIN);
+    reverseMsg.data.u8[1] = boostMode;
     ESP32Can.CANWriteFrame(&reverseMsg);
     reverseISRFlag = false;
   }

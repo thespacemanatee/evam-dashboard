@@ -61,9 +61,10 @@ extern volatile unsigned long lastLightSwitchEvent;  //last time the light switc
 
 
 
-extern volatile bool driveMode;                                         //drive mode
+extern volatile bool boostMode;                                         //boost mode. Maybe change to ECO
 extern volatile bool revMode;                                           //reverse mode
 extern volatile bool reverseISRFlag;
+extern volatile bool boostISRFlag;
 extern volatile unsigned long lastDriveModeSwitchEvent; //last time the reverse or boost/eco ISR was triggered
 
 void setSwitchesGPIO();
@@ -74,6 +75,7 @@ void shutDown();
 
 void IRAM_ATTR lightingISR();
 void IRAM_ATTR reverseISR();
+void IRAM_ATTR boostISR();
 
 
 #endif //EVAM_H
