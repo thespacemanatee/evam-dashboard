@@ -1,9 +1,9 @@
 /* 
- *  hud_ble.h
- * 
- *  BLE Characteristics and Stuff for the HUD Node, for EVAM
- *
- */
+    hud_ble.h
+
+    BLE Characteristics and Stuff for the HUD Node, for EVAM
+
+*/
 
 #ifndef HUD_BLE_H
 #define HUD_BLE_H
@@ -37,13 +37,26 @@ extern BLECharacteristic *pRearLightingCharacteristic;
 extern BLECharacteristic *pInteriorLightingCharacteristic;
 extern BLECharacteristicCallbacks *lightingCallback;
 
+class ConnectionCallbacks : public BLEServerCallbacks
+{
+public:
+  void onConnect(BLEServer *pServer);
+  void onDisconnect(BLEServer *pServer);
+};
+
+class LightingUpdateCallback : public BLECharacteristicCallbacks
+{
+public:
+  void onWrite(BLECharacteristic *pCharacteristic);
+};
+
 extern bool deviceConnected;
 extern bool oldDeviceConnected;
 
 void setCoreCharacteristic();
 void setStatusCharacteristic();
 void setBatteryCharacteristic();
-
+void setupBLE();
 
 
 

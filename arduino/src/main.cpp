@@ -28,66 +28,6 @@ TODO:  ECO/BOOST not enabled (probably not enabling)
 
 //#include <utils.h>
 
-/*************** CALLBACKS ***************/
-
-/* Callback for connection and disconnection of server */
-class ConnectionCallbacks : public BLEServerCallbacks
-{
-  void onConnect(BLEServer *pServer)
-  {
-    deviceConnected = true;
-
-    #ifdef SERIAL_DEBUG
-    Serial.println("Connected");
-    #endif
-    
-    phoneConnectedMsg.data.u8[0]=deviceConnected;
-    ESP32Can.CANWriteFrame(&phoneConnectedMsg);
-  };
-
-  void onDisconnect(BLEServer *pServer)
-  {
-    deviceConnected = false;
-
-    #ifdef SERIAL_DEBUG
-    Serial.println("Disconnected");
-    #endif
-
-    phoneConnectedMsg.data.u8[0]=deviceConnected;
-    ESP32Can.CANWriteFrame(&phoneConnectedMsg);
-  }
-};
-
-/* Callback for updated lighting data written from client */
-class LightingUpdateCallback : public BLECharacteristicCallbacks
-{
-  void onWrite(BLECharacteristic *pCharacteristic)
-  {
-    uint8_t *valPtr = pCharacteristic->getData();
-
-    if (pCharacteristic == pFrontLightingCharacteristic)
-    {
-      Serial.println("Setting front RGB...");
-      setVehicleLights(valPtr, FRONT_LIGHT);
-    }
-    else if (pCharacteristic == pRearLightingCharacteristic)
-    {
-      Serial.println("Setting rear RGB...");
-      setVehicleLights(valPtr, REAR_LIGHT);
-    }
-    else if (pCharacteristic == pInteriorLightingCharacteristic)
-    {
-      Serial.println("Setting interior RGB...");
-      setVehicleLights(valPtr, INT_LIGHT);
-    }
-    else
-    {
-      Serial.println("No matching characteristic");
-    }
-  }
-};
-
-
 /*************** SETUP ***************/
 void setup()
 {
@@ -122,67 +62,7 @@ void setup()
 
 
   /* BLE Setup */
-
-  // Create the BLE Device
-  BLEDevice::init("EVAM");
-
-  // Create the BLE Server
-  pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new ConnectionCallbacks());
-
-  // Create the BLE Service
-  BLEService *pCoreService = pServer->createService(CORE_SERVICE_UUID);
-  BLEService *pStatusService = pServer->createService(STATUS_SERVICE_UUID);
-  BLEService *pLightingService = pServer->createService(LIGHTING_SERVICE_UUID);
-
-  // Create BLE Characteristics
-  pCoreCharacteristic = pCoreService->createCharacteristic(
-      CORE_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-
-  pStatusCharacteristic = pStatusService->createCharacteristic(
-      STATUS_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-
-  pBatteryCharacteristic = pStatusService->createCharacteristic(
-      BATTERY_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-
-  pFrontLightingCharacteristic = pLightingService->createCharacteristic(
-      FRONT_LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-  pRearLightingCharacteristic = pLightingService->createCharacteristic(
-      REAR_LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-  pInteriorLightingCharacteristic = pLightingService->createCharacteristic(
-      INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
-      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-
-  lightingCallback = new LightingUpdateCallback();
-
-  pFrontLightingCharacteristic->setCallbacks(lightingCallback);
-  pRearLightingCharacteristic->setCallbacks(lightingCallback);
-  pInteriorLightingCharacteristic->setCallbacks(lightingCallback);
-
-  // Create BLE Descriptors
-  pCoreCharacteristic->addDescriptor(new BLE2902());
-  pStatusCharacteristic->addDescriptor(new BLE2902());
-  pBatteryCharacteristic->addDescriptor(new BLE2902());
-  pFrontLightingCharacteristic->addDescriptor(new BLE2902());
-  pRearLightingCharacteristic->addDescriptor(new BLE2902());
-  pInteriorLightingCharacteristic->addDescriptor(new BLE2902());
-
-  // Start the service
-  pCoreService->start();
-  pStatusService->start();
-  pLightingService->start();
-
-  // Start advertising
-  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-  pAdvertising->addServiceUUID(CORE_SERVICE_UUID);
-  pAdvertising->setScanResponse(false);
-  pAdvertising->setMinPreferred(0x0); // set value to 0x00 to not advertise this parameter
-  BLEDevice::startAdvertising();
+  setupBLE();
   #ifdef SERIAL_DEBUG
   Serial.println("Connect to bluetooth device: 'EVAM'.");
   #endif //SERIAL_DEBUG
@@ -192,6 +72,10 @@ void setup()
   /* GPIO SETUP */
   setSwitchesGPIO();  
   attachInterrupts();
+
+  /* SET UP EEPROM */
+  EEPROM.begin(EEPROM_SIZE);
+  //lightSwitchOn = EEPROM.read(0); //disabled until we figure out how to save the state just before shutdown. See function shutDown()
   lightSwitchOn = false;  //can eventually be changed to read the EEPROM
 }
 
@@ -203,17 +87,6 @@ void loop()
 
   sendButtonCanMessages();
   checkIncomingCanMessages(); 
-
-  //checkReEnableInterrupts(&currentMillis);
-  //test
-  // bool lightsOnTest = digitalRead(LIGHTING_SWITCH_PIN);
-  // if(lightsOnTest){
-  //   Serial.println("Light Switch Pressed!!");
-  //   digitalWrite(LIGHTING_LED_PIN, 1);
-  // }
-  // else{
-  //  digitalWrite(LIGHTING_LED_PIN, 0);
-  // }
 
   //update BLE server and notify for core data
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)

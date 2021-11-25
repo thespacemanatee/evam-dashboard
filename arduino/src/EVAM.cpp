@@ -1,8 +1,5 @@
 #include <EVAM.h>
 
-//Define messages for BLE characteristics
-
-
 unsigned long prevCoreMillis = 0; //timer for the important data service
 unsigned long prevSlowMillis = 0; //timer for the less important data service
 unsigned long prevMotorLockMillis = 0;  //timer for motor lock CAN Bus message
@@ -15,10 +12,6 @@ volatile bool driveMode = 0;
 volatile bool revMode = 0;
 volatile bool reverseISRFlag = false;
 volatile unsigned long lastDriveModeSwitchEvent = 0;
-
-
-
-
 
 //Sets the ESP32's GPIO Pins correctly for the connected switches
 // to be run once in the Arduino Setup()
@@ -42,17 +35,6 @@ void attachInterrupts(){
     attachInterrupt(REVERSE_SWITCH_PIN, reverseISR, CHANGE);
 }
 
-//re-enables interrupts after a DEBOUNCE_INTERVAL has elapsed
-//acts as a software debounce for the interrupt-enabled buttons
-void checkReEnableInterrupts(unsigned long *_currentMillis){
-    if(*_currentMillis - lastLightSwitchEvent > LIGHT_SWITCH_DEBOUNCE_INTERVAL){
-        attachInterrupt(LIGHTING_SWITCH_PIN, lightingISR, RISING);
-    }
-    if(*_currentMillis - lastDriveModeSwitchEvent > DEBOUNCE_INTERVAL){
-        attachInterrupt(REVERSE_SWITCH_PIN, reverseISR, CHANGE);
-    }
-}
-
 //Checks if the motor lock pin is used
 //And sends the message on the CAN Bus
 void checkSendMotorLockout(){
@@ -63,6 +45,13 @@ void checkSendMotorLockout(){
     #endif
     ESP32Can.CANWriteFrame(&motorLockMsg);
 }
+
+//carries out any functions that need to be done before power is lost
+void shutDown(){
+    EEPROM.write(0, lightSwitchOn);
+    EEPROM.commit();
+}
+
 
 void IRAM_ATTR lightingISR(){
     if((millis() - lastLightSwitchEvent) > LIGHT_SWITCH_DEBOUNCE_INTERVAL){
@@ -82,14 +71,14 @@ void IRAM_ATTR reverseISR(){
     lastDriveModeSwitchEvent = millis();
 }
 
-/* DISABLED: LIGHT SWITCH IS A MOMENTARY SWITCH SO THE ESP CANNOT DETERMINE THE STATE BY READING THE PIN
-//Checks whether the light switch on the dashboard is pressed
-//And turns on the LED for the switch if it is pressed
-bool checkLightSwitch(){
-    bool _lightSwitchOn = digitalRead(LIGHTING_SWITCH_PIN);
-    digitalWrite(LIGHTING_LED_PIN, _lightSwitchOn);
-    return _lightSwitchOn;
-}
-*/
-
-
+//re-enables interrupts after a DEBOUNCE_INTERVAL has elapsed
+//acts as a software debounce for the interrupt-enabled buttons
+//seems like disabling interrupts doesn't really work for some reason
+// void checkReEnableInterrupts(unsigned long *_currentMillis){
+//     if(*_currentMillis - lastLightSwitchEvent > LIGHT_SWITCH_DEBOUNCE_INTERVAL){
+//         attachInterrupt(LIGHTING_SWITCH_PIN, lightingISR, RISING);
+//     }
+//     if(*_currentMillis - lastDriveModeSwitchEvent > DEBOUNCE_INTERVAL){
+//         attachInterrupt(REVERSE_SWITCH_PIN, reverseISR, CHANGE);
+//     }
+// }

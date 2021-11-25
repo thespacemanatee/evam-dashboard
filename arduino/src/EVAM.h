@@ -12,6 +12,7 @@
 #endif //ndef ARDUINO_ESP32_DEV
 
 #include <Arduino.h>
+#include <EEPROM.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
@@ -37,11 +38,10 @@
 #define B2_SWITCH_PIN GPIO_NUM_35
 
 //Timings
-
 #define CORE_DATA_REFRESH_INTERVAL      16
 #define SLOW_DATA_REFRESH_INTERVAL      100
 #define MOTOR_LOCK_MSG_REFRESH_INTERVAL 1000
-#define DEBOUNCE_INTERVAL               50      //interval to wait before accepting a new reading from a switch
+#define DEBOUNCE_INTERVAL               100      //interval to wait before accepting a new reading from a switch
 #define LIGHT_SWITCH_DEBOUNCE_INTERVAL  1000      //interval to wait before accepting a new reading from a switch
 
 extern unsigned long prevCoreMillis; //timer for the important data service
@@ -51,10 +51,15 @@ extern unsigned long prevMotorLockMillis; //timer for the less important data se
 //Switch values
 
 //motorLock is saved directly to the can bus message frame
-
 extern volatile bool lightSwitchOn; //whether the light switch is on or off
 extern volatile bool lightingISRFlag;
 extern volatile unsigned long lastLightSwitchEvent;  //last time the light switch ISR was triggered
+
+//EEPROM
+#define EEPROM_SIZE 1
+
+
+
 
 extern volatile bool driveMode;                                         //drive mode
 extern volatile bool revMode;                                           //reverse mode
@@ -63,9 +68,9 @@ extern volatile unsigned long lastDriveModeSwitchEvent; //last time the reverse 
 
 void setSwitchesGPIO();
 void attachInterrupts();
-void checkReEnableInterrupts(unsigned long *_currentMillis);
+//void checkReEnableInterrupts(unsigned long *_currentMillis);
 void checkSendMotorLockout();
-//bool checkLightSwitch();
+void shutDown();
 
 void IRAM_ATTR lightingISR();
 void IRAM_ATTR reverseISR();

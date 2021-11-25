@@ -27,48 +27,69 @@ void checkIncomingCanMessages(){
 
     //check status messages
     if(rx_frame.MsgID == ECU_STATUS_MSG_ID){
-      statusMessage[0] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
-    }
-    else if(rx_frame.MsgID == BMS_STATUS_MSG_ID){
-      statusMessage[1] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[0] != (rx_frame.data.u8[0])){
+        statusMessage[0] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
+    } else if(rx_frame.MsgID == BMS_STATUS_MSG_ID){
+      if(statusMessage[1] != (rx_frame.data.u8[0])){
+        statusMessage[1] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == TPS_STATUS_MSG_ID){
-      statusMessage[2] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[2] != (rx_frame.data.u8[0])){
+        statusMessage[2] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == SAS_STATUS_MSG_ID){
-      statusMessage[3] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[3] != (rx_frame.data.u8[0])){
+        statusMessage[3] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == IMU_STATUS_MSG_ID){
-      statusMessage[4] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[4] != (rx_frame.data.u8[0])){
+        statusMessage[4] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == FW_STATUS_MSG_ID){
-      statusMessage[5] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[5] != (rx_frame.data.u8[0])){
+        statusMessage[5] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == RLW_STATUS_MSG_ID){
-      statusMessage[6] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[6] != (rx_frame.data.u8[0])){
+        statusMessage[6] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == RRW_STATUS_MSG_ID){
-      statusMessage[7] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[7] != (rx_frame.data.u8[0])){
+        statusMessage[7] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == FL_STATUS_MSG_ID){
-      statusMessage[8] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[8] != (rx_frame.data.u8[0])){
+        statusMessage[8] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == RL_STATUS_MSG_ID){
-      statusMessage[9] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[9] != (rx_frame.data.u8[0])){
+        statusMessage[9] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
     else if(rx_frame.MsgID == INT_STATUS_MSG_ID){
-      statusMessage[10] = (rx_frame.data.u8[0]);
-      setStatusCharacteristic();
+      if(statusMessage[10] != (rx_frame.data.u8[0])){
+        statusMessage[10] = (rx_frame.data.u8[0]);
+        setStatusCharacteristic();
+      } 
     }
 
     //check Core Data
@@ -90,6 +111,10 @@ void checkIncomingCanMessages(){
     }
 
     //check other data if required
+    else if(rx_frame.MsgID == E_STOP_MSG_ID){
+      //not sure what to do
+      //coreMessage[0] = rx_frame.data.u8[1]; //just take the second byte (MSB) since we only need 8-bit resolution
+    }
   } //if(xQueueReceive...
 }
 
