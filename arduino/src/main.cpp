@@ -1,19 +1,31 @@
 /*
- * HUD NODE FOR EVAM
+ * HUD (Dashboard) NODE FOR EVAM
 
-    Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleNotify.cpp
-    Ported to Arduino ESP32 by Evandro Copercini
-    updated by chegewara
+(Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleNotify.cpp
+Ported to Arduino ESP32 by Evandro Copercini
+updated by chegewara)
 
- *  !!THIS CODE HAS NO OVERFLOW PROTECTION!!
- *  (since the car isn't expected to remain on for 50 days consecutively)
- * 
- * TODO:  ECO/BOOST not enabled (probably not enabling)
- *        Test
- *
- */
+FUNCTIONS:
+-Read throttle positions sensors and publish to CAN Bus
+--Possibly average a few readings for stability
+-If 2 TPS are connected, check between both sensors to identify throttle faults
+
+-Read brake pressure sensor(s) and publish [pressure inforamtion to CAN Bus
+-Convert pressure information to equivalent brake pedal position and publish to CANB us
+
+
+Designed to run on an ESP32 (ARDUINO_AVR_NANO)
+
+
+!!THIS CODE HAS NO OVERFLOW PROTECTION!!
+(since the car isn't expected to remain on for 50 days consecutively)
+  
+TODO:  ECO/BOOST not enabled (probably not enabling)
+       Test
+*/
 
 #include <EVAM.h>
+
 //#include <utils.h>
 
 /*************** CALLBACKS ***************/
@@ -84,9 +96,13 @@ void setup()
   srand(static_cast<unsigned>(time(0)));  //to create the random data
   #endif
   */
-
+  #ifdef SERIAL_DEBUG
   Serial.begin(115200);
   Serial.println("EVAM HUD (Dashboard) Node");
+  #ifndef ARDUINO_ESP32_DEV
+  Serial.println("warning: This code was designed for the ESP32 Dev board.");
+  #endif //ndef ARDUINO_ESP32_DEV
+  #endif //SERIAL_DEBUG
 
   /* CAN Setup */
   int res = canSetup();
@@ -167,18 +183,16 @@ void setup()
   pAdvertising->setScanResponse(false);
   pAdvertising->setMinPreferred(0x0); // set value to 0x00 to not advertise this parameter
   BLEDevice::startAdvertising();
+  #ifdef SERIAL_DEBUG
   Serial.println("Connect to bluetooth device: 'EVAM'.");
+  #endif //SERIAL_DEBUG
 
   setStatusCharacteristic();
 
   /* GPIO SETUP */
   setSwitchesGPIO();  
   attachInterrupts();
-  lightSwitchOn = checkLightSwitch();
-  #ifdef SERIAL_DEBUG
-  Serial.print("Lights: ");
-  Serial.println(lightSwitchOn);
-  #endif
+  lightSwitchOn = false;  //can eventually be changed to read the EEPROM
 }
 
 
@@ -190,8 +204,16 @@ void loop()
   sendButtonCanMessages();
   checkIncomingCanMessages(); 
 
-  checkReEnableInterrupts(&currentMillis);
-
+  //checkReEnableInterrupts(&currentMillis);
+  //test
+  // bool lightsOnTest = digitalRead(LIGHTING_SWITCH_PIN);
+  // if(lightsOnTest){
+  //   Serial.println("Light Switch Pressed!!");
+  //   digitalWrite(LIGHTING_LED_PIN, 1);
+  // }
+  // else{
+  //  digitalWrite(LIGHTING_LED_PIN, 0);
+  // }
 
   //update BLE server and notify for core data
   if (currentMillis - prevCoreMillis > CORE_DATA_REFRESH_INTERVAL)

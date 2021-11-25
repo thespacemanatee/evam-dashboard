@@ -5,7 +5,11 @@
 #ifndef EVAM_H
 #define EVAM_H
 
-#define SERIAL_DEBUG    //flag to turn on/off Serial.print (not used for now)
+#define SERIAL_DEBUG    //flag to turn on/off Serial.print
+
+#ifndef ARDUINO_ESP32_DEV
+#warning "this code was designed for the ESP32 Dev board."
+#endif //ndef ARDUINO_ESP32_DEV
 
 #include <Arduino.h>
 #include <BLEDevice.h>
@@ -27,17 +31,18 @@
 //#define POWER_SENSE_PIN GPIO_NUM_22           //designed to connect to an ISOLATED circuit that opens when the main power swtich is opened. DO NOT CONNECT TO THE 100V battery circuit or you will see magic smoke
 
 //Extra GPIOs in case we want to add (2) more buttons later
-//#define B1_LED_PIN GPIO_NUM_25                
-//#define B1_SWITCH_PIN GPIO_NUM_33
-//#define B2_LED_PIN GPIO_NUM_32
-//#define B2_SWITCH_PIN GPIO_NUM_35
+#define B1_LED_PIN GPIO_NUM_25                
+#define B1_SWITCH_PIN GPIO_NUM_33
+#define B2_LED_PIN GPIO_NUM_32
+#define B2_SWITCH_PIN GPIO_NUM_35
 
 //Timings
 
 #define CORE_DATA_REFRESH_INTERVAL      16
 #define SLOW_DATA_REFRESH_INTERVAL      100
 #define MOTOR_LOCK_MSG_REFRESH_INTERVAL 1000
-#define DEBOUNCE_INTERVAL               20      //interval to wait before accepting a new reading from a switch
+#define DEBOUNCE_INTERVAL               50      //interval to wait before accepting a new reading from a switch
+#define LIGHT_SWITCH_DEBOUNCE_INTERVAL  1000      //interval to wait before accepting a new reading from a switch
 
 extern unsigned long prevCoreMillis; //timer for the important data service
 extern unsigned long prevSlowMillis; //timer for the less important data service
@@ -49,7 +54,7 @@ extern unsigned long prevMotorLockMillis; //timer for the less important data se
 
 extern volatile bool lightSwitchOn; //whether the light switch is on or off
 extern volatile bool lightingISRFlag;
-extern volatile unsigned long lastLightingSwitchEvent;  //last time the light switch ISR was triggered
+extern volatile unsigned long lastLightSwitchEvent;  //last time the light switch ISR was triggered
 
 extern volatile bool driveMode;                                         //drive mode
 extern volatile bool revMode;                                           //reverse mode
@@ -60,7 +65,7 @@ void setSwitchesGPIO();
 void attachInterrupts();
 void checkReEnableInterrupts(unsigned long *_currentMillis);
 void checkSendMotorLockout();
-bool checkLightSwitch();
+//bool checkLightSwitch();
 
 void IRAM_ATTR lightingISR();
 void IRAM_ATTR reverseISR();

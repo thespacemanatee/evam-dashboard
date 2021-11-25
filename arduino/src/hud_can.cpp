@@ -154,6 +154,20 @@ void sendButtonCanMessages(){
 
   //lighting
   if(lightingISRFlag){
+    #ifdef SERIAL_DEBUG
+    Serial.print("Lights: ");
+    Serial.println(lightSwitchOn);
+    #endif
+    if(!lightSwitchOn){
+      uint8_t lightsOffArray[3];
+      for(int i = 0; i<3;i++){
+        lightsOffArray[i] = 0;
+      }
+      setVehicleLights(&lightsOffArray[0], FRONT_LIGHT);
+      setVehicleLights(&lightsOffArray[0], REAR_LIGHT);
+      setVehicleLights(&lightsOffArray[0], INT_LIGHT);
+    }
+    digitalWrite(LIGHTING_LED_PIN, lightSwitchOn);
     sendAllLightingMessages();
     lightingISRFlag = false;
   }

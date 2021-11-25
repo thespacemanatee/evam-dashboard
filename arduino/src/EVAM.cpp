@@ -9,7 +9,7 @@ unsigned long prevMotorLockMillis = 0;  //timer for motor lock CAN Bus message
 
 volatile bool lightSwitchOn = false;
 volatile bool lightingISRFlag = false;
-volatile unsigned long lastLightingSwitchEvent = 0;
+volatile unsigned long lastLightSwitchEvent = 0;
 
 volatile bool driveMode = 0;
 volatile bool revMode = 0;
@@ -38,15 +38,15 @@ void setSwitchesGPIO(){
 
 //attaches interrupts for all the interrupt enabled switches
 void attachInterrupts(){
-    attachInterrupt(LIGHTING_SWITCH_PIN, lightingISR, CHANGE);
+    attachInterrupt(LIGHTING_SWITCH_PIN, lightingISR, RISING); //light switch is a pushbutton
     attachInterrupt(REVERSE_SWITCH_PIN, reverseISR, CHANGE);
 }
 
 //re-enables interrupts after a DEBOUNCE_INTERVAL has elapsed
 //acts as a software debounce for the interrupt-enabled buttons
 void checkReEnableInterrupts(unsigned long *_currentMillis){
-    if(*_currentMillis - lastLightingSwitchEvent > DEBOUNCE_INTERVAL){
-        attachInterrupt(LIGHTING_SWITCH_PIN, lightingISR, CHANGE);
+    if(*_currentMillis - lastLightSwitchEvent > LIGHT_SWITCH_DEBOUNCE_INTERVAL){
+        attachInterrupt(LIGHTING_SWITCH_PIN, lightingISR, RISING);
     }
     if(*_currentMillis - lastDriveModeSwitchEvent > DEBOUNCE_INTERVAL){
         attachInterrupt(REVERSE_SWITCH_PIN, reverseISR, CHANGE);
@@ -64,6 +64,25 @@ void checkSendMotorLockout(){
     ESP32Can.CANWriteFrame(&motorLockMsg);
 }
 
+void IRAM_ATTR lightingISR(){
+    if((millis() - lastLightSwitchEvent) > LIGHT_SWITCH_DEBOUNCE_INTERVAL){
+        lightSwitchOn = !lightSwitchOn;
+        lightingISRFlag = true;  
+    }
+
+    lastLightSwitchEvent = millis();
+
+}
+
+void IRAM_ATTR reverseISR(){
+    if((millis() - lastDriveModeSwitchEvent) > DEBOUNCE_INTERVAL){
+        revMode = digitalRead(REVERSE_SWITCH_PIN);
+        reverseISRFlag = true;  
+    }
+    lastDriveModeSwitchEvent = millis();
+}
+
+/* DISABLED: LIGHT SWITCH IS A MOMENTARY SWITCH SO THE ESP CANNOT DETERMINE THE STATE BY READING THE PIN
 //Checks whether the light switch on the dashboard is pressed
 //And turns on the LED for the switch if it is pressed
 bool checkLightSwitch(){
@@ -71,23 +90,6 @@ bool checkLightSwitch(){
     digitalWrite(LIGHTING_LED_PIN, _lightSwitchOn);
     return _lightSwitchOn;
 }
-
-void IRAM_ATTR lightingISR(){
-    detachInterrupt(LIGHTING_SWITCH_PIN);
-    lightSwitchOn = digitalRead(LIGHTING_SWITCH_PIN);
-    lightingISRFlag = true;
-    lastLightingSwitchEvent = millis();
-
-}
-
-
-void IRAM_ATTR reverseISR(){
-    detachInterrupt(REVERSE_SWITCH_PIN);
-    revMode = digitalRead(LIGHTING_SWITCH_PIN);
-    reverseISRFlag = true;
-    lastDriveModeSwitchEvent = millis();
-}
-
-
+*/
 
 
