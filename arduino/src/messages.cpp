@@ -107,7 +107,7 @@ void initPhoneConnectedMsg(){
 void initReverseMsg(){
   //setup front light message for CAN Bus
   reverseMsg.FIR.B.FF = CAN_frame_std;
-  reverseMsg.MsgID  = PHONE_CONNECTED_MSG_ID;
+  reverseMsg.MsgID  = REV_BOOST_MSG_ID;
   reverseMsg.FIR.B.DLC = 2;
   reverseMsg.data.u8[0] = digitalRead(REVERSE_SWITCH_PIN);  //0= forward, 1 = reverse
   reverseMsg.data.u8[1] = 0;  //0= normal, 1 = eco, 2 = boost  

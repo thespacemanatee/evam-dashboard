@@ -56,6 +56,7 @@ extern bool oldDeviceConnected;
 void setCoreCharacteristic();
 void setStatusCharacteristic();
 void setBatteryCharacteristic();
+void setLightingCharacteristic();
 void setupBLE();
 
 

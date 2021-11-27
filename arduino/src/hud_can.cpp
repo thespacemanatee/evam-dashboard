@@ -122,8 +122,8 @@ void checkIncomingCanMessages(){
 /* OUTPUT DATA TO CAN BUS */
 
 /**
- * @brief Sets the vehicle light data (and updates CANBus if lights are on)
- * @param [in] value The rgb value to be set
+ * @brief Sets the vehicle light data (and updates CANBus if light switch is on)
+ * @param [in] value (pointer to) the rgb value to be set
  * @param [in] location which light to set (FRONT_LIGHT, REAR_LIGHT, INT_LIGHT)
  */
 void setVehicleLights(uint8_t *value, lightLocation_t location)
@@ -177,23 +177,32 @@ void sendAllLightingMessages(){
 //checks for ISR flags of the various button presses, executes the logic, and sends the CAN messages
 void sendButtonCanMessages(unsigned long *_currentMillis){
 
-  //lighting
+  //if lighting has just been switched on / off
   if(lightingISRFlag){
     #ifdef SERIAL_DEBUG
     Serial.print("Lights: ");
     Serial.println(lightSwitchOn);
     #endif
     if(!lightSwitchOn){
+      //make array of zeros
       uint8_t lightsOffArray[3];
       for(int i = 0; i<3;i++){
         lightsOffArray[i] = 0;
       }
+      //set all lights to zeros
       setVehicleLights(&lightsOffArray[0], FRONT_LIGHT);
       setVehicleLights(&lightsOffArray[0], REAR_LIGHT);
       setVehicleLights(&lightsOffArray[0], INT_LIGHT);
+      sendAllLightingMessages();
+    } else if(lightSwitchOn){
+      uint8_t *valPtr = pFrontLightingCharacteristic->getData();
+      setVehicleLights(valPtr, FRONT_LIGHT);
+      valPtr = pRearLightingCharacteristic->getData();
+      setVehicleLights(valPtr, REAR_LIGHT);
+      valPtr = pInteriorLightingCharacteristic->getData();
+      setVehicleLights(valPtr, INT_LIGHT);
     }
     digitalWrite(LIGHTING_LED_PIN, lightSwitchOn);
-    sendAllLightingMessages();
     lightingISRFlag = false;
   }
 

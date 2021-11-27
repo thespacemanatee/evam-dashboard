@@ -68,15 +68,16 @@ void setup()
   #endif //SERIAL_DEBUG
 
   setStatusCharacteristic();
+  setLightingCharacteristic();
 
   /* GPIO SETUP */
   setSwitchesGPIO();  
   attachInterrupts();
 
   /* SET UP EEPROM */
-  EEPROM.begin(EEPROM_SIZE);
+  //EEPROM.begin(EEPROM_SIZE);
   //lightSwitchOn = EEPROM.read(0); //disabled until we figure out how to save the state just before shutdown. See function shutDown()
-  lightSwitchOn = false;  //can eventually be changed to read the EEPROM
+  lightSwitchOn = true;  //can eventually be changed to read the EEPROM
 }
 
 

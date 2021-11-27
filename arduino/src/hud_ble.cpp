@@ -17,7 +17,6 @@ bool oldDeviceConnected = false;
 
 /********** SETTING CHARACTERISTICS ***********/
 
-//plan to move to hud_ble.h
 /* Sets new data for core characteristic and notifies */
 void setCoreCharacteristic()
 {
@@ -36,6 +35,15 @@ void setStatusCharacteristic()
 void setBatteryCharacteristic()
 {
     pBatteryCharacteristic->setValue((uint8_t *)batteryMessage, sizeof(batteryMessage));
+    pBatteryCharacteristic->notify();
+}
+
+/* Sets new data for all three lighting charactersitics and notifies */
+void setLightingCharacteristic()
+{
+    pFrontLightingCharacteristic->setValue((uint8_t *)frontLightMsg.data.u8, sizeof(frontLightMsg.data.u8));
+    pRearLightingCharacteristic->setValue((uint8_t *)rearLightMsg.data.u8, sizeof(rearLightMsg.data.u8));
+    pInteriorLightingCharacteristic->setValue((uint8_t *)intLightMsg.data.u8, sizeof(intLightMsg.data.u8));
     pBatteryCharacteristic->notify();
 }
 
