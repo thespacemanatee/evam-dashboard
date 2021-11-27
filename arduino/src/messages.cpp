@@ -66,7 +66,7 @@ void initLightingMsg(){
     frontLightMsg.data.u8[i] = 255; //initialise front lights to white, 100% brightness
   }
   frontLightMsg.data.u8[3] = 0; //fade default (on)
-  frontLightMsg.data.u8[3] = 0; //indicator off
+  frontLightMsg.data.u8[4] = 0; //indicator off
   
   //setup rear light message for CAN Bus
   rearLightMsg.FIR.B.FF = CAN_frame_std;
@@ -75,7 +75,7 @@ void initLightingMsg(){
   for(uint8_t i = 1; i < 5; i++){
     rearLightMsg.data.u8[i] = 0;
   }
-  rearLightMsg.data.u8[0] = 128;  //initialise rear lights to red, 50% brightness
+  rearLightMsg.data.u8[0] = 40;  //initialise rear lights to red, 50% brightness
 
   //setup interior light message for CAN Bus
   intLightMsg.FIR.B.FF = CAN_frame_std;
@@ -85,7 +85,7 @@ void initLightingMsg(){
     intLightMsg.data.u8[i] = 128; //initialise interior lights to white, 50% brightness
   }
   intLightMsg.data.u8[3] = 0; //fade default (on)
-  intLightMsg.data.u8[3] = 0; //indicator off
+  intLightMsg.data.u8[4] = 0; //indicator off
 }
 
 void initMotorLockMsg(){
@@ -98,10 +98,10 @@ void initMotorLockMsg(){
 
 void initPhoneConnectedMsg(){
   //setup front light message for CAN Bus
-  motorLockMsg.FIR.B.FF = CAN_frame_std;
-  motorLockMsg.MsgID  = PHONE_CONNECTED_MSG_ID;
-  motorLockMsg.FIR.B.DLC = 1;
-  motorLockMsg.data.u8[0] = 0;
+  phoneConnectedMsg.FIR.B.FF = CAN_frame_std;
+  phoneConnectedMsg.MsgID  = PHONE_CONNECTED_MSG_ID;
+  phoneConnectedMsg.FIR.B.DLC = 1;
+  phoneConnectedMsg.data.u8[0] = 0;
 }
 
 void initReverseMsg(){
