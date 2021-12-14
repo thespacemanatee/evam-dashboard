@@ -4,6 +4,7 @@
 #define E_STOP_MSG_ID               4
 #define MOTOR_LOCKOUT_MSG_ID        5
 
+#define NODE_STATUS_REQUEST_MSG_ID  7
 #define ECU_STATUS_MSG_ID           8
 #define BMS_STATUS_MSG_ID           9
 #define TPS_STATUS_MSG_ID           10

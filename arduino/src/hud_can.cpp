@@ -224,3 +224,8 @@ void sendButtonCanMessages(unsigned long *_currentMillis){
   }
   */
 }
+
+void requestCanNodeStatuses(uint8_t node){
+  nodeStatusRequestMsg.data.u8[0] = node;
+  ESP32Can.CANWriteFrame(&nodeStatusRequestMsg);
+}

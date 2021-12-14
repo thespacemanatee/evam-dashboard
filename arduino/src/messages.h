@@ -52,12 +52,13 @@ extern uint8_t batteryMessage[5];
 
 
 /********** MESSAGES FOR CAN BUS **********/
-extern CAN_frame_t frontLightMsg;  //front light CAN message
-extern CAN_frame_t rearLightMsg;   //rear light CAN message
-extern CAN_frame_t intLightMsg;    //interior light CAN message
-extern CAN_frame_t motorLockMsg;    //motor lock status
-extern CAN_frame_t phoneConnectedMsg;    //phone connection status
-extern CAN_frame_t reverseMsg;    //drive mode: reverse, normal, eco, boost
+extern CAN_frame_t frontLightMsg;           //front light CAN message
+extern CAN_frame_t rearLightMsg;            //rear light CAN message
+extern CAN_frame_t intLightMsg;             //interior light CAN message
+extern CAN_frame_t motorLockMsg;            //motor lock status
+extern CAN_frame_t phoneConnectedMsg;       //phone connection status
+extern CAN_frame_t reverseMsg;              //drive mode: reverse, normal, eco, boost
+extern CAN_frame_t nodeStatusRequestMsg;    //CAN frame for HUD to request all nodes to report their statuses
 
 
 void initMessageData();
@@ -70,6 +71,7 @@ void initLightingMsg();
 void initMotorLockMsg();
 void initPhoneConnectedMsg();
 void initReverseMsg();
+void initNodeStatusRequestMessage();
 
 
 

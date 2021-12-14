@@ -6,12 +6,13 @@ uint8_t statusMessage[11];
 uint8_t batteryMessage[5];
 
 /********** MESSAGES FOR CAN BUS **********/
-CAN_frame_t frontLightMsg;        //front light CAN message
-CAN_frame_t rearLightMsg;         //rear light CAN message
-CAN_frame_t intLightMsg;          //interior light CAN message
-CAN_frame_t motorLockMsg;         //motor lock status
-CAN_frame_t phoneConnectedMsg;    //phone connection status
-CAN_frame_t reverseMsg;    //drive mode: reverse, normal, eco, boost
+CAN_frame_t frontLightMsg;          //front light CAN message
+CAN_frame_t rearLightMsg;           //rear light CAN message
+CAN_frame_t intLightMsg;            //interior light CAN message
+CAN_frame_t motorLockMsg;           //motor lock status
+CAN_frame_t phoneConnectedMsg;      //phone connection status
+CAN_frame_t reverseMsg;             //drive mode: reverse, normal, eco, boost
+CAN_frame_t nodeStatusRequestMsg;   //CAN frame for HUD to request all nodes to report their statuses
 
 /*************** INITIALISE MESSAGE CONTENTS ***************/
 
@@ -26,6 +27,7 @@ void initMessageData(){
   initMotorLockMsg();
   initPhoneConnectedMsg();
   initReverseMsg();    
+  initNodeStatusRequestMessage();
 }
 
 
@@ -57,6 +59,7 @@ void initStatusMsg(){
 
 //CAN Bus Messages
 
+//set up lighting messages for CAN Bus
 void initLightingMsg(){
   //setup front light message for CAN Bus
   frontLightMsg.FIR.B.FF = CAN_frame_std;
@@ -88,27 +91,35 @@ void initLightingMsg(){
   intLightMsg.data.u8[4] = 0; //indicator off
 }
 
+//setup "motors locked" message for CAN Bus
 void initMotorLockMsg(){
-  //setup front light message for CAN Bus
   motorLockMsg.FIR.B.FF = CAN_frame_std;
   motorLockMsg.MsgID  = MOTOR_LOCKOUT_MSG_ID;
   motorLockMsg.FIR.B.DLC = 1;
   motorLockMsg.data.u8[0] = 1;
 }
 
+//setup "phone connected" message for CAN Bus
 void initPhoneConnectedMsg(){
-  //setup front light message for CAN Bus
   phoneConnectedMsg.FIR.B.FF = CAN_frame_std;
   phoneConnectedMsg.MsgID  = PHONE_CONNECTED_MSG_ID;
   phoneConnectedMsg.FIR.B.DLC = 1;
   phoneConnectedMsg.data.u8[0] = 0;
 }
 
+//setup reverse message for CAN Bus
 void initReverseMsg(){
-  //setup front light message for CAN Bus
   reverseMsg.FIR.B.FF = CAN_frame_std;
   reverseMsg.MsgID  = REV_BOOST_MSG_ID;
   reverseMsg.FIR.B.DLC = 2;
   reverseMsg.data.u8[0] = digitalRead(REVERSE_SWITCH_PIN);  //0= forward, 1 = reverse
   reverseMsg.data.u8[1] = 0;  //0= normal, 1 = eco, 2 = boost  
+}
+
+void initNodeStatusRequestMessage(){
+  //setup front light message for CAN Bus
+  nodeStatusRequestMsg.FIR.B.FF = CAN_frame_std;
+  nodeStatusRequestMsg.MsgID  = NODE_STATUS_REQUEST_MSG_ID;
+  nodeStatusRequestMsg.FIR.B.DLC = 1;
+  nodeStatusRequestMsg.data.u8[0] = 0;  //0= all , otherwise refers to a specific CAN Node (refer to excel file for the numbers)
 }

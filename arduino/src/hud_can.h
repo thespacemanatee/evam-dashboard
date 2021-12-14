@@ -21,6 +21,7 @@ void checkIncomingCanMessages();
 void setVehicleLights(uint8_t *value, lightLocation_t location);
 void sendButtonCanMessages(unsigned long *_currentMillis);
 void sendAllLightingMessages();
+void requestCanNodeStatuses(uint8_t node = 0);
 
 
 

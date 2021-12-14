@@ -78,6 +78,7 @@ void setup()
   //EEPROM.begin(EEPROM_SIZE);
   //lightSwitchOn = EEPROM.read(0); //disabled until we figure out how to save the state just before shutdown. See function shutDown()
   lightSwitchOn = true;  //can eventually be changed to read the EEPROM
+  requestCanNodeStatuses(); //initial request to all nodes for their status
 }
 
 
