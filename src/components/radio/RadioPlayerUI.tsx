@@ -114,15 +114,15 @@ const RadioPlayerUI = ({
               onPressSkipBack();
             }}>
             <Ionicons
-              name='play-skip-back-circle'
-              color='white'
+              name="play-skip-back-circle"
+              color="white"
               size={RADIO_BUTTON_SIZE}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={onPressPlayPause}>
             <Ionicons
               name={playing ? 'pause-circle' : 'play-circle'}
-              color='white'
+              color="white"
               size={RADIO_BUTTON_SIZE + 16}
             />
           </TouchableOpacity>
@@ -132,8 +132,8 @@ const RadioPlayerUI = ({
               onPressSkipForward();
             }}>
             <Ionicons
-              name='play-skip-forward-circle'
-              color='white'
+              name="play-skip-forward-circle"
+              color="white"
               size={RADIO_BUTTON_SIZE}
             />
           </TouchableOpacity>

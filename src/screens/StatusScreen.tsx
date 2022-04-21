@@ -106,9 +106,7 @@ const styles = StyleSheet.create({
 type Props = StackScreenProps<RootStackParamList, 'Status'>;
 
 const StatusScreen = ({ navigation }: Props): JSX.Element => {
-  const deviceUUID = useAppSelector(
-    (state) => state.settings.selectedDeviceUUID,
-  );
+  const deviceUUID = useAppSelector(state => state.settings.selectedDeviceUUID);
   const [data, setIndicatorData] = useState<StatusIndicatorData>();
 
   const readAndUpdateStatusValues = useCallback(async () => {
@@ -187,28 +185,28 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
     <>
       <View style={[StyleSheet.absoluteFill, styles.screen]}>
         <CarGraphic />
-        <StatusIndicator status={data?.frl} label='FRL' style={styles.FRL} />
-        <StatusIndicator status={data?.frw} label='FRW' style={styles.FRW} />
-        <StatusIndicator status={data?.fll} label='FLL' style={styles.FLL} />
-        <StatusIndicator status={data?.flw} label='FLW' style={styles.FLW} />
-        <StatusIndicator status={data?.int} label='INT' style={styles.INT} />
-        <StatusIndicator status={data?.ecu} label='ECU' style={styles.ECU} />
-        <StatusIndicator status={data?.imu} label='IMU' style={styles.IMU} />
-        <StatusIndicator status={data?.rrl} label='RRL' style={styles.RRL} />
-        <StatusIndicator status={data?.rrw} label='RRW' style={styles.RRW} />
-        <StatusIndicator status={data?.rll} label='RLL' style={styles.RLL} />
-        <StatusIndicator status={data?.rlw} label='RLW' style={styles.RLW} />
-        <StatusIndicator status={data?.bms} label='BMS' style={styles.BMS} />
-        <StatusIndicator status={data?.tps} label='TPS' style={styles.TPS} />
-        <StatusIndicator status={data?.sas} label='SAS' style={styles.SAS} />
+        <StatusIndicator status={data?.frl} label="FRL" style={styles.FRL} />
+        <StatusIndicator status={data?.frw} label="FRW" style={styles.FRW} />
+        <StatusIndicator status={data?.fll} label="FLL" style={styles.FLL} />
+        <StatusIndicator status={data?.flw} label="FLW" style={styles.FLW} />
+        <StatusIndicator status={data?.int} label="INT" style={styles.INT} />
+        <StatusIndicator status={data?.ecu} label="ECU" style={styles.ECU} />
+        <StatusIndicator status={data?.imu} label="IMU" style={styles.IMU} />
+        <StatusIndicator status={data?.rrl} label="RRL" style={styles.RRL} />
+        <StatusIndicator status={data?.rrw} label="RRW" style={styles.RRW} />
+        <StatusIndicator status={data?.rll} label="RLL" style={styles.RLL} />
+        <StatusIndicator status={data?.rlw} label="RLW" style={styles.RLW} />
+        <StatusIndicator status={data?.bms} label="BMS" style={styles.BMS} />
+        <StatusIndicator status={data?.tps} label="TPS" style={styles.TPS} />
+        <StatusIndicator status={data?.sas} label="SAS" style={styles.SAS} />
       </View>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.backButton}>
         <Ionicons
-          name='chevron-back-outline'
+          name="chevron-back-outline"
           size={MENU_ICON_SIZE}
-          color='white'
+          color="white"
         />
       </TouchableOpacity>
     </>

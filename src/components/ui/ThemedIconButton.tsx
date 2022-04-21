@@ -32,7 +32,7 @@ const ThemedIconButton: React.FC<ThemedIconButtonProps> = ({
   return (
     <View style={style}>
       <TouchableOpacity onPress={onPress} style={styles.button}>
-        <Ionicons name={iconName} size={32} color='white' />
+        <Ionicons name={iconName} size={32} color="white" />
       </TouchableOpacity>
     </View>
   );

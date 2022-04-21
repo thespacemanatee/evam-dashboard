@@ -57,7 +57,7 @@ type RadioPlayerSheetProps = {
 
 const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
   const channels = useAppSelector(channelsSelector.selectAll);
-  const currentChannel = useAppSelector((state) => state.player.currentChannel);
+  const currentChannel = useAppSelector(state => state.player.currentChannel);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -119,11 +119,11 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
       index={0}
       snapPoints={['1%', '90%']}
       enablePanDownToClose
-      handleComponent={(props) => <SheetHandle {...props} />}
-      backgroundComponent={(props) => (
+      handleComponent={props => <SheetHandle {...props} />}
+      backgroundComponent={props => (
         <View style={[props.style, styles.bottomSheetBackdrop]} />
       )}
-      backdropComponent={(props) => (
+      backdropComponent={props => (
         <BottomSheetBackdrop {...props} opacity={0.8} />
       )}>
       <View style={styles.bottomSheetContentContainer}>
@@ -131,7 +131,7 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
           <Text style={styles.bottomSheetHeader}>Radio Stations</Text>
           <BottomSheetFlatList
             data={channels}
-            keyExtractor={(i) => String(i.id)}
+            keyExtractor={i => String(i.id)}
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
           />
@@ -146,7 +146,7 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
                 width: RADIO_IMAGE_SIZE,
                 height: RADIO_IMAGE_SIZE,
               }}
-              resizeMode='contain'
+              resizeMode="contain"
             />
           </View>
           <RadioPlayerUI

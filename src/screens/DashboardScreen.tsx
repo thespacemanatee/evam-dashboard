@@ -68,11 +68,9 @@ const styles = StyleSheet.create({
 });
 
 const DashboardScreen = (): JSX.Element => {
-  const deviceUUID = useAppSelector(
-    (state) => state.settings.selectedDeviceUUID,
-  );
+  const deviceUUID = useAppSelector(state => state.settings.selectedDeviceUUID);
   const channels = useAppSelector(channelsSelector.selectAll);
-  const currentChannel = useAppSelector((state) => state.player.currentChannel);
+  const currentChannel = useAppSelector(state => state.player.currentChannel);
   const [isPlaying, setIsPlaying] = useState(false);
   const [indicatorData, setIndicatorData] = useState<TopIndicatorData>();
   const velocity = useSharedValue(0);

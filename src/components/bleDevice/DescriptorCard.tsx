@@ -13,7 +13,7 @@ const DescriptorCard: React.FC<DescriptorCardProps> = ({ descriptor }) => {
   const [value, setValue] = useState('');
   useEffect(() => {
     (async () => {
-      descriptor.read().then((r) => {
+      descriptor.read().then(r => {
         if (r && r.value) {
           setValue(r.value);
         }

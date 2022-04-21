@@ -25,8 +25,8 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
   const [descriptor, setDescriptor] = useState('');
 
   useEffect(() => {
-    char.descriptors().then((desc) => {
-      desc[0]?.read().then((val) => {
+    char.descriptors().then(desc => {
+      desc[0]?.read().then(val => {
         if (val) {
           setDescriptor(btoa(val.value || ''));
         }

@@ -40,7 +40,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   return (
     <Animated.View style={style}>
       <TouchableOpacity onPress={onPress} style={styles.container}>
-        <Ionicons name={iconName} size={iconSize} color='white' />
+        <Ionicons name={iconName} size={iconSize} color="white" />
         <Text style={styles.labelText}>{label}</Text>
       </TouchableOpacity>
     </Animated.View>

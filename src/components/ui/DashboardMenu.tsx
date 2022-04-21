@@ -131,7 +131,7 @@ const DashboardMenu = ({ style }: DashboardMenuProps): JSX.Element => {
           containerStyle={styles.mainButton}
           onPress={handleMenuPress}>
           <Animated.View style={cogAnimatedStyle}>
-            <Ionicons name='cog-outline' size={MENU_ICON_SIZE} color='white' />
+            <Ionicons name="cog-outline" size={MENU_ICON_SIZE} color="white" />
           </Animated.View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -139,31 +139,31 @@ const DashboardMenu = ({ style }: DashboardMenuProps): JSX.Element => {
           onPress={handleMenuPress}>
           <Animated.View style={closeAnimatedStyle}>
             <Ionicons
-              name='close-outline'
+              name="close-outline"
               size={MENU_ICON_SIZE}
-              color='white'
+              color="white"
             />
           </Animated.View>
         </TouchableOpacity>
         <View style={styles.menuButtons}>
           <MenuButton
-            iconName='bluetooth-outline'
+            iconName="bluetooth-outline"
             iconSize={MENU_ICON_SIZE}
-            label='Bluetooth'
+            label="Bluetooth"
             style={[styles.bluetoothButton, bluetoothAnimatedStyle]}
             onPress={handleSettings}
           />
           <MenuButton
-            iconName='thermometer-outline'
+            iconName="thermometer-outline"
             iconSize={MENU_ICON_SIZE}
-            label='Vehicle Status'
+            label="Vehicle Status"
             style={[styles.temperatureButton, temperatureAnimatedStyle]}
             onPress={handleTemperature}
           />
           <MenuButton
-            iconName='sunny-outline'
+            iconName="sunny-outline"
             iconSize={MENU_ICON_SIZE}
-            label='Lighting'
+            label="Lighting"
             style={[styles.lightingButton, lightingAnimatedStyle]}
             onPress={handleLighting}
           />

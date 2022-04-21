@@ -60,9 +60,7 @@ const styles = StyleSheet.create({
 type Props = StackScreenProps<RootStackParamList, 'Lighting'>;
 
 const LightingScreen = ({ navigation }: Props): JSX.Element => {
-  const deviceUUID = useAppSelector(
-    (state) => state.settings.selectedDeviceUUID,
-  );
+  const deviceUUID = useAppSelector(state => state.settings.selectedDeviceUUID);
   const [frontChecked, setFrontChecked] = useState(false);
   const [rearChecked, setRearChecked] = useState(false);
   const [interiorChecked, setInteriorChecked] = useState(false);
@@ -209,21 +207,21 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
       <View style={styles.screen}>
         <View>
           <LightingOption
-            label='Front Lights'
+            label="Front Lights"
             value={frontChecked}
             onValueChange={onFrontCheckedChange}
             color={frontColor}
             style={styles.lightingOption}
           />
           <LightingOption
-            label='Rear Lights'
+            label="Rear Lights"
             value={rearChecked}
             onValueChange={onRearCheckedChange}
             color={rearColor}
             style={styles.lightingOption}
           />
           <LightingOption
-            label='Interior Lights'
+            label="Interior Lights"
             value={interiorChecked}
             onValueChange={onInteriorCheckedChange}
             color={interiorColor}
@@ -231,17 +229,17 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
           />
           <View style={styles.buttonContainer}>
             <ThemedButton
-              label='FADE'
+              label="FADE"
               onPress={handleSetFade}
               style={styles.button}
             />
             <ThemedButton
-              label='CHASE'
+              label="CHASE"
               onPress={handleSetChase}
               style={styles.button}
             />
             <ThemedButton
-              label='SET COLORS'
+              label="SET COLORS"
               onPress={handleSendRGBData}
               style={styles.button}
             />
@@ -265,9 +263,9 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
         onPress={() => navigation.goBack()}
         style={styles.backButton}>
         <Ionicons
-          name='chevron-back-outline'
+          name="chevron-back-outline"
           size={MENU_ICON_SIZE}
-          color='white'
+          color="white"
         />
       </TouchableOpacity>
     </>

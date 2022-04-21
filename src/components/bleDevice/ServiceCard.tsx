@@ -40,14 +40,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, style }) => {
     <BaseCard disabled style={style}>
       <TouchableOpacity
         onPress={() => {
-          setAreCharacteristicsVisible((prev) => !prev);
+          setAreCharacteristicsVisible(prev => !prev);
         }}>
         <Text>{`Service UUID: ${service.uuid}`}</Text>
       </TouchableOpacity>
 
       {areCharacteristicsVisible &&
         characteristics &&
-        characteristics.map((char) => (
+        characteristics.map(char => (
           <CharacteristicCard
             key={char.id}
             char={char}

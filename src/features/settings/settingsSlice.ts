@@ -16,7 +16,7 @@ export const settingsSlice = createSlice({
   initialState,
   reducers: {
     addDevice: (state, action: PayloadAction<Device>) => {
-      if (!state.devices.some((e) => e.id === action.payload.id)) {
+      if (!state.devices.some(e => e.id === action.payload.id)) {
         state.devices.push(action.payload);
       }
     },
@@ -24,9 +24,9 @@ export const settingsSlice = createSlice({
       state.selectedDeviceUUID = action.payload;
     },
     removeDevice: (state, action: PayloadAction<Device>) => {
-      state.devices = state.devices.filter((e) => e !== action.payload);
+      state.devices = state.devices.filter(e => e !== action.payload);
     },
-    resetDevices: (state) => {
+    resetDevices: state => {
       state.devices = [];
     },
   },

@@ -85,7 +85,7 @@ const DeviceScreen = ({
 
   return (
     <View style={styles.screen}>
-      <Button onPress={disconnectDevice} title='DISCONNECT' />
+      <Button onPress={disconnectDevice} title="DISCONNECT" />
       <View style={styles.container}>
         <BaseCard disabled>
           <Text>{`Id: ${device.id}`}</Text>
