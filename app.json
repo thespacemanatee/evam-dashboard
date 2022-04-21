@@ -1,4 +1,9 @@
 {
   "name": "EVAM",
-  "displayName": "EVAM"
+  "displayName": "EVAM",
+  "expo": {
+    "name": "EVAM",
+    "slug": "evam",
+    "jsEngine": "hermes"
+  }
 }

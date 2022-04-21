@@ -12,8 +12,10 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		4DEBAE41C15110A9E6E9CBDA /* libPods-EVAM-EVAMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20D53366877169E9B0C4B275 /* libPods-EVAM-EVAMTests.a */; };
+		5C1F14B369CF53AFC305E1F9 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF7F40433D3EF26192AC916 /* ExpoModulesProvider.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		ABDC78D7A61C1DE898E9A40C /* libPods-EVAM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1578B1FFB8E5838D1B0E9283 /* libPods-EVAM.a */; };
+		D3E1F72435DFEF85E6BFD667 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E6A38EC60E95E5A3A25059 /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +41,8 @@
 		1578B1FFB8E5838D1B0E9283 /* libPods-EVAM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EVAM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DC983865660622B6AAB7BF2 /* Pods-EVAM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVAM.debug.xcconfig"; path = "Target Support Files/Pods-EVAM/Pods-EVAM.debug.xcconfig"; sourceTree = "<group>"; };
 		20D53366877169E9B0C4B275 /* libPods-EVAM-EVAMTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EVAM-EVAMTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DF7F40433D3EF26192AC916 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EVAM/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		64E6A38EC60E95E5A3A25059 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EVAM-EVAMTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EVAM/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C2F93ABC8E2C3476F9F999DC /* Pods-EVAM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVAM.release.xcconfig"; path = "Target Support Files/Pods-EVAM/Pods-EVAM.release.xcconfig"; sourceTree = "<group>"; };
 		D3F58F1669D6473B53413163 /* Pods-EVAM-EVAMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVAM-EVAMTests.debug.xcconfig"; path = "Target Support Files/Pods-EVAM-EVAMTests/Pods-EVAM-EVAMTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -83,6 +87,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0881557D6E5C4501B7D76BB2 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				5646200691FBC974180925EF /* EVAM */,
+				09E0F5E1C3E7C4D33CA29082 /* EVAMTests */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		09E0F5E1C3E7C4D33CA29082 /* EVAMTests */ = {
+			isa = PBXGroup;
+			children = (
+				64E6A38EC60E95E5A3A25059 /* ExpoModulesProvider.swift */,
+			);
+			name = EVAMTests;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* EVAM */ = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +125,14 @@
 				20D53366877169E9B0C4B275 /* libPods-EVAM-EVAMTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5646200691FBC974180925EF /* EVAM */ = {
+			isa = PBXGroup;
+			children = (
+				2DF7F40433D3EF26192AC916 /* ExpoModulesProvider.swift */,
+			);
+			name = EVAM;
 			sourceTree = "<group>";
 		};
 		762EDB98C86FDA144549F986 /* Pods */ = {
@@ -133,6 +162,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				762EDB98C86FDA144549F986 /* Pods */,
+				0881557D6E5C4501B7D76BB2 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -403,6 +433,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* EVAMTests.m in Sources */,
+				D3E1F72435DFEF85E6BFD667 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,6 +443,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				5C1F14B369CF53AFC305E1F9 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,7 +468,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = EVAMTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -460,7 +492,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = EVAMTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -560,7 +592,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -576,7 +608,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -625,7 +657,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -634,7 +666,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
