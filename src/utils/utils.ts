@@ -1,8 +1,13 @@
 /* eslint-disable indent */
 /* eslint-disable no-nested-ternary */
-import { PermissionsAndroid } from 'react-native';
 import { decode as btoa } from 'base-64';
 import { Characteristic } from 'react-native-ble-plx';
+import {
+  checkMultiple,
+  PERMISSIONS,
+  requestMultiple,
+  RESULTS,
+} from 'react-native-permissions';
 
 import { bleManagerRef } from './BleHelper';
 import { TopIndicatorData } from '../index';
@@ -122,35 +127,33 @@ export const getTopIndicatorData = (
 
 export const requestLocationPermissions = async (): Promise<boolean> => {
   try {
-    const fine = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
-    const connect = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-    );
-    const scan = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-    );
-    if (!fine || !connect || !scan) {
-      const request = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+    const statuses = await checkMultiple([
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+      PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+    ]);
+    if (
+      !statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] ||
+      !statuses[PERMISSIONS.ANDROID.BLUETOOTH_CONNECT] ||
+      !statuses[PERMISSIONS.ANDROID.BLUETOOTH_SCAN]
+    ) {
+      const requests = await requestMultiple([
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+        PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
       ]);
       if (
-        request['android.permission.ACCESS_FINE_LOCATION'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        request['android.permission.BLUETOOTH_CONNECT'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        request['android.permission.BLUETOOTH_SCAN'] ===
-          PermissionsAndroid.RESULTS.GRANTED
+        requests[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] ===
+          RESULTS.GRANTED &&
+        requests[PERMISSIONS.ANDROID.BLUETOOTH_CONNECT] === RESULTS.GRANTED &&
+        requests[PERMISSIONS.ANDROID.BLUETOOTH_SCAN] === RESULTS.GRANTED
       ) {
         return true;
       }
       return false;
     }
   } catch (err) {
-    console.warn(err);
+    console.error(err);
     return false;
   }
   return true;

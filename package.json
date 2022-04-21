@@ -30,6 +30,7 @@
     "react-native-ble-plx": "^2.0.3",
     "react-native-gesture-handler": "^2.4.0",
     "react-native-gradle-plugin": "^0.0.6",
+    "react-native-permissions": "^3.3.1",
     "react-native-radio-player": "^0.2.3",
     "react-native-reanimated": "2.7.0",
     "react-native-redash": "^16.2.3",
