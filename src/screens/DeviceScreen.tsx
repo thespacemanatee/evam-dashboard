@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const ItemSeparatorComponent = () => <View style={styles.separator} />;
+
 const DeviceScreen = ({
   route,
 }: StackScreenProps<RootStackParamList, 'Device'>): JSX.Element => {
@@ -79,9 +81,9 @@ const DeviceScreen = ({
     return () => subscription.remove();
   }, [device, dispatch]);
 
-  const renderServices = ({ item }: { item: Service }) => {
-    return <ServiceCard service={item} />;
-  };
+  const renderServices = ({ item }: { item: Service }) => (
+    <ServiceCard service={item} />
+  );
 
   return (
     <View style={styles.screen}>
@@ -101,7 +103,7 @@ const DeviceScreen = ({
         <FlatList
           data={services}
           renderItem={renderServices}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ItemSeparatorComponent={ItemSeparatorComponent}
           style={styles.services}
         />
       </View>

@@ -40,24 +40,22 @@ const LightingOption = ({
   onValueChange,
   color,
   style,
-}: LightingOptionProps): JSX.Element => {
-  return (
-    <View style={style}>
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.label}>{label}</Text>
-          <View style={styles.colorTextContainer}>
-            <Text style={styles.colorText}>Current Color: </Text>
-            <Text style={[styles.colorText, { color: color || 'white' }]}>
-              {color || 'Not Set'}
-            </Text>
-          </View>
+}: LightingOptionProps): JSX.Element => (
+  <View style={style}>
+    <View style={styles.container}>
+      <View>
+        <Text style={styles.label}>{label}</Text>
+        <View style={styles.colorTextContainer}>
+          <Text style={styles.colorText}>Current Color: </Text>
+          <Text style={[styles.colorText, { color: color || 'white' }]}>
+            {color || 'Not Set'}
+          </Text>
         </View>
-        <ThemedSwitch value={value} onValueChange={onValueChange} />
       </View>
+      <ThemedSwitch value={value} onValueChange={onValueChange} />
     </View>
-  );
-};
+  </View>
+);
 
 LightingOption.defaultProps = {
   color: undefined,

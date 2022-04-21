@@ -182,17 +182,13 @@ const LightingScreen = ({ navigation }: Props): JSX.Element => {
     readAndUpdateRearRGBValues,
   ]);
 
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      text: `Selected Color: ${colorAnim.value}`,
-    };
-  });
+  const animatedProps = useAnimatedProps(() => ({
+    text: `Selected Color: ${colorAnim.value}`,
+  }));
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      color: colorAnim.value,
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    color: colorAnim.value,
+  }));
 
   const handleColorChange = (color: string) => {
     colorAnim.value = color.toUpperCase();

@@ -28,15 +28,13 @@ const ThemedIconButton: React.FC<ThemedIconButtonProps> = ({
   onPress,
   iconName,
   style,
-}) => {
-  return (
-    <View style={style}>
-      <TouchableOpacity onPress={onPress} style={styles.button}>
-        <Ionicons name={iconName} size={32} color="white" />
-      </TouchableOpacity>
-    </View>
-  );
-};
+}) => (
+  <View style={style}>
+    <TouchableOpacity onPress={onPress} style={styles.button}>
+      <Ionicons name={iconName} size={32} color="white" />
+    </TouchableOpacity>
+  </View>
+);
 
 ThemedIconButton.defaultProps = {
   style: undefined,

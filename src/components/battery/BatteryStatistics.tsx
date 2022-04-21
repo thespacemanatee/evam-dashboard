@@ -43,23 +43,17 @@ const BatteryStatistics = ({
   temperature,
   style,
 }: BatteryStatisticsProps): JSX.Element => {
-  const voltageProps = useAnimatedProps(() => {
-    return {
-      text: voltage.value.toFixed(1),
-    };
-  });
+  const voltageProps = useAnimatedProps(() => ({
+    text: voltage.value.toFixed(1),
+  }));
 
-  const ampereProps = useAnimatedProps(() => {
-    return {
-      text: current.value.toFixed(1),
-    };
-  });
+  const ampereProps = useAnimatedProps(() => ({
+    text: current.value.toFixed(1),
+  }));
 
-  const temperatureProps = useAnimatedProps(() => {
-    return {
-      text: temperature.value.toFixed(1),
-    };
-  });
+  const temperatureProps = useAnimatedProps(() => ({
+    text: temperature.value.toFixed(1),
+  }));
 
   return (
     <View style={style}>

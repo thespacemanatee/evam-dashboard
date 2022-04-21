@@ -33,16 +33,14 @@ const StatusIndicator = ({
   label,
   status,
   style,
-}: StatusIndicatorProps): JSX.Element => {
-  return (
-    <View style={style}>
-      <View style={styles.container}>
-        <Text style={styles.indicatorText}>{label}</Text>
-        <Indicator status={status} />
-      </View>
+}: StatusIndicatorProps): JSX.Element => (
+  <View style={style}>
+    <View style={styles.container}>
+      <Text style={styles.indicatorText}>{label}</Text>
+      <Indicator status={status} />
     </View>
-  );
-};
+  </View>
+);
 
 StatusIndicator.defaultProps = {
   status: -1,

@@ -22,16 +22,14 @@ type IndicatorProps = {
 };
 
 const Indicator = ({ status, style }: IndicatorProps): JSX.Element => {
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor:
-        status === 1
-          ? colors.nodeActive
-          : status === 0
-          ? colors.nodeError
-          : colors.nodeInactive,
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    backgroundColor:
+      status === 1
+        ? colors.nodeActive
+        : status === 0
+        ? colors.nodeError
+        : colors.nodeInactive,
+  }));
   return (
     <View style={style}>
       <Animated.View style={[styles.indicator, animatedStyle]} />

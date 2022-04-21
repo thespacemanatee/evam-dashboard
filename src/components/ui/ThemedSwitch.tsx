@@ -113,30 +113,26 @@ const ThemedSwitch = ({
     },
   });
 
-  const trackAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor: interpolateColor(
-        translateX.value,
-        [0, THUMB_TRAVEL],
-        [colors.basic, colors.primaryLight],
-      ),
-    };
-  });
+  const trackAnimatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      translateX.value,
+      [0, THUMB_TRAVEL],
+      [colors.basic, colors.primaryLight],
+    ),
+  }));
 
-  const thumbAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: translateX.value,
-        },
-        {
-          scale: pressed.value
-            ? withTiming(1.1, animationConfig)
-            : withTiming(1, animationConfig),
-        },
-      ],
-    };
-  });
+  const thumbAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: translateX.value,
+      },
+      {
+        scale: pressed.value
+          ? withTiming(1.1, animationConfig)
+          : withTiming(1, animationConfig),
+      },
+    ],
+  }));
 
   return (
     <View style={style}>

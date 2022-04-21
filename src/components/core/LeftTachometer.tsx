@@ -16,11 +16,10 @@ interface LeftTachometerProps {
 }
 
 const LeftTachometer: React.FC<LeftTachometerProps> = ({ progress, style }) => {
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      height: interpolate(progress.value, [0, 100], [840, 0]),
-    };
-  });
+  const animatedProps = useAnimatedProps(() => ({
+    height: interpolate(progress.value, [0, 100], [840, 0]),
+  }));
+
   return (
     <View style={style}>
       <Svg

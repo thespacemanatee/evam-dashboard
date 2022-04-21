@@ -105,9 +105,7 @@ const DashboardScreen = (): JSX.Element => {
   const handleSkipBack = () => {
     if (currentChannel) {
       const nextChannelId =
-        currentChannel.id - 2 < 0
-          ? channels.length - 1
-          : currentChannel?.id - 2;
+        currentChannel.id - 2 < 0 ? channels.length - 1 : currentChannel.id - 2;
       const nextChannel = channels[nextChannelId];
       RadioPlayer.radioURL(nextChannel.url);
       dispatch(setCurrentChannel(nextChannel));

@@ -49,6 +49,7 @@ module.exports = {
     'react/jsx-closing-bracket-location': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'react/jsx-props-no-spreading': [1],
     'react/function-component-definition': [
       2,
       {

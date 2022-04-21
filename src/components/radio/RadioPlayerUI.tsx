@@ -84,16 +84,14 @@ const RadioPlayerUI = ({
     resetAnimation();
   }, [progress, resetAnimation]);
 
-  const labelAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      right: interpolate(
-        progress.value,
-        [0.33, 0.66, 0.66, 1],
-        [0, RADIO_LABEL_WIDTH, -RADIO_LABEL_WIDTH, 0],
-        Extrapolate.CLAMP,
-      ),
-    };
-  });
+  const labelAnimatedStyle = useAnimatedStyle(() => ({
+    right: interpolate(
+      progress.value,
+      [0.33, 0.66, 0.66, 1],
+      [0, RADIO_LABEL_WIDTH, -RADIO_LABEL_WIDTH, 0],
+      Extrapolate.CLAMP,
+    ),
+  }));
 
   return (
     <View style={style}>

@@ -36,16 +36,14 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   label,
   style,
   onPress,
-}) => {
-  return (
-    <Animated.View style={style}>
-      <TouchableOpacity onPress={onPress} style={styles.container}>
-        <Ionicons name={iconName} size={iconSize} color="white" />
-        <Text style={styles.labelText}>{label}</Text>
-      </TouchableOpacity>
-    </Animated.View>
-  );
-};
+}) => (
+  <Animated.View style={style}>
+    <TouchableOpacity onPress={onPress} style={styles.container}>
+      <Ionicons name={iconName} size={iconSize} color="white" />
+      <Text style={styles.labelText}>{label}</Text>
+    </TouchableOpacity>
+  </Animated.View>
+);
 
 MenuButton.defaultProps = {
   style: null,

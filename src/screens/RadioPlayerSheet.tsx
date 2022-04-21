@@ -2,7 +2,10 @@ import React, { useCallback, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import BottomSheet, {
   BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetBackgroundProps,
   BottomSheetFlatList,
+  BottomSheetHandleProps,
 } from '@gorhom/bottom-sheet';
 import { LinearGradient } from 'expo-linear-gradient';
 import RadioPlayer from 'react-native-radio-player';
@@ -51,6 +54,18 @@ const styles = StyleSheet.create({
   },
 });
 
+const HandleComponent = (props: BottomSheetHandleProps) => (
+  <SheetHandle {...props} />
+);
+
+const BackgroundComponent = ({ style }: BottomSheetBackgroundProps) => (
+  <View style={[style, styles.bottomSheetBackdrop]} />
+);
+
+const BackdropComponent = (props: BottomSheetBackdropProps) => (
+  <BottomSheetBackdrop {...props} opacity={0.8} />
+);
+
 type RadioPlayerSheetProps = {
   sheetRef: React.RefObject<BottomSheet>;
 };
@@ -75,9 +90,7 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
   const handleSkipBack = () => {
     if (currentChannel) {
       const nextChannelId =
-        currentChannel.id - 2 < 0
-          ? channels.length - 1
-          : currentChannel?.id - 2;
+        currentChannel.id - 2 < 0 ? channels.length - 1 : currentChannel.id - 2;
       const nextChannel = channels[nextChannelId];
       RadioPlayer.radioURL(nextChannel.url);
       dispatch(setCurrentChannel(nextChannel));
@@ -119,13 +132,9 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
       index={0}
       snapPoints={['1%', '90%']}
       enablePanDownToClose
-      handleComponent={props => <SheetHandle {...props} />}
-      backgroundComponent={props => (
-        <View style={[props.style, styles.bottomSheetBackdrop]} />
-      )}
-      backdropComponent={props => (
-        <BottomSheetBackdrop {...props} opacity={0.8} />
-      )}>
+      handleComponent={HandleComponent}
+      backgroundComponent={BackgroundComponent}
+      backdropComponent={BackdropComponent}>
       <View style={styles.bottomSheetContentContainer}>
         <View style={styles.radioChannelList}>
           <Text style={styles.bottomSheetHeader}>Radio Stations</Text>

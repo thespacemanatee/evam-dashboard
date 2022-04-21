@@ -16,11 +16,9 @@ type BatteryProps = {
 };
 
 const Battery = ({ percentage, style }: BatteryProps): JSX.Element => {
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      y: interpolate(percentage.value, [0, 100], [200, -20]),
-    };
-  });
+  const animatedProps = useAnimatedProps(() => ({
+    y: interpolate(percentage.value, [0, 100], [200, -20]),
+  }));
 
   return (
     <Svg

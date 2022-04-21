@@ -30,18 +30,16 @@ const BaseCard: React.FC<BaseCardProps> = ({
   style,
   disabled,
   children,
-}) => {
-  return (
-    <View style={style}>
-      <TouchableOpacity
-        onPress={onPress}
-        style={styles.container}
-        disabled={disabled}>
-        {children}
-      </TouchableOpacity>
-    </View>
-  );
-};
+}) => (
+  <View style={style}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.container}
+      disabled={disabled}>
+      {children}
+    </TouchableOpacity>
+  </View>
+);
 
 BaseCard.defaultProps = {
   onPress: undefined,

@@ -27,11 +27,10 @@ interface SpeedIndicatorProps {
 }
 
 const SpeedIndicator: React.FC<SpeedIndicatorProps> = ({ progress, style }) => {
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      text: progress.value.toString().padStart(2, '0'),
-    };
-  });
+  const animatedProps = useAnimatedProps(() => ({
+    text: progress.value.toString().padStart(2, '0'),
+  }));
+
   return (
     <View style={style}>
       <View style={styles.container}>
