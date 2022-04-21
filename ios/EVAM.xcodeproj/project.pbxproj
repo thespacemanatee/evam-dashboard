@@ -13,6 +13,7 @@
 		4DEBAE41C15110A9E6E9CBDA /* libPods-EVAM-EVAMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20D53366877169E9B0C4B275 /* libPods-EVAM-EVAMTests.a */; };
 		5C1F14B369CF53AFC305E1F9 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF7F40433D3EF26192AC916 /* ExpoModulesProvider.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A783FE72ADB44334B5536FFD /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EC40E6D862A4AD19FB00583 /* SplashScreen.storyboard */; };
 		ABDC78D7A61C1DE898E9A40C /* libPods-EVAM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1578B1FFB8E5838D1B0E9283 /* libPods-EVAM.a */; };
 		BA24E2CA281125E000933A85 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = BA24E2C9281125E000933A85 /* AppDelegate.mm */; };
 		D3E1F72435DFEF85E6BFD667 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E6A38EC60E95E5A3A25059 /* ExpoModulesProvider.swift */; };
@@ -42,6 +43,7 @@
 		20D53366877169E9B0C4B275 /* libPods-EVAM-EVAMTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EVAM-EVAMTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DF7F40433D3EF26192AC916 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EVAM/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		64E6A38EC60E95E5A3A25059 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EVAM-EVAMTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		6EC40E6D862A4AD19FB00583 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = EVAM/SplashScreen.storyboard; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EVAM/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BA24E2C9281125E000933A85 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = EVAM/AppDelegate.mm; sourceTree = "<group>"; };
 		C2F93ABC8E2C3476F9F999DC /* Pods-EVAM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVAM.release.xcconfig"; path = "Target Support Files/Pods-EVAM/Pods-EVAM.release.xcconfig"; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				6EC40E6D862A4AD19FB00583 /* SplashScreen.storyboard */,
 			);
 			name = EVAM;
 			sourceTree = "<group>";
@@ -274,6 +277,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A783FE72ADB44334B5536FFD /* SplashScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

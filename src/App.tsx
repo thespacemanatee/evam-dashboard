@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { StatusBar } from 'react-native';
 import * as Font from 'expo-font';
-// import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from 'expo-splash-screen';
 import { BleManager } from 'react-native-ble-plx';
 
 import { store } from './app/store';
@@ -16,7 +16,7 @@ const App = (): React.ReactElement | null => {
   const [loaded, setLoaded] = useState(false);
 
   const loadAssets = async () => {
-    // await SplashScreen.preventAutoHideAsync();
+    await SplashScreen.preventAutoHideAsync();
     await Font.loadAsync({
       // eslint-disable-next-line global-require
       'Gotham-Narrow': require('../assets/fonts/Gotham-Narrow-Book.otf'),
@@ -28,7 +28,7 @@ const App = (): React.ReactElement | null => {
   useEffect(() => {
     loadAssets().then(() => {
       setLoaded(true);
-      // SplashScreen.hideAsync();
+      SplashScreen.hideAsync();
     });
     bleManagerRef.current = new BleManager();
     store.dispatch(setAllChannels(channelsData.stations));

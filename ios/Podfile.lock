@@ -387,8 +387,8 @@ PODS:
     - React-jsi (= 0.68.1)
     - React-logger (= 0.68.1)
     - React-perflogger (= 0.68.1)
-  - RNCMaskedView (0.1.11):
-    - React
+  - RNCMaskedView (0.2.6):
+    - React-Core
   - RNGestureHandler (2.4.0):
     - React-Core
   - RNPermissions (3.3.1):
@@ -500,7 +500,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -620,7 +620,7 @@ EXTERNAL SOURCES:
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
   RNCMaskedView:
-    :path: "../node_modules/@react-native-community/masked-view"
+    :path: "../node_modules/@react-native-masked-view/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNPermissions:
@@ -661,12 +661,12 @@ SPEC CHECKSUMS:
   FlipperKit: cbdee19bdd4e7f05472a66ce290f1b729ba3cb86
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   FRadioPlayer: 7c6173cc44a3be39a9419abd3a931d9223e175e4
-  glog: 5337263514dd6f09803962437687240c5dc39aa4
+  glog: 43737235ae6a21de4f45297f4f73b6420fc2ecb2
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   MultiplatformBleAdapter: 5a6a897b006764392f9cef785e4360f54fb9477d
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   Permission-BluetoothPeripheral: a408e2ba4b43e60c5a4b8b4d442bb8abc93394b2
-  RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
+  RCT-Folly: e2636706cc3fded205cf0d380428ec0ea7455f80
   RCTRequired: 00581111c53531e39e3c6346ef0d2c0cf52a5a37
   RCTTypeSafety: 07e03ee7800e7dd65cba8e52ad0c2edb06c96604
   React: e61f4bf3c573d0c61c56b53dc3eb1d9daf0768a0
@@ -695,7 +695,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 9e344c840176b0af9c84d5019eb4fed8b3c105a1
   React-runtimeexecutor: 7285b499d0339104b2813a1f58ad1ada4adbd6c0
   ReactCommon: bf2888a826ceedf54b99ad1b6182d1bc4a8a3984
-  RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
+  RNCMaskedView: c298b644a10c0c142055b3ae24d83879ecb13ccd
   RNGestureHandler: 50e6ffee79932d14ea747d4ea4cc99aac0f24e86
   RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
   RNReanimated: e42de406edd11350af29016cf6802ef16ee364d0
