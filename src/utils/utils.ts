@@ -37,84 +37,63 @@ const getCharacteristic = async (
     const services = await (
       await device[0].discoverAllServicesAndCharacteristics()
     ).services();
-    const service = services.find((e) => e.uuid === serviceUUID);
+    const service = services.find(e => e.uuid === serviceUUID);
     const characteristics = await service?.characteristics();
-    characteristic = characteristics?.find(
-      (e) => e.uuid === characteristicUUID,
-    );
+    characteristic = characteristics?.find(e => e.uuid === characteristicUUID);
   }
   return characteristic;
 };
 
-export const getCoreCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
-  return getCharacteristic(
+export const getCoreCharacteristic = async () =>
+  getCharacteristic(
     CORE_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     CORE_CHARACTERISTIC_UUID,
   );
-};
 
-export const getStatusCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
-  return getCharacteristic(
+export const getStatusCharacteristic = async () =>
+  getCharacteristic(
     STATUS_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     STATUS_CHARACTERISTIC_UUID,
   );
-};
 
-export const getBatteryCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
-  return getCharacteristic(
+export const getBatteryCharacteristic = async () =>
+  getCharacteristic(
     STATUS_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     BATTERY_CHARACTERISTIC_UUID,
   );
-};
 
-export const getFrontLightingCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
-  return getCharacteristic(
+export const getFrontLightingCharacteristic = async () =>
+  getCharacteristic(
     LIGHTING_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     FRONT_LIGHTING_CHARACTERISTIC_UUID,
   );
-};
 
-export const getRearLightingCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
-  return getCharacteristic(
+export const getRearLightingCharacteristic = async () =>
+  getCharacteristic(
     LIGHTING_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     REAR_LIGHTING_CHARACTERISTIC_UUID,
   );
-};
 
-export const getInteriorLightingCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
-  return getCharacteristic(
+export const getInteriorLightingCharacteristic = async () =>
+  getCharacteristic(
     LIGHTING_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
   );
-};
 
-export const getRGBString = (decodedRGBString: string): string => {
-  return `#${(
+export const getRGBString = (decodedRGBString: string): string =>
+  `#${(
     decodedRGBString.charCodeAt(0).toString(16) +
     decodedRGBString.charCodeAt(1).toString(16) +
     decodedRGBString.charCodeAt(2).toString(16)
   )
     .padStart(6, '0')
     .toUpperCase()}`;
-};
 
 export const getTopIndicatorData = (
   decodedString: string,
@@ -143,14 +122,29 @@ export const getTopIndicatorData = (
 
 export const requestLocationPermissions = async (): Promise<boolean> => {
   try {
-    const granted = await PermissionsAndroid.check(
+    const fine = await PermissionsAndroid.check(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     );
-    if (!granted) {
-      const request = await PermissionsAndroid.request(
+    const connect = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+    );
+    const scan = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+    );
+    if (!fine || !connect || !scan) {
+      const request = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (request === PermissionsAndroid.RESULTS.GRANTED) {
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+      ]);
+      if (
+        request['android.permission.ACCESS_FINE_LOCATION'] ===
+          PermissionsAndroid.RESULTS.GRANTED &&
+        request['android.permission.BLUETOOTH_CONNECT'] ===
+          PermissionsAndroid.RESULTS.GRANTED &&
+        request['android.permission.BLUETOOTH_SCAN'] ===
+          PermissionsAndroid.RESULTS.GRANTED
+      ) {
         return true;
       }
       return false;

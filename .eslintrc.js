@@ -8,8 +8,8 @@ module.exports = {
   extends: [
     'plugin:react/recommended',
     'airbnb',
-    'prettier',
     'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -23,7 +23,6 @@ module.exports = {
   rules: {
     indent: ['error', 2, { SwitchCase: 1 }],
     quotes: ['error', 'single', { avoidEscape: true }],
-    'jsx-quotes': ['error', 'prefer-single'],
     'no-empty-function': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     'react/display-name': 'off',
@@ -50,6 +49,13 @@ module.exports = {
     'react/jsx-closing-bracket-location': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'react/function-component-definition': [
+      2,
+      {
+        namedComponents: 'arrow-function',
+        unnamedComponents: 'arrow-function',
+      },
+    ],
   },
   settings: {
     'import/resolver': {

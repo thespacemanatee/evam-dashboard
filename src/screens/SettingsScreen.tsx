@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 type Props = StackScreenProps<RootStackParamList, 'Settings'>;
 
 const SettingsScreen = ({ navigation }: Props): JSX.Element => {
-  const devices = useAppSelector((state) => state.settings.devices);
+  const devices = useAppSelector(state => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -84,20 +84,20 @@ const SettingsScreen = ({ navigation }: Props): JSX.Element => {
         <View style={styles.button}>
           <Button
             onPress={scanDevices}
-            title='SCAN'
+            title="SCAN"
             disabled={bluetoothLoading}
           />
         </View>
         <View style={styles.button}>
           <Button
             onPress={() => dispatch(resetDevices())}
-            title='RESET'
+            title="RESET"
             disabled={bluetoothLoading}
           />
         </View>
       </View>
       <FlatList
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         numColumns={2}
         data={devices}
         renderItem={({ item }) => (

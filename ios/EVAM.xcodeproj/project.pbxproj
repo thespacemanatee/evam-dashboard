@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* EVAMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EVAMTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		4DEBAE41C15110A9E6E9CBDA /* libPods-EVAM-EVAMTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20D53366877169E9B0C4B275 /* libPods-EVAM-EVAMTests.a */; };
 		5C1F14B369CF53AFC305E1F9 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF7F40433D3EF26192AC916 /* ExpoModulesProvider.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		ABDC78D7A61C1DE898E9A40C /* libPods-EVAM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1578B1FFB8E5838D1B0E9283 /* libPods-EVAM.a */; };
+		BA24E2CA281125E000933A85 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = BA24E2C9281125E000933A85 /* AppDelegate.mm */; };
 		D3E1F72435DFEF85E6BFD667 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E6A38EC60E95E5A3A25059 /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +34,6 @@
 		00E356F21AD99517003FC87E /* EVAMTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EVAMTests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* EVAM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVAM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = EVAM/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = EVAM/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EVAM/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = EVAM/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = EVAM/main.m; sourceTree = "<group>"; };
@@ -44,6 +43,7 @@
 		2DF7F40433D3EF26192AC916 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EVAM/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		64E6A38EC60E95E5A3A25059 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-EVAM-EVAMTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EVAM/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BA24E2C9281125E000933A85 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = EVAM/AppDelegate.mm; sourceTree = "<group>"; };
 		C2F93ABC8E2C3476F9F999DC /* Pods-EVAM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVAM.release.xcconfig"; path = "Target Support Files/Pods-EVAM/Pods-EVAM.release.xcconfig"; sourceTree = "<group>"; };
 		D3F58F1669D6473B53413163 /* Pods-EVAM-EVAMTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVAM-EVAMTests.debug.xcconfig"; path = "Target Support Files/Pods-EVAM-EVAMTests/Pods-EVAM-EVAMTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D9304D14D9696DB124E1E5C9 /* Pods-EVAM-EVAMTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVAM-EVAMTests.release.xcconfig"; path = "Target Support Files/Pods-EVAM-EVAMTests/Pods-EVAM-EVAMTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -107,8 +107,8 @@
 		13B07FAE1A68108700A75B9A /* EVAM */ = {
 			isa = PBXGroup;
 			children = (
+				BA24E2C9281125E000933A85 /* AppDelegate.mm */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -441,8 +441,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				BA24E2CA281125E000933A85 /* AppDelegate.mm in Sources */,
 				5C1F14B369CF53AFC305E1F9 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -614,8 +614,8 @@
 					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/lib/swift",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -672,8 +672,8 @@
 					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SDKROOT)/usr/lib/swift",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
