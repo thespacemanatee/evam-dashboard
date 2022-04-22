@@ -125,7 +125,7 @@ export const getTopIndicatorData = (
   };
 };
 
-export const requestLocationPermissions = async (): Promise<boolean> => {
+export const requestLocationPermissions = async () => {
   try {
     const statuses = await checkMultiple([
       PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
@@ -133,9 +133,9 @@ export const requestLocationPermissions = async (): Promise<boolean> => {
       PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
     ]);
     if (
-      !statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] ||
-      !statuses[PERMISSIONS.ANDROID.BLUETOOTH_CONNECT] ||
-      !statuses[PERMISSIONS.ANDROID.BLUETOOTH_SCAN]
+      statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] === RESULTS.DENIED ||
+      statuses[PERMISSIONS.ANDROID.BLUETOOTH_CONNECT] === RESULTS.DENIED ||
+      statuses[PERMISSIONS.ANDROID.BLUETOOTH_SCAN] === RESULTS.DENIED
     ) {
       const requests = await requestMultiple([
         PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,

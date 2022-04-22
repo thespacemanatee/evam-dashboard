@@ -2006,10 +2006,10 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.5.tgz#5f19d2b85a98e9558036f6a3cacc8819420f05cf"
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
-"@types/react-native@^0.67.4":
-  version "0.67.4"
-  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.67.4.tgz#97a8d3cff2a7606f247008e93d9fe2a3879bc84e"
-  integrity sha512-L81CB6W1m0s7d+TH/loP318+VKPwwjWQBUTVYQ1+lQTWiE5jHxyihgCmd7JbwLICo708FRSDwJW7pJoiZHy6yg==
+"@types/react-native@^0.67.5":
+  version "0.67.5"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.67.5.tgz#cc80b3d50872980e925e83538f86ebd1517b0817"
+  integrity sha512-x/rAJSH4N/ZT4plkRHgWgEJ4Y2x8y+ssC5EwEgSEOZagS6lQcyjOsC7dID+xTwJke07fSYCl6DL833QbLOxWIg==
   dependencies:
     "@types/react" "*"
 
@@ -7211,10 +7211,10 @@ react-native-elevation@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-native-elevation/-/react-native-elevation-1.0.0.tgz#2a091c688290ac9b08b5842d1a8e8a00fc84233e"
   integrity sha512-BWIKcEYtzjRV6GpkX0Km5/w2E7fgIcywiQOT7JZTc5NSbv/YI9kpFinB9lRFsOoRVGmiqq/O3VfP/oH2clIiBA==
 
-react-native-gesture-handler@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.4.0.tgz#0b96b7a5e7b4e8662a55fd1c94f6cbc1684557a8"
-  integrity sha512-8Aao3iGAmlpTbazEt8AfTdEXiPL052Psv8VztKCdvEUW+rCmUso/2pdWCzmqwG0XQdi9ojYW9lg6A7bpaCK7EA==
+react-native-gesture-handler@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.4.1.tgz#f4cb1784b6dcdf41ae35b4fff6022ec21038e2cd"
+  integrity sha512-qJHkZAWyuvZvEm8jV6TsYKeTgkYmoNsKrO/CEx0YaisAcHSiaiMx2Dy/0/QQ7oZr3t5aL4rJqWtOEZCADNbfeQ==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"
@@ -7237,10 +7237,10 @@ react-native-radio-player@^0.2.3:
   resolved "https://registry.yarnpkg.com/react-native-radio-player/-/react-native-radio-player-0.2.3.tgz#b647ca593f505d151916b8f93040bba6072339ee"
   integrity sha512-78lRATsw6ZyLShDdisxZIQScSubzwOpduJ/pobim6qbMOFgcnxTSKQiczf/1AbmX5MlCGbXILB0jKcfMmt2TCQ==
 
-react-native-reanimated@2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.7.0.tgz#2cebf9bddaf87a4b364079b40e9099ec0d7ce247"
-  integrity sha512-wPKqOGdC/XAqPZU+fNkpHM9B76QHmYCIeAcOQcOqMV2kS3mbZ4ZMe5veM7pdaMZs3tCnNgCqGPIbmMNQUE0bOw==
+react-native-reanimated@2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.8.0.tgz#93c06ca84d91fb3865110b0857c49a24e316130e"
+  integrity sha512-kJvf/UWLBMaGCs9X66MKq5zdFMgwx8D0nHnolbHR7s8ZnbLdb7TlQ/yuzIXqn/9wABfnwtNRI3CyaP1aHWMmZg==
   dependencies:
     "@babel/plugin-transform-object-assign" "^7.16.7"
     "@babel/preset-typescript" "^7.16.7"
