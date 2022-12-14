@@ -6,12 +6,7 @@ Ported to Arduino ESP32 by Evandro Copercini
 updated by chegewara)
 
 FUNCTIONS:
--Read throttle positions sensors and publish to CAN Bus
---Possibly average a few readings for stability
--If 2 TPS are connected, check between both sensors to identify throttle faults
 
--Read brake pressure sensor(s) and publish [pressure inforamtion to CAN Bus
--Convert pressure information to equivalent brake pedal position and publish to CANB us
 
 
 Designed to run on an ESP32 (ARDUINO_AVR_NANO)
