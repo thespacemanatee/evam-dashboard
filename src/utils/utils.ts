@@ -1,11 +1,9 @@
-/* eslint-disable indent */
-/* eslint-disable no-nested-ternary */
 import { PermissionsAndroid } from 'react-native';
 import { decode as btoa } from 'base-64';
-import { Characteristic } from 'react-native-ble-plx';
+import { type Characteristic } from 'react-native-ble-plx';
 
 import { bleManagerRef } from './BleHelper';
-import { TopIndicatorData } from '../index';
+import { type TopIndicatorData } from '../index';
 import {
   BATTERY_CHARACTERISTIC_UUID,
   CORE_CHARACTERISTIC_UUID,
@@ -20,7 +18,7 @@ import {
 import { store } from '../app/store';
 
 export const decodeBleString = (value: string | undefined | null): string => {
-  if (!value) {
+  if (value == null) {
     return '';
   }
   return btoa(value);
@@ -33,7 +31,7 @@ const getCharacteristic = async (
 ): Promise<Characteristic | undefined> => {
   let characteristic: Characteristic | undefined;
   const device = await bleManagerRef.current?.devices([deviceUUID]);
-  if (device && device.length > 0) {
+  if (device != null && device.length > 0) {
     const services = await (
       await device[0].discoverAllServicesAndCharacteristics()
     ).services();
@@ -49,7 +47,7 @@ const getCharacteristic = async (
 export const getCoreCharacteristic = async (): Promise<
   Characteristic | undefined
 > => {
-  return getCharacteristic(
+  return await getCharacteristic(
     CORE_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     CORE_CHARACTERISTIC_UUID,
@@ -59,7 +57,7 @@ export const getCoreCharacteristic = async (): Promise<
 export const getStatusCharacteristic = async (): Promise<
   Characteristic | undefined
 > => {
-  return getCharacteristic(
+  return await getCharacteristic(
     STATUS_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     STATUS_CHARACTERISTIC_UUID,
@@ -69,7 +67,7 @@ export const getStatusCharacteristic = async (): Promise<
 export const getBatteryCharacteristic = async (): Promise<
   Characteristic | undefined
 > => {
-  return getCharacteristic(
+  return await getCharacteristic(
     STATUS_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     BATTERY_CHARACTERISTIC_UUID,
@@ -79,7 +77,7 @@ export const getBatteryCharacteristic = async (): Promise<
 export const getFrontLightingCharacteristic = async (): Promise<
   Characteristic | undefined
 > => {
-  return getCharacteristic(
+  return await getCharacteristic(
     LIGHTING_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     FRONT_LIGHTING_CHARACTERISTIC_UUID,
@@ -89,7 +87,7 @@ export const getFrontLightingCharacteristic = async (): Promise<
 export const getRearLightingCharacteristic = async (): Promise<
   Characteristic | undefined
 > => {
-  return getCharacteristic(
+  return await getCharacteristic(
     LIGHTING_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     REAR_LIGHTING_CHARACTERISTIC_UUID,
@@ -99,7 +97,7 @@ export const getRearLightingCharacteristic = async (): Promise<
 export const getInteriorLightingCharacteristic = async (): Promise<
   Characteristic | undefined
 > => {
-  return getCharacteristic(
+  return await getCharacteristic(
     LIGHTING_SERVICE_UUID,
     store.getState().settings.selectedDeviceUUID,
     INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
@@ -151,6 +149,36 @@ export const requestLocationPermissions = async (): Promise<boolean> => {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       );
       if (request === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      }
+      return false;
+    }
+  } catch (err) {
+    console.warn(err);
+    return false;
+  }
+  return true;
+};
+
+export const requestBluetoothPermissions = async (): Promise<boolean> => {
+  try {
+    const connectGranted = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+    );
+    const scanGranted = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+    );
+    if (!connectGranted || !scanGranted) {
+      const request = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+      ]);
+      if (
+        request[PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT] ===
+          PermissionsAndroid.RESULTS.GRANTED &&
+        request[PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN] ===
+          PermissionsAndroid.RESULTS.GRANTED
+      ) {
         return true;
       }
       return false;

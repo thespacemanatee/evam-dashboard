@@ -1,5 +1,5 @@
-import React, { createRef } from 'react';
-import { BleManager } from 'react-native-ble-plx';
+import { createRef } from 'react';
+import { type BleManager } from 'react-native-ble-plx';
 
 export const isReadyRef: React.MutableRefObject<boolean | null> = createRef();
 

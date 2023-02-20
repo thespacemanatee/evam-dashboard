@@ -1,20 +1,20 @@
-export type RadioChannel = {
+export interface RadioChannel {
   id: number;
   name: string;
   channel: string;
   url: string;
   imageUrl: string;
-};
+}
 
-export type TopIndicatorData = {
+export interface TopIndicatorData {
   ecu: number;
   bms: number;
   tps: number;
   sas: number;
   whl: number;
-};
+}
 
-export type StatusIndicatorData = {
+export interface StatusIndicatorData {
   ecu: number;
   bms: number;
   tps: number;
@@ -29,4 +29,4 @@ export type StatusIndicatorData = {
   frl: number;
   rll: number;
   rrl: number;
-};
+}

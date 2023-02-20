@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from '../../app/store';
-import { RadioChannel } from '../../index';
+import { type RootState } from '../../app/store';
+import { type RadioChannel } from '../../index';
 
 const channelsAdapter = createEntityAdapter<RadioChannel>({
   selectId: (channel: RadioChannel) => channel.id,

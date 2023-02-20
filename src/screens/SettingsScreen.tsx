@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, Alert, FlatList, Button } from 'react-native';
-import { StackScreenProps } from '@react-navigation/stack';
-import { Device } from 'react-native-ble-plx';
+import { type Device } from 'react-native-ble-plx';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { addDevice, resetDevices } from '../features/settings/settingsSlice';
-import { requestLocationPermissions } from '../utils/utils';
+import {
+  requestBluetoothPermissions,
+  requestLocationPermissions,
+} from '../utils/utils';
 import DeviceCard from '../components/bleDevice/DeviceCard';
 import { bleManagerRef } from '../utils/BleHelper';
-import { RootStackParamList } from '../navigation';
+import { type SettingsScreenProps } from '../navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    padding: 16,
+    paddingVertical: 16,
+    paddingEnd: 16,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   button: {
     flex: 0.5,
@@ -27,71 +29,86 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 0.5,
-    marginBottom: 16,
+    marginVertical: 8,
     marginHorizontal: 8,
   },
 });
 
-type Props = StackScreenProps<RootStackParamList, 'Settings'>;
-
-const SettingsScreen = ({ navigation }: Props): JSX.Element => {
+const SettingsScreen = ({ navigation }: SettingsScreenProps): JSX.Element => {
   const devices = useAppSelector((state) => state.settings.devices);
   const [bluetoothLoading, setBluetoothLoading] = useState(false);
 
   const dispatch = useAppDispatch();
 
-  const navigateToDevice = (device: Device) =>
+  const navigateToDevice = (device: Device): void => {
     navigation.navigate('Device', { device });
+  };
 
-  const scanDevices = async () => {
-    setBluetoothLoading(true);
-    const stopScan = () => {
-      bleManagerRef.current?.stopDeviceScan();
-      setBluetoothLoading(false);
-    };
-    const granted = await requestLocationPermissions();
-    if (granted) {
-      bleManagerRef.current?.startDeviceScan(
-        null,
-        null,
-        (error, scannedDevice) => {
-          const scanTimeout = setTimeout(() => {
-            stopScan();
-          }, 5000);
-          if (error) {
-            console.error(error);
-            clearTimeout(scanTimeout);
-            stopScan();
-            Alert.alert('Error', 'Could not scan for bluetooth devices');
-          }
-          if (scannedDevice) {
-            dispatch(addDevice(scannedDevice));
-          }
-        },
-      );
-    } else {
-      setBluetoothLoading(false);
-      Alert.alert('Error', 'Bluetooth permissions not granted', [
-        { text: 'OK' },
-        { text: 'Try again', onPress: scanDevices },
-      ]);
+  const scanDevices = async (): Promise<void> => {
+    try {
+      setBluetoothLoading(true);
+      const stopScan = (): void => {
+        bleManagerRef.current?.stopDeviceScan();
+        setBluetoothLoading(false);
+      };
+      const locationGranted = await requestLocationPermissions();
+      const bluetoothGranted = await requestBluetoothPermissions();
+      if (locationGranted && bluetoothGranted) {
+        bleManagerRef.current?.startDeviceScan(
+          null,
+          null,
+          (error, scannedDevice) => {
+            const scanTimeout = setTimeout(() => {
+              stopScan();
+            }, 5000);
+            if (error != null) {
+              console.error(error);
+              clearTimeout(scanTimeout);
+              stopScan();
+              Alert.alert('Error', 'Could not scan for bluetooth devices');
+            }
+            if (scannedDevice != null) {
+              dispatch(addDevice(scannedDevice));
+            }
+          },
+        );
+      } else {
+        setBluetoothLoading(false);
+        Alert.alert('Error', 'Bluetooth permissions not granted', [
+          { text: 'OK' },
+          {
+            text: 'Try again',
+            onPress: () => {
+              void (async () => {
+                try {
+                  await scanDevices();
+                } catch (err) {
+                  console.error(err);
+                }
+              })();
+            },
+          },
+        ]);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <View style={styles.buttonContainer}>
         <View style={styles.button}>
           <Button
             onPress={scanDevices}
-            title='SCAN'
+            title="SCAN"
             disabled={bluetoothLoading}
           />
         </View>
         <View style={styles.button}>
           <Button
             onPress={() => dispatch(resetDevices())}
-            title='RESET'
+            title="RESET"
             disabled={bluetoothLoading}
           />
         </View>
@@ -108,7 +125,7 @@ const SettingsScreen = ({ navigation }: Props): JSX.Element => {
           />
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

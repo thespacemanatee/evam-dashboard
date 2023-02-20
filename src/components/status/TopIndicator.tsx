@@ -1,15 +1,20 @@
 import React from 'react';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import {
+  type StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+  useWindowDimensions,
+} from 'react-native';
 
-import { TopIndicatorData } from '../../index';
+import { type TopIndicatorData } from '../../index';
 
-import { MAX_WIDTH } from '../../utils/config';
 import Indicator from './Indicator';
 
 const styles = StyleSheet.create({
   contentContainer: {
     position: 'absolute',
-    width: MAX_WIDTH / 3,
     alignItems: 'center',
     alignSelf: 'center',
   },
@@ -38,15 +43,17 @@ const styles = StyleSheet.create({
   },
 });
 
-type TopIndicatorProps = {
+interface TopIndicatorProps {
   data?: TopIndicatorData;
   style?: StyleProp<ViewStyle>;
-};
+}
 
 const TopIndicator = ({ data, style }: TopIndicatorProps): JSX.Element => {
+  const { width } = useWindowDimensions();
+
   return (
     <View style={style}>
-      <View style={styles.contentContainer}>
+      <View style={[styles.contentContainer, { width: width / 3 }]}>
         <View style={styles.topIndicator}>
           <Indicator status={data?.tps} style={styles.indicator} />
           <Indicator status={data?.sas} style={styles.indicator} />
@@ -65,11 +72,6 @@ const TopIndicator = ({ data, style }: TopIndicatorProps): JSX.Element => {
       </View>
     </View>
   );
-};
-
-TopIndicator.defaultProps = {
-  data: undefined,
-  style: undefined,
 };
 
 export default TopIndicator;

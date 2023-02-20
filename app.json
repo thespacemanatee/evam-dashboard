@@ -1,4 +1,32 @@
 {
-  "name": "EVAM",
-  "displayName": "EVAM"
+  "expo": {
+    "name": "evam-dashboard",
+    "slug": "evam-dashboard",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/ev-club-logo.png",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.evam.dashboard"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/ev-club-logo.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.evam.dashboard"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e3d9e4a0-b263-4d5d-a7a1-d0dcbf63f3f7"
+      }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/e3d9e4a0-b263-4d5d-a7a1-d0dcbf63f3f7"
+    }
+  }
 }

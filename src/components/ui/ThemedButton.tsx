@@ -1,5 +1,11 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import colors from '../../utils/colors';
 
 const styles = StyleSheet.create({
@@ -44,26 +50,18 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   style,
 }) => {
   return (
-    <View style={style}>
-      <View style={styles.container}>
-        <Pressable
-          android_ripple={{ color: '#000000', borderless: true }}
-          onPress={onPress}
-          onPressIn={onPressIn}
-          onPressOut={onPressOut}
-          style={styles.button}>
-          <Text style={styles.buttonText}>{label}</Text>
-        </Pressable>
-      </View>
+    <View style={[styles.container, style]}>
+      <Pressable
+        android_ripple={{ color: '#000000', borderless: true }}
+        onPress={onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>{label}</Text>
+      </Pressable>
     </View>
   );
-};
-
-ThemedButton.defaultProps = {
-  onPress: undefined,
-  onPressIn: undefined,
-  onPressOut: undefined,
-  style: undefined,
 };
 
 export default ThemedButton;

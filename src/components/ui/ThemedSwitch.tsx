@@ -1,6 +1,10 @@
 import React from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import {
+  type GestureEvent,
+  PanGestureHandler,
+  type PanGestureHandlerEventPayload,
+} from 'react-native-gesture-handler';
 import Animated, {
   interpolateColor,
   runOnJS,
@@ -49,16 +53,16 @@ const animationConfig = {
   duration: 100,
 };
 
-type ThemedSwitchProps = {
+interface ThemedSwitchProps {
   value: boolean;
   onValueChange: (value: boolean) => void;
   style?: StyleProp<ViewStyle>;
-};
+}
 
-type ThumbGestureHandlerContext = {
+interface ThumbGestureHandlerContext {
   startX: number;
   moved: boolean;
-};
+}
 
 const ThemedSwitch = ({
   value,
@@ -68,7 +72,9 @@ const ThemedSwitch = ({
   const translateX = useSharedValue(value ? THUMB_TRAVEL : 0);
   const pressed = useSharedValue(false);
 
-  const gestureHandler = useAnimatedGestureHandler({
+  const gestureHandler = useAnimatedGestureHandler<
+    GestureEvent<PanGestureHandlerEventPayload>
+  >({
     onStart: (_, ctx: ThumbGestureHandlerContext) => {
       pressed.value = true;
       ctx.startX = translateX.value;
@@ -94,7 +100,7 @@ const ThemedSwitch = ({
     onCancel: () => {
       pressed.value = false;
     },
-    onFinish: (_, ctx) => {
+    onFinish: (_, ctx: ThumbGestureHandlerContext) => {
       pressed.value = false;
       if (translateX.value < TRACK_MIDPOINT) {
         if (ctx.moved) {
@@ -147,10 +153,6 @@ const ThemedSwitch = ({
       </PanGestureHandler>
     </View>
   );
-};
-
-ThemedSwitch.defaultProps = {
-  style: undefined,
 };
 
 export default ThemedSwitch;

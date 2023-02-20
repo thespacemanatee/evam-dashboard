@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import {
-  StyleProp,
+  type StyleProp,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ViewStyle,
+  type ViewStyle,
 } from 'react-native';
 import Animated, {
   Easing,
@@ -18,11 +18,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import {
-  RADIO_BUTTON_SIZE,
-  RADIO_LABEL_HEIGHT,
-  RADIO_LABEL_WIDTH,
-} from '../../utils/config';
+const RADIO_BUTTON_SIZE = 48;
+const RADIO_LABEL_HEIGHT = 48;
+const RADIO_LABEL_WIDTH = 240;
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +48,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type RadioPlayerUIProps = {
+interface RadioPlayerUIProps {
   onPressRadioLabel?: () => void;
   onPressSkipBack: () => void;
   onPressPlayPause: () => void;
@@ -58,7 +56,7 @@ type RadioPlayerUIProps = {
   playing: boolean;
   currentChannel: string;
   style?: StyleProp<ViewStyle>;
-};
+}
 
 const RadioPlayerUI = ({
   onPressRadioLabel,
@@ -84,68 +82,62 @@ const RadioPlayerUI = ({
     resetAnimation();
   }, [progress, resetAnimation]);
 
-  const labelAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      right: interpolate(
-        progress.value,
-        [0.33, 0.66, 0.66, 1],
-        [0, RADIO_LABEL_WIDTH, -RADIO_LABEL_WIDTH, 0],
-        Extrapolate.CLAMP,
-      ),
-    };
-  });
+  const labelAnimatedStyle = useAnimatedStyle(() => ({
+    right: interpolate(
+      progress.value,
+      [0.33, 0.66, 0.66, 1],
+      [0, RADIO_LABEL_WIDTH, -RADIO_LABEL_WIDTH, 0],
+      Extrapolate.CLAMP,
+    ),
+  }));
 
   return (
-    <View style={style}>
-      <View style={styles.container}>
+    <View style={[styles.container, style]}>
+      <TouchableOpacity
+        onPress={onPressRadioLabel}
+        disabled={onPressRadioLabel == null}
+        style={styles.radioLabelContainer}
+      >
+        <Text style={styles.radioTitle}>Now Playing</Text>
+        <Animated.Text style={[styles.radioLabel, labelAnimatedStyle]}>
+          {currentChannel}
+        </Animated.Text>
+      </TouchableOpacity>
+      <View style={styles.radioControls}>
         <TouchableOpacity
-          onPress={onPressRadioLabel}
-          disabled={!onPressRadioLabel}
-          style={styles.radioLabelContainer}>
-          <Text style={styles.radioTitle}>Now Playing</Text>
-          <Animated.Text style={[styles.radioLabel, labelAnimatedStyle]}>
-            {currentChannel}
-          </Animated.Text>
+          onPress={() => {
+            resetAnimation();
+            onPressSkipBack();
+          }}
+        >
+          <Ionicons
+            name="play-skip-back-circle"
+            color="white"
+            size={RADIO_BUTTON_SIZE}
+          />
         </TouchableOpacity>
-        <View style={styles.radioControls}>
-          <TouchableOpacity
-            onPress={() => {
-              resetAnimation();
-              onPressSkipBack();
-            }}>
-            <Ionicons
-              name='play-skip-back-circle'
-              color='white'
-              size={RADIO_BUTTON_SIZE}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onPressPlayPause}>
-            <Ionicons
-              name={playing ? 'pause-circle' : 'play-circle'}
-              color='white'
-              size={RADIO_BUTTON_SIZE + 16}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              resetAnimation();
-              onPressSkipForward();
-            }}>
-            <Ionicons
-              name='play-skip-forward-circle'
-              color='white'
-              size={RADIO_BUTTON_SIZE}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={onPressPlayPause}>
+          <Ionicons
+            name={playing ? 'pause-circle' : 'play-circle'}
+            color="white"
+            size={RADIO_BUTTON_SIZE + 16}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            resetAnimation();
+            onPressSkipForward();
+          }}
+        >
+          <Ionicons
+            name="play-skip-forward-circle"
+            color="white"
+            size={RADIO_BUTTON_SIZE}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
-};
-
-RadioPlayerUI.defaultProps = {
-  onPressRadioLabel: undefined,
-  style: undefined,
 };
 
 export default RadioPlayerUI;

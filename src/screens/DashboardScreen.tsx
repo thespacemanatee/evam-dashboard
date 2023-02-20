@@ -1,17 +1,15 @@
-/* eslint-disable indent */
-/* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
-import { Subscription } from 'react-native-ble-plx';
+import { type Subscription } from 'react-native-ble-plx';
 import RadioPlayer from 'react-native-radio-player';
-import BottomSheet from '@gorhom/bottom-sheet';
+import type BottomSheet from '@gorhom/bottom-sheet';
 
 import SpeedIndicator from '../components/core/SpeedIndicator';
 import LeftTachometer from '../components/core/LeftTachometer';
 import RightTachometer from '../components/core/RightTachometer';
 import BatteryStatistics from '../components/battery/BatteryStatistics';
-import DashboardButtonGroup from '../components/ui/DashboardMenu';
+import DashboardMenu from '../components/ui/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { bleManagerRef } from '../utils/BleHelper';
 import {
@@ -25,7 +23,7 @@ import { channelsSelector } from '../features/radio/channelsSlice';
 import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioPlayerUI from '../components/radio/RadioPlayerUI';
 import TopIndicator from '../components/status/TopIndicator';
-import { TopIndicatorData } from '../index';
+import { type TopIndicatorData } from '../index';
 import RadioPlayerSheet from './RadioPlayerSheet';
 
 const styles = StyleSheet.create({
@@ -55,10 +53,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   leftTachometer: {
-    right: 70,
+    right: -100,
   },
   rightTachometer: {
-    left: 70,
+    left: -100,
   },
   dashboardRadioPlayer: {
     position: 'absolute',
@@ -87,82 +85,108 @@ const DashboardScreen = (): JSX.Element => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (currentChannel) {
-      RadioPlayer.radioURL(currentChannel.url);
+    if (currentChannel != null) {
+      void (async () => {
+        try {
+          await RadioPlayer.radioURL(currentChannel.url);
+        } catch (err) {
+          console.error(err);
+        }
+      })();
     } else {
       dispatch(setCurrentChannel(channels[0]));
     }
   }, [channels, currentChannel, dispatch]);
 
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      RadioPlayer.stop();
-      setIsPlaying(false);
-    } else {
-      RadioPlayer.play();
-      setIsPlaying(true);
+  const handlePlayPause = async (): Promise<void> => {
+    try {
+      if (isPlaying) {
+        await RadioPlayer.stop();
+        setIsPlaying(false);
+      } else {
+        await RadioPlayer.play();
+        setIsPlaying(true);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleSkipBack = () => {
-    if (currentChannel) {
-      const nextChannelId =
-        currentChannel.id - 2 < 0
-          ? channels.length - 1
-          : currentChannel?.id - 2;
-      const nextChannel = channels[nextChannelId];
-      RadioPlayer.radioURL(nextChannel.url);
-      dispatch(setCurrentChannel(nextChannel));
+  const handleSkipBack = async (): Promise<void> => {
+    try {
+      if (currentChannel != null) {
+        const nextChannelId =
+          currentChannel.id - 2 < 0
+            ? channels.length - 1
+            : currentChannel?.id - 2;
+        const nextChannel = channels[nextChannelId];
+        await RadioPlayer.radioURL(nextChannel.url);
+        dispatch(setCurrentChannel(nextChannel));
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleSkipForward = () => {
-    if (currentChannel) {
-      const nextChannelId =
-        currentChannel.id > channels.length - 1 ? 0 : currentChannel.id;
-      const nextChannel = channels[nextChannelId];
-      RadioPlayer.radioURL(nextChannel.url);
-      dispatch(setCurrentChannel(nextChannel));
+  const handleSkipForward = async (): Promise<void> => {
+    try {
+      if (currentChannel != null) {
+        const nextChannelId =
+          currentChannel.id > channels.length - 1 ? 0 : currentChannel.id;
+        const nextChannel = channels[nextChannelId];
+        await RadioPlayer.radioURL(nextChannel.url);
+        dispatch(setCurrentChannel(nextChannel));
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const monitorAndUpdateCoreValues = useCallback(async () => {
-    const coreCharacteristic = await getCoreCharacteristic();
-    return coreCharacteristic?.monitor((err, cha) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      const decodedString = decodeBleString(cha?.value);
-      velocity.value = decodedString.charCodeAt(0);
-      acceleration.value = decodedString.charCodeAt(1);
-      brake.value = decodedString.charCodeAt(2);
-    });
+    try {
+      const coreCharacteristic = await getCoreCharacteristic();
+      return coreCharacteristic?.monitor((err, cha) => {
+        if (err != null) {
+          console.error(err);
+          return;
+        }
+        const decodedString = decodeBleString(cha?.value);
+        velocity.value = decodedString.charCodeAt(0);
+        acceleration.value = decodedString.charCodeAt(1);
+        brake.value = decodedString.charCodeAt(2);
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }, [acceleration, brake, velocity]);
 
   const monitorAndUpdateStatusValues = useCallback(async () => {
-    const statusCharacteristic = await getStatusCharacteristic();
-    let decodedString: string;
-    decodedString = decodeBleString(
-      (await statusCharacteristic?.read())?.value,
-    );
-    setIndicatorData(getTopIndicatorData(decodedString));
-
-    return statusCharacteristic?.monitor((err, cha) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      decodedString = decodeBleString(cha?.value);
+    try {
+      const statusCharacteristic = await getStatusCharacteristic();
+      let decodedString: string;
+      decodedString = decodeBleString(
+        (await statusCharacteristic?.read())?.value,
+      );
       setIndicatorData(getTopIndicatorData(decodedString));
-    });
+
+      return statusCharacteristic?.monitor((err, cha) => {
+        if (err != null) {
+          console.error(err);
+          return;
+        }
+        decodedString = decodeBleString(cha?.value);
+        setIndicatorData(getTopIndicatorData(decodedString));
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   const monitorAndUpdateBatteryValues = useCallback(async () => {
     const batteryCharacteristic = await getBatteryCharacteristic();
 
     return batteryCharacteristic?.monitor((err, cha) => {
-      if (err) {
+      if (err != null) {
         console.error(err);
         return;
       }
@@ -180,10 +204,10 @@ const DashboardScreen = (): JSX.Element => {
     let coreSubscription: Subscription | undefined;
     let statusSubscription: Subscription | undefined;
     let batterySubscription: Subscription | undefined;
-    const getDevice = async () => {
+    void (async () => {
       try {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
-        if (device && device.length > 0) {
+        if (device != null && device.length > 0) {
           coreSubscription = await monitorAndUpdateCoreValues();
           statusSubscription = await monitorAndUpdateStatusValues();
           batterySubscription = await monitorAndUpdateBatteryValues();
@@ -191,8 +215,7 @@ const DashboardScreen = (): JSX.Element => {
       } catch (err) {
         console.error(err);
       }
-    };
-    getDevice();
+    })();
 
     return () => {
       coreSubscription?.remove();
@@ -200,10 +223,10 @@ const DashboardScreen = (): JSX.Element => {
       batterySubscription?.remove();
     };
   }, [
+    deviceUUID,
+    monitorAndUpdateBatteryValues,
     monitorAndUpdateCoreValues,
     monitorAndUpdateStatusValues,
-    monitorAndUpdateBatteryValues,
-    deviceUUID,
   ]);
 
   return (
@@ -228,14 +251,16 @@ const DashboardScreen = (): JSX.Element => {
           temperature={battTemperature}
           style={styles.battery}
         />
-        <DashboardButtonGroup style={styles.menu} />
+        <DashboardMenu style={styles.menu} />
         <RadioPlayerUI
-          onPressRadioLabel={() => sheetRef.current?.expand()}
+          onPressRadioLabel={() => {
+            sheetRef.current?.expand();
+          }}
           onPressSkipBack={handleSkipBack}
           onPressPlayPause={handlePlayPause}
           onPressSkipForward={handleSkipForward}
           playing={isPlaying}
-          currentChannel={currentChannel?.name || ''}
+          currentChannel={currentChannel?.name ?? ''}
           style={styles.dashboardRadioPlayer}
         />
       </View>

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { RadioChannel } from '../../index';
+import { type RadioChannel } from '../../index';
 
 interface PlayerState {
   currentChannel?: RadioChannel;

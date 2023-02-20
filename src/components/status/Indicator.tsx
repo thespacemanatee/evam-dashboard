@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { type StyleProp, StyleSheet, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import colors from '../../utils/colors';
@@ -16,10 +16,10 @@ const styles = StyleSheet.create({
   },
 });
 
-type IndicatorProps = {
+interface IndicatorProps {
   status?: number;
   style?: StyleProp<ViewStyle>;
-};
+}
 
 const Indicator = ({ status, style }: IndicatorProps): JSX.Element => {
   const animatedStyle = useAnimatedStyle(() => {
@@ -32,16 +32,7 @@ const Indicator = ({ status, style }: IndicatorProps): JSX.Element => {
           : colors.nodeInactive,
     };
   });
-  return (
-    <View style={style}>
-      <Animated.View style={[styles.indicator, animatedStyle]} />
-    </View>
-  );
-};
-
-Indicator.defaultProps = {
-  status: -1,
-  style: undefined,
+  return <Animated.View style={[styles.indicator, animatedStyle, style]} />;
 };
 
 export default Indicator;

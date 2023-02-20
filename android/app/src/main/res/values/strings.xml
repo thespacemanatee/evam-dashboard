@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">EVAMDashboard</string>
+  <!-- Below line is handled by '@expo/configure-splash-screen' command and it's discouraged to modify it manually -->
+  <string name="app_name">EVAM Dashboard</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">true</string>
+  <string name="expo_runtime_version">1.0.0</string>
 </resources>

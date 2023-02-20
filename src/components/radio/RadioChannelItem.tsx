@@ -1,13 +1,15 @@
-import React from 'react';
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-import { RadioChannel } from '../../index';
+import { type RadioChannel } from '../../index';
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     marginBottom: 16,
     alignItems: 'center',
+  },
+  albumArt: {
+    borderRadius: 8,
   },
   channelLabel: {
     marginLeft: 16,
@@ -24,21 +26,28 @@ const styles = StyleSheet.create({
   },
 });
 
-type RadioChannelItemProps = {
+interface RadioChannelItemProps {
   radioChannel: RadioChannel;
   onPress: (radioChannel: RadioChannel) => void;
-};
+}
 
 const RadioChannelItem = ({
   radioChannel,
   onPress,
 }: RadioChannelItemProps): JSX.Element => {
   const { imageUrl, name, channel } = radioChannel;
+
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => onPress(radioChannel)}>
-      <Image source={{ uri: imageUrl, width: 96, height: 66 }} />
+      onPress={() => {
+        onPress(radioChannel);
+      }}
+    >
+      <Image
+        source={{ uri: imageUrl, width: 96, height: 66 }}
+        style={styles.albumArt}
+      />
       <View style={styles.channelLabel}>
         <Text style={styles.channelName}>{name}</Text>
         <Text style={styles.channelChannel}>{`${channel} FM`}</Text>

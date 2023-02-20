@@ -1,7 +1,13 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable indent */
 import React from 'react';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import {
+  type StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
 
 import colors from '../../utils/colors';
 import Indicator from './Indicator';
@@ -23,11 +29,11 @@ const styles = StyleSheet.create({
   },
 });
 
-type StatusIndicatorProps = {
+interface StatusIndicatorProps {
   label: string;
   status?: number;
   style?: StyleProp<ViewStyle>;
-};
+}
 
 const StatusIndicator = ({
   label,
@@ -42,11 +48,6 @@ const StatusIndicator = ({
       </View>
     </View>
   );
-};
-
-StatusIndicator.defaultProps = {
-  status: -1,
-  style: undefined,
 };
 
 export default StatusIndicator;
