@@ -1,10 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Button, FlatList, StyleSheet, Text, View } from 'react-native';
-import { StackScreenProps } from '@react-navigation/stack';
-import { Service, Subscription } from 'react-native-ble-plx';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Button,
+  FlatList,
+  type ListRenderItem,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { type StackScreenProps } from '@react-navigation/stack';
+import { type Service, type Subscription } from 'react-native-ble-plx';
 import { decode as btoa } from 'base-64';
 
-import { RootStackParamList } from '../navigation';
+import { type SettingsStackParamList } from '../navigation';
 import ServiceCard from '../components/bleDevice/ServiceCard';
 import { useAppDispatch } from '../app/hooks';
 import { setSelectedDeviceUUID } from '../features/settings/settingsSlice';
@@ -30,7 +38,7 @@ const styles = StyleSheet.create({
 
 const DeviceScreen = ({
   route,
-}: StackScreenProps<RootStackParamList, 'Device'>): JSX.Element => {
+}: StackScreenProps<SettingsStackParamList, 'Device'>): JSX.Element => {
   const { device } = route.params;
 
   const [isConnected, setIsConnected] = useState(false);
@@ -38,7 +46,7 @@ const DeviceScreen = ({
 
   const dispatch = useAppDispatch();
 
-  const disconnectDevice = async () => {
+  const disconnectDevice = async (): Promise<void> => {
     const isDeviceConnected = await device.isConnected();
     if (isDeviceConnected) {
       await device.cancelConnection();
@@ -49,7 +57,7 @@ const DeviceScreen = ({
 
   useEffect(() => {
     let subscription: Subscription;
-    const getDeviceInformation = async () => {
+    void (async (): Promise<void> => {
       let connectedDevice = device;
       try {
         if (!(await device.isConnected())) {
@@ -73,26 +81,27 @@ const DeviceScreen = ({
         console.error(err);
         Alert.alert('Error', 'Could not connect to selected device');
       }
-    };
+    })();
 
-    getDeviceInformation();
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+    };
   }, [device, dispatch]);
 
-  const renderServices = ({ item }: { item: Service }) => {
+  const renderServices: ListRenderItem<Service> = ({ item }) => {
     return <ServiceCard service={item} />;
   };
 
   return (
     <View style={styles.screen}>
-      <Button onPress={disconnectDevice} title='DISCONNECT' />
+      <Button onPress={disconnectDevice} title="DISCONNECT" />
       <View style={styles.container}>
         <BaseCard disabled>
           <Text>{`Id: ${device.id}`}</Text>
-          <Text>{`Name: ${device.name}`}</Text>
-          <Text>{`Is connected: ${isConnected}`}</Text>
-          <Text>{`RSSI : ${device.rssi}`}</Text>
-          {device.manufacturerData && (
+          <Text>{`Name: ${device.name ?? ''}`}</Text>
+          <Text>{`Is connected: ${String(isConnected)}`}</Text>
+          <Text>{`RSSI: ${device.rssi ?? ''}`}</Text>
+          {device.manufacturerData != null && (
             <Text>{`Manufacturer: ${btoa(device.manufacturerData)}`}</Text>
           )}
           <Text>{`ServiceData: ${device.serviceData}`}</Text>

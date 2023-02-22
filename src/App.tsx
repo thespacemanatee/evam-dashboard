@@ -1,9 +1,9 @@
-import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { StatusBar } from 'react-native';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { BleManager } from 'react-native-ble-plx';
 
 import { store } from './app/store';
@@ -15,24 +15,34 @@ import * as channelsData from '../assets/stations.json';
 const App = (): React.ReactElement | null => {
   const [loaded, setLoaded] = useState(false);
 
-  const loadAssets = async () => {
-    await SplashScreen.preventAutoHideAsync();
-    await Font.loadAsync({
-      // eslint-disable-next-line global-require
-      'Gotham-Narrow': require('../assets/fonts/Gotham-Narrow-Book.otf'),
-      // eslint-disable-next-line global-require
-      'Digital-Numbers': require('../assets/fonts/Digital-Numbers.ttf'),
-    });
+  const loadAssets = async (): Promise<void> => {
+    try {
+      await ScreenOrientation.lockAsync(
+        ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT,
+      );
+      await SplashScreen.preventAutoHideAsync();
+      await Font.loadAsync({
+        'Gotham-Narrow': require('../assets/fonts/Gotham-Narrow-Book.otf'),
+        'Digital-Numbers': require('../assets/fonts/Digital-Numbers.ttf'),
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
-    loadAssets().then(() => {
-      setLoaded(true);
-      SplashScreen.hideAsync();
-    });
-    bleManagerRef.current = new BleManager();
-    store.dispatch(setAllChannels(channelsData.stations));
-  });
+    void (async () => {
+      try {
+        await loadAssets();
+        setLoaded(true);
+        bleManagerRef.current = new BleManager();
+        store.dispatch(setAllChannels(channelsData.stations));
+        await SplashScreen.hideAsync();
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
 
   if (!loaded) {
     return null;

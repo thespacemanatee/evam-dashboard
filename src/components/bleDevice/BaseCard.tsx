@@ -1,10 +1,9 @@
-import React from 'react';
 import {
-  StyleProp,
+  type StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
-  ViewStyle,
+  type ViewStyle,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -23,6 +22,7 @@ interface BaseCardProps {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  children: React.ReactNode;
 }
 
 const BaseCard: React.FC<BaseCardProps> = ({
@@ -36,17 +36,12 @@ const BaseCard: React.FC<BaseCardProps> = ({
       <TouchableOpacity
         onPress={onPress}
         style={styles.container}
-        disabled={disabled}>
+        disabled={disabled}
+      >
         {children}
       </TouchableOpacity>
     </View>
   );
-};
-
-BaseCard.defaultProps = {
-  onPress: undefined,
-  style: undefined,
-  disabled: false,
 };
 
 export default BaseCard;

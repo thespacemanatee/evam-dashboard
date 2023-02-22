@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  StyleProp,
+  type StyleProp,
   StyleSheet,
   Text,
   TouchableOpacity,
-  ViewStyle,
+  type ViewStyle,
 } from 'react-native';
-import { Characteristic, Service } from 'react-native-ble-plx';
+import { type Characteristic, type Service } from 'react-native-ble-plx';
 
 import BaseCard from './BaseCard';
 import CharacteristicCard from './CharacteristicCard';
@@ -23,17 +23,19 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, style }) => {
-  const [characteristics, setCharacteristics] = useState<Characteristic[]>([]);
+  const [characteristics, setCharacteristics] = useState<Characteristic[]>();
   const [areCharacteristicsVisible, setAreCharacteristicsVisible] =
     useState(true);
 
   useEffect(() => {
-    const getCharacteristics = async () => {
-      const newCharacteristics = await service.characteristics();
-      setCharacteristics(newCharacteristics);
-    };
-
-    getCharacteristics();
+    void (async () => {
+      try {
+        const newCharacteristics = await service.characteristics();
+        setCharacteristics(newCharacteristics);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
   }, [service]);
 
   return (
@@ -41,12 +43,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, style }) => {
       <TouchableOpacity
         onPress={() => {
           setAreCharacteristicsVisible((prev) => !prev);
-        }}>
+        }}
+      >
         <Text>{`Service UUID: ${service.uuid}`}</Text>
       </TouchableOpacity>
 
       {areCharacteristicsVisible &&
-        characteristics &&
+        characteristics != null &&
         characteristics.map((char) => (
           <CharacteristicCard
             key={char.id}
@@ -56,10 +59,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, style }) => {
         ))}
     </BaseCard>
   );
-};
-
-ServiceCard.defaultProps = {
-  style: undefined,
 };
 
 export default ServiceCard;

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -14,8 +14,10 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { channelsSelector } from '../features/radio/channelsSlice';
 import { setCurrentChannel } from '../features/radio/playerSlice';
 import RadioChannelItem from '../components/radio/RadioChannelItem';
-import { RadioChannel } from '../index';
-import { RADIO_IMAGE_SIZE } from '../utils/config';
+import { type RadioChannel } from '../index';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const RADIO_IMAGE_SIZE = 176;
 
 const styles = StyleSheet.create({
   bottomSheetBackdrop: {
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   bottomSheetHeader: {
-    fontSize: 40,
+    fontSize: 36,
     color: 'white',
     fontFamily: 'Gotham-Narrow',
     fontWeight: 'bold',
@@ -33,7 +35,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 32,
   },
   radioChannelList: {
     marginRight: 32,
@@ -45,15 +46,13 @@ const styles = StyleSheet.create({
   imageBackground: {
     backgroundColor: 'black',
     borderRadius: 8,
-  },
-  bottomSheetRadioPlayer: {
-    marginTop: 8,
+    marginBottom: 8,
   },
 });
 
-type RadioPlayerSheetProps = {
+interface RadioPlayerSheetProps {
   sheetRef: React.RefObject<BottomSheet>;
-};
+}
 
 const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
   const channels = useAppSelector(channelsSelector.selectAll);
@@ -62,46 +61,62 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
 
   const dispatch = useAppDispatch();
 
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      RadioPlayer.stop();
-      setIsPlaying(false);
-    } else {
-      RadioPlayer.play();
-      setIsPlaying(true);
+  const handlePlayPause = async (): Promise<void> => {
+    try {
+      if (isPlaying) {
+        await RadioPlayer.stop();
+        setIsPlaying(false);
+      } else {
+        await RadioPlayer.play();
+        setIsPlaying(true);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleSkipBack = () => {
-    if (currentChannel) {
-      const nextChannelId =
-        currentChannel.id - 2 < 0
-          ? channels.length - 1
-          : currentChannel?.id - 2;
-      const nextChannel = channels[nextChannelId];
-      RadioPlayer.radioURL(nextChannel.url);
-      dispatch(setCurrentChannel(nextChannel));
+  const handleSkipBack = async (): Promise<void> => {
+    try {
+      if (currentChannel != null) {
+        const nextChannelId =
+          currentChannel.id - 2 < 0
+            ? channels.length - 1
+            : currentChannel?.id - 2;
+        const nextChannel = channels[nextChannelId];
+        await RadioPlayer.radioURL(nextChannel.url);
+        dispatch(setCurrentChannel(nextChannel));
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleSkipForward = () => {
-    if (currentChannel) {
-      const nextChannelId =
-        currentChannel.id > channels.length - 1 ? 0 : currentChannel.id;
-      const nextChannel = channels[nextChannelId];
-      RadioPlayer.radioURL(nextChannel.url);
-      dispatch(setCurrentChannel(nextChannel));
+  const handleSkipForward = async (): Promise<void> => {
+    try {
+      if (currentChannel != null) {
+        const nextChannelId =
+          currentChannel.id > channels.length - 1 ? 0 : currentChannel.id;
+        const nextChannel = channels[nextChannelId];
+        await RadioPlayer.radioURL(nextChannel.url);
+        dispatch(setCurrentChannel(nextChannel));
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const handlePressChannelItem = useCallback(
-    (channel: RadioChannel) => {
-      RadioPlayer.radioURL(channel.url);
-      if (!isPlaying) {
-        RadioPlayer.play();
-        setIsPlaying(true);
+    async (channel: RadioChannel) => {
+      try {
+        await RadioPlayer.radioURL(channel.url);
+        if (!isPlaying) {
+          await RadioPlayer.play();
+          setIsPlaying(true);
+        }
+        dispatch(setCurrentChannel(channel));
+      } catch (err) {
+        console.error(err);
       }
-      dispatch(setCurrentChannel(channel));
     },
     [dispatch, isPlaying],
   );
@@ -116,8 +131,8 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
   return (
     <BottomSheet
       ref={sheetRef}
-      index={0}
-      snapPoints={['1%', '90%']}
+      index={-1}
+      snapPoints={['90%']}
       enablePanDownToClose
       handleComponent={(props) => <SheetHandle {...props} />}
       backgroundComponent={(props) => (
@@ -125,8 +140,9 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
       )}
       backdropComponent={(props) => (
         <BottomSheetBackdrop {...props} opacity={0.8} />
-      )}>
-      <View style={styles.bottomSheetContentContainer}>
+      )}
+    >
+      <SafeAreaView style={styles.bottomSheetContentContainer}>
         <View style={styles.radioChannelList}>
           <Text style={styles.bottomSheetHeader}>Radio Stations</Text>
           <BottomSheetFlatList
@@ -138,7 +154,8 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
         </View>
         <LinearGradient
           colors={[colors.background, '#414345']}
-          style={styles.bottomSheetRadioPlayerContainer}>
+          style={styles.bottomSheetRadioPlayerContainer}
+        >
           <View style={styles.imageBackground}>
             <Image
               source={{
@@ -146,7 +163,7 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
                 width: RADIO_IMAGE_SIZE,
                 height: RADIO_IMAGE_SIZE,
               }}
-              resizeMode='contain'
+              resizeMode="contain"
             />
           </View>
           <RadioPlayerUI
@@ -154,11 +171,10 @@ const RadioPlayerSheet = ({ sheetRef }: RadioPlayerSheetProps): JSX.Element => {
             onPressPlayPause={handlePlayPause}
             onPressSkipForward={handleSkipForward}
             playing={isPlaying}
-            currentChannel={currentChannel?.name || ''}
-            style={styles.bottomSheetRadioPlayer}
+            currentChannel={currentChannel?.name ?? ''}
           />
         </LinearGradient>
-      </View>
+      </SafeAreaView>
     </BottomSheet>
   );
 };

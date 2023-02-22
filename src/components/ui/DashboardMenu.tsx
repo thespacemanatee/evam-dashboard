@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
@@ -10,18 +10,15 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { type DashboardScreenNavigationProp } from '../../navigation';
 
-import { MAX_HEIGHT, MENU_ICON_SIZE } from '../../utils/config';
+import { MENU_ICON_SIZE } from '../../utils/config';
 import MenuButton from './MenuButton';
 
 const SPACING = 20;
 const MENU_SIZE = 160;
 
 const styles = StyleSheet.create({
-  container: {
-    height: MAX_HEIGHT / 2,
-    width: '100%',
-  },
   mainButton: {
     position: 'absolute',
   },
@@ -42,33 +39,33 @@ const styles = StyleSheet.create({
   },
 });
 
-type DashboardMenuProps = {
+interface DashboardMenuProps {
   style?: StyleProp<ViewStyle>;
-};
+}
 
 const DashboardMenu = ({ style }: DashboardMenuProps): JSX.Element => {
   const [open, setOpen] = useState(false);
   const mainProgress = useSharedValue(0);
   const menuProgress = useSharedValue(0);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<DashboardScreenNavigationProp>();
 
-  const handleSettings = () => {
+  const handleSettings = (): void => {
     navigation.navigate('SettingsStack');
     setOpen(!open);
   };
 
-  const handleTemperature = () => {
+  const handleTemperature = (): void => {
     navigation.navigate('Status');
     setOpen(!open);
   };
 
-  const handleLighting = () => {
+  const handleLighting = (): void => {
     navigation.navigate('Lighting');
     setOpen(!open);
   };
 
-  const handleMenuPress = () => {
+  const handleMenuPress = (): void => {
     setOpen(!open);
   };
 
@@ -126,55 +123,47 @@ const DashboardMenu = ({ style }: DashboardMenuProps): JSX.Element => {
 
   return (
     <View style={style}>
-      <View style={styles.container}>
-        <TouchableOpacity
-          containerStyle={styles.mainButton}
-          onPress={handleMenuPress}>
-          <Animated.View style={cogAnimatedStyle}>
-            <Ionicons name='cog-outline' size={MENU_ICON_SIZE} color='white' />
-          </Animated.View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          containerStyle={styles.mainButton}
-          onPress={handleMenuPress}>
-          <Animated.View style={closeAnimatedStyle}>
-            <Ionicons
-              name='close-outline'
-              size={MENU_ICON_SIZE}
-              color='white'
-            />
-          </Animated.View>
-        </TouchableOpacity>
-        <View style={styles.menuButtons}>
-          <MenuButton
-            iconName='bluetooth-outline'
-            iconSize={MENU_ICON_SIZE}
-            label='Bluetooth'
-            style={[styles.bluetoothButton, bluetoothAnimatedStyle]}
-            onPress={handleSettings}
-          />
-          <MenuButton
-            iconName='thermometer-outline'
-            iconSize={MENU_ICON_SIZE}
-            label='Vehicle Status'
-            style={[styles.temperatureButton, temperatureAnimatedStyle]}
-            onPress={handleTemperature}
-          />
-          <MenuButton
-            iconName='sunny-outline'
-            iconSize={MENU_ICON_SIZE}
-            label='Lighting'
-            style={[styles.lightingButton, lightingAnimatedStyle]}
-            onPress={handleLighting}
-          />
-        </View>
+      <TouchableOpacity
+        containerStyle={styles.mainButton}
+        onPress={handleMenuPress}
+      >
+        <Animated.View style={cogAnimatedStyle}>
+          <Ionicons name="cog-outline" size={MENU_ICON_SIZE} color="white" />
+        </Animated.View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        containerStyle={styles.mainButton}
+        onPress={handleMenuPress}
+      >
+        <Animated.View style={closeAnimatedStyle}>
+          <Ionicons name="close-outline" size={MENU_ICON_SIZE} color="white" />
+        </Animated.View>
+      </TouchableOpacity>
+      <View style={styles.menuButtons}>
+        <MenuButton
+          iconName="bluetooth-outline"
+          iconSize={MENU_ICON_SIZE}
+          label="Bluetooth"
+          style={[styles.bluetoothButton, bluetoothAnimatedStyle]}
+          onPress={handleSettings}
+        />
+        <MenuButton
+          iconName="thermometer-outline"
+          iconSize={MENU_ICON_SIZE}
+          label="Vehicle Status"
+          style={[styles.temperatureButton, temperatureAnimatedStyle]}
+          onPress={handleTemperature}
+        />
+        <MenuButton
+          iconName="sunny-outline"
+          iconSize={MENU_ICON_SIZE}
+          label="Lighting"
+          style={[styles.lightingButton, lightingAnimatedStyle]}
+          onPress={handleLighting}
+        />
       </View>
     </View>
   );
-};
-
-DashboardMenu.defaultProps = {
-  style: undefined,
 };
 
 export default DashboardMenu;

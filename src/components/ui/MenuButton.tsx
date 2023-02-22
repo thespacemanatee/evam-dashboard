@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import {
-  StyleProp,
+  type StyleProp,
   StyleSheet,
   Text,
   TouchableOpacity,
-  ViewStyle,
+  type ViewStyle,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -40,15 +40,11 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   return (
     <Animated.View style={style}>
       <TouchableOpacity onPress={onPress} style={styles.container}>
-        <Ionicons name={iconName} size={iconSize} color='white' />
+        <Ionicons name={iconName} size={iconSize} color="white" />
         <Text style={styles.labelText}>{label}</Text>
       </TouchableOpacity>
     </Animated.View>
   );
-};
-
-MenuButton.defaultProps = {
-  style: null,
 };
 
 export default MenuButton;

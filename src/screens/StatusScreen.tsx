@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { StackScreenProps } from '@react-navigation/stack';
-import { Subscription } from 'react-native-ble-plx';
+import { type StackScreenProps } from '@react-navigation/stack';
+import { type Subscription } from 'react-native-ble-plx';
 
 import { MENU_ICON_SIZE } from '../utils/config';
 import CarGraphic from '../components/status/CarGraphic';
-import { RootStackParamList } from '../navigation';
+import { type DashboardStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
 import { decodeBleString, getStatusCharacteristic } from '../utils/utils';
 import StatusIndicator from '../components/status/StatusIndicator';
-import { StatusIndicatorData } from '../index';
+import { type StatusIndicatorData } from '../index';
 
 const styles = StyleSheet.create({
   screen: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = StackScreenProps<RootStackParamList, 'Status'>;
+type Props = StackScreenProps<DashboardStackParamList, 'Status'>;
 
 const StatusScreen = ({ navigation }: Props): JSX.Element => {
   const deviceUUID = useAppSelector(
@@ -112,37 +112,12 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
   const [data, setIndicatorData] = useState<StatusIndicatorData>();
 
   const readAndUpdateStatusValues = useCallback(async () => {
-    const statusCharacteristic = await getStatusCharacteristic();
+    try {
+      const statusCharacteristic = await getStatusCharacteristic();
 
-    const decodedString = decodeBleString(
-      (await statusCharacteristic?.read())?.value,
-    );
-    setIndicatorData({
-      ecu: decodedString.charCodeAt(0),
-      bms: decodedString.charCodeAt(1),
-      tps: decodedString.charCodeAt(2),
-      sas: decodedString.charCodeAt(3),
-      imu: decodedString.charCodeAt(4),
-      int: decodedString.charCodeAt(5),
-      flw: decodedString.charCodeAt(6),
-      frw: decodedString.charCodeAt(7),
-      rlw: decodedString.charCodeAt(8),
-      rrw: decodedString.charCodeAt(9),
-      fll: decodedString.charCodeAt(10),
-      frl: decodedString.charCodeAt(11),
-      rll: decodedString.charCodeAt(12),
-      rrl: decodedString.charCodeAt(13),
-    });
-  }, []);
-
-  const monitorAndUpdateStatusValues = useCallback(async () => {
-    const characteristic = await getStatusCharacteristic();
-    return characteristic?.monitor((err, cha) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      const decodedString = decodeBleString(cha?.value);
+      const decodedString = decodeBleString(
+        (await statusCharacteristic?.read())?.value,
+      );
       setIndicatorData({
         ecu: decodedString.charCodeAt(0),
         bms: decodedString.charCodeAt(1),
@@ -159,56 +134,99 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
         rll: decodedString.charCodeAt(12),
         rrl: decodedString.charCodeAt(13),
       });
-    });
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  const monitorAndUpdateStatusValues = useCallback(async () => {
+    try {
+      const characteristic = await getStatusCharacteristic();
+      return characteristic?.monitor((err, cha) => {
+        if (err != null) {
+          console.error(err);
+          return;
+        }
+        const decodedString = decodeBleString(cha?.value);
+        setIndicatorData({
+          ecu: decodedString.charCodeAt(0),
+          bms: decodedString.charCodeAt(1),
+          tps: decodedString.charCodeAt(2),
+          sas: decodedString.charCodeAt(3),
+          imu: decodedString.charCodeAt(4),
+          int: decodedString.charCodeAt(5),
+          flw: decodedString.charCodeAt(6),
+          frw: decodedString.charCodeAt(7),
+          rlw: decodedString.charCodeAt(8),
+          rrw: decodedString.charCodeAt(9),
+          fll: decodedString.charCodeAt(10),
+          frl: decodedString.charCodeAt(11),
+          rll: decodedString.charCodeAt(12),
+          rrl: decodedString.charCodeAt(13),
+        });
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   useEffect(() => {
-    readAndUpdateStatusValues();
+    void (async () => {
+      try {
+        await readAndUpdateStatusValues();
+      } catch (err) {
+        console.error(err);
+      }
+    })();
   }, [readAndUpdateStatusValues]);
 
   useEffect(() => {
     let subscription: Subscription | undefined;
-    const getDevice = async () => {
+    void (async () => {
       try {
         const device = await bleManagerRef.current?.devices([deviceUUID]);
-        if (device && device.length > 0) {
+        if (device != null && device.length > 0) {
           subscription = await monitorAndUpdateStatusValues();
         }
       } catch (err) {
         console.error(err);
       }
-    };
-    getDevice();
+    })();
 
-    return () => subscription?.remove();
+    return () => {
+      subscription?.remove();
+    };
   }, [deviceUUID, monitorAndUpdateStatusValues]);
 
   return (
     <>
       <View style={[StyleSheet.absoluteFill, styles.screen]}>
         <CarGraphic />
-        <StatusIndicator status={data?.frl} label='FRL' style={styles.FRL} />
-        <StatusIndicator status={data?.frw} label='FRW' style={styles.FRW} />
-        <StatusIndicator status={data?.fll} label='FLL' style={styles.FLL} />
-        <StatusIndicator status={data?.flw} label='FLW' style={styles.FLW} />
-        <StatusIndicator status={data?.int} label='INT' style={styles.INT} />
-        <StatusIndicator status={data?.ecu} label='ECU' style={styles.ECU} />
-        <StatusIndicator status={data?.imu} label='IMU' style={styles.IMU} />
-        <StatusIndicator status={data?.rrl} label='RRL' style={styles.RRL} />
-        <StatusIndicator status={data?.rrw} label='RRW' style={styles.RRW} />
-        <StatusIndicator status={data?.rll} label='RLL' style={styles.RLL} />
-        <StatusIndicator status={data?.rlw} label='RLW' style={styles.RLW} />
-        <StatusIndicator status={data?.bms} label='BMS' style={styles.BMS} />
-        <StatusIndicator status={data?.tps} label='TPS' style={styles.TPS} />
-        <StatusIndicator status={data?.sas} label='SAS' style={styles.SAS} />
+        <StatusIndicator status={data?.frl} label="FRL" style={styles.FRL} />
+        <StatusIndicator status={data?.frw} label="FRW" style={styles.FRW} />
+        <StatusIndicator status={data?.fll} label="FLL" style={styles.FLL} />
+        <StatusIndicator status={data?.flw} label="FLW" style={styles.FLW} />
+        <StatusIndicator status={data?.int} label="INT" style={styles.INT} />
+        <StatusIndicator status={data?.ecu} label="ECU" style={styles.ECU} />
+        <StatusIndicator status={data?.imu} label="IMU" style={styles.IMU} />
+        <StatusIndicator status={data?.rrl} label="RRL" style={styles.RRL} />
+        <StatusIndicator status={data?.rrw} label="RRW" style={styles.RRW} />
+        <StatusIndicator status={data?.rll} label="RLL" style={styles.RLL} />
+        <StatusIndicator status={data?.rlw} label="RLW" style={styles.RLW} />
+        <StatusIndicator status={data?.bms} label="BMS" style={styles.BMS} />
+        <StatusIndicator status={data?.tps} label="TPS" style={styles.TPS} />
+        <StatusIndicator status={data?.sas} label="SAS" style={styles.SAS} />
       </View>
       <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}>
+        onPress={() => {
+          navigation.goBack();
+        }}
+        style={styles.backButton}
+      >
         <Ionicons
-          name='chevron-back-outline'
+          name="chevron-back-outline"
           size={MENU_ICON_SIZE}
-          color='white'
+          color="white"
         />
       </TouchableOpacity>
     </>

@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
-import { BottomSheetHandleProps } from '@gorhom/bottom-sheet';
+import { useMemo } from 'react';
+import { type StyleProp, StyleSheet, type ViewStyle } from 'react-native';
+import { type BottomSheetHandleProps } from '@gorhom/bottom-sheet';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -134,17 +134,14 @@ const SheetHandle: React.FC<HandleProps> = ({ style, animatedIndex }) => {
   return (
     <Animated.View
       style={[containerStyle, containerAnimatedStyle]}
-      renderToHardwareTextureAndroid>
+      renderToHardwareTextureAndroid
+    >
       <Animated.View style={[leftIndicatorStyle, leftIndicatorAnimatedStyle]} />
       <Animated.View
         style={[rightIndicatorStyle, rightIndicatorAnimatedStyle]}
       />
     </Animated.View>
   );
-};
-
-SheetHandle.defaultProps = {
-  style: undefined,
 };
 
 export default SheetHandle;

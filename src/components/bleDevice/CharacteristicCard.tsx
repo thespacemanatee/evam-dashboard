@@ -1,6 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { Characteristic } from 'react-native-ble-plx';
+import { useEffect, useState } from 'react';
+import {
+  type StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
+import { type Characteristic } from 'react-native-ble-plx';
 import { decode as btoa } from 'base-64';
 
 interface CharacteristicCardProps {
@@ -25,13 +31,17 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
   const [descriptor, setDescriptor] = useState('');
 
   useEffect(() => {
-    char.descriptors().then((desc) => {
-      desc[0]?.read().then((val) => {
-        if (val) {
-          setDescriptor(btoa(val.value || ''));
+    void (async () => {
+      try {
+        const desc = await char.descriptors();
+        const r = await desc[0]?.read();
+        if (r.value != null) {
+          setDescriptor(btoa(r.value));
         }
-      });
-    });
+      } catch (err) {
+        console.error(err);
+      }
+    })();
   }, [char]);
 
   return (
@@ -41,21 +51,21 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
         <Text>{`Descriptor: ${descriptor}`}</Text>
         <View style={{ flexDirection: 'row' }}>
           <View>
-            <Text>{`isIndicatable: ${char.isIndicatable}`}</Text>
-            <Text>{`isNotifiable: ${char.isNotifiable}`}</Text>
-            <Text>{`isNotifying: ${char.isNotifying}`}</Text>
-            <Text>{`isReadable: ${char.isReadable}`}</Text>
-            <Text>{`isWritableWithResponse: ${char.isWritableWithResponse}`}</Text>
-            <Text>{`isWritableWithoutResponse: ${char.isWritableWithoutResponse}`}</Text>
+            <Text>{`isIndicatable: ${String(char.isIndicatable)}`}</Text>
+            <Text>{`isNotifiable: ${String(char.isNotifiable)}`}</Text>
+            <Text>{`isNotifying: ${String(char.isNotifying)}`}</Text>
+            <Text>{`isReadable: ${String(char.isReadable)}`}</Text>
+            <Text>{`isWritableWithResponse: ${String(
+              char.isWritableWithResponse,
+            )}`}</Text>
+            <Text>{`isWritableWithoutResponse: ${String(
+              char.isWritableWithoutResponse,
+            )}`}</Text>
           </View>
         </View>
       </View>
     </View>
   );
-};
-
-CharacteristicCard.defaultProps = {
-  style: undefined,
 };
 
 export default CharacteristicCard;

@@ -1,7 +1,13 @@
-import React from 'react';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import {
+  type StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import AnimateableText from 'react-native-animateable-text';
-import Animated, { useAnimatedProps } from 'react-native-reanimated';
+import type Animated from 'react-native-reanimated';
+import { useAnimatedProps } from 'react-native-reanimated';
 
 import Battery from './Battery';
 
@@ -28,13 +34,13 @@ const styles = StyleSheet.create({
   },
 });
 
-type BatteryStatisticsProps = {
+interface BatteryStatisticsProps {
   percentage: Animated.SharedValue<number>;
   voltage: Animated.SharedValue<number>;
   current: Animated.SharedValue<number>;
   temperature: Animated.SharedValue<number>;
   style?: StyleProp<ViewStyle>;
-};
+}
 
 const BatteryStatistics = ({
   percentage,
@@ -83,10 +89,6 @@ const BatteryStatistics = ({
       </View>
     </View>
   );
-};
-
-BatteryStatistics.defaultProps = {
-  style: undefined,
 };
 
 export default BatteryStatistics;

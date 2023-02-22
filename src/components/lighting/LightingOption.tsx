@@ -1,5 +1,10 @@
-import React from 'react';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import {
+  type StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
 
 import ThemedSwitch from '../ui/ThemedSwitch';
 
@@ -9,6 +14,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: 250,
+  },
+  labelContainer: {
+    marginEnd: 16,
   },
   label: {
     color: 'white',
@@ -26,13 +34,13 @@ const styles = StyleSheet.create({
   },
 });
 
-type LightingOptionProps = {
+interface LightingOptionProps {
   label: string;
   value: boolean;
   onValueChange: (value: boolean) => void;
   color?: string;
   style?: StyleProp<ViewStyle>;
-};
+}
 
 const LightingOption = ({
   label,
@@ -42,26 +50,19 @@ const LightingOption = ({
   style,
 }: LightingOptionProps): JSX.Element => {
   return (
-    <View style={style}>
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.label}>{label}</Text>
-          <View style={styles.colorTextContainer}>
-            <Text style={styles.colorText}>Current Color: </Text>
-            <Text style={[styles.colorText, { color: color || 'white' }]}>
-              {color || 'Not Set'}
-            </Text>
-          </View>
+    <View style={[styles.container, style]}>
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>{label}</Text>
+        <View style={styles.colorTextContainer}>
+          <Text style={styles.colorText}>Current Color: </Text>
+          <Text style={[styles.colorText, { color: color ?? 'white' }]}>
+            {color ?? 'Not Set'}
+          </Text>
         </View>
-        <ThemedSwitch value={value} onValueChange={onValueChange} />
       </View>
+      <ThemedSwitch value={value} onValueChange={onValueChange} />
     </View>
   );
-};
-
-LightingOption.defaultProps = {
-  color: undefined,
-  style: undefined,
 };
 
 export default LightingOption;
