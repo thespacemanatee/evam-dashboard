@@ -16,8 +16,9 @@
     coreMessage[0] = vel    //Car velocity, 0-255km/h
     coreMessage[1] = acc    //Accelerator percentage, 0-100%
     coreMessage[2] = brake  //Brake percentage, 0-100%
+    coreMessage[3] = reverse  //Reverse: 0 or 1
 */
-extern uint8_t coreMessage[3];
+extern uint8_t coreMessage[4];
 
 /* Node status message to be notified:
     statusMessage[0] = ecu          //engine control unit

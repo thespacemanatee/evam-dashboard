@@ -105,6 +105,8 @@ void checkIncomingCanMessages(){
         batteryMessage[2] = rx_frame.data.u8[2]; //battCurr_1
         batteryMessage[3] = rx_frame.data.u8[3]; //battCurr_2
         batteryMessage[0] = rx_frame.data.u8[6]; //battPercent
+        batteryMessage[4] = rx_frame.data.u8[7]-40; //battTemp
+
     } 
     else if(rx_frame.MsgID == VEH_SPEED_MSG_ID){
       coreMessage[0] = rx_frame.data.u8[1]; //just take the second byte (MSB) since we only need 8-bit resolution
@@ -214,6 +216,7 @@ void sendButtonCanMessages(unsigned long *_currentMillis){
     reverseMsg.data.u8[0] = revMode;
     ESP32Can.CANWriteFrame(&reverseMsg);
     reverseISRFlag = false;
+    coreMessage[3] = revMode;   //update BLE message
   }
   
   //boost (template)
