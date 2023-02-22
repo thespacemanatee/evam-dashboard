@@ -1,7 +1,7 @@
 #include <messages.h>
 
 /********** MESSAGES FOR BLE CHARACTERISTICS **********/
-uint8_t coreMessage[3];
+uint8_t coreMessage[4];
 uint8_t statusMessage[11];
 uint8_t batteryMessage[5];
 
@@ -107,13 +107,14 @@ void initPhoneConnectedMsg(){
   phoneConnectedMsg.data.u8[0] = 0;
 }
 
-//setup reverse message for CAN Bus
+//setup reverse message for CAN Bus and update BLE message too
 void initReverseMsg(){
   reverseMsg.FIR.B.FF = CAN_frame_std;
   reverseMsg.MsgID  = REV_BOOST_MSG_ID;
   reverseMsg.FIR.B.DLC = 2;
   reverseMsg.data.u8[0] = digitalRead(REVERSE_SWITCH_PIN);  //0= forward, 1 = reverse
-  reverseMsg.data.u8[1] = 0;  //0= normal, 1 = eco, 2 = boost  
+  reverseMsg.data.u8[1] = 0;                                //0= normal, 1 = eco, 2 = boost
+  coreMessage[3] = reverseMsg.data.u8[0];                   //set BLE message
 }
 
 void initNodeStatusRequestMessage(){

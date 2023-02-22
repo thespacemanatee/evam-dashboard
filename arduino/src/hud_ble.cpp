@@ -5,7 +5,6 @@ BLEService *pCoreService;     //service for core data
 BLEService *pStatusService;   //service for CANBus node status data
 BLEService *pLightingService; //service for lighting data
 BLECharacteristic *pCoreCharacteristic;
-BLECharacteristic *pExtraCharacteristic;
 BLECharacteristic *pStatusCharacteristic;
 BLECharacteristic *pBatteryCharacteristic;
 BLECharacteristic *pFrontLightingCharacteristic;
