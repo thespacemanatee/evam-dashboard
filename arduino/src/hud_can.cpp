@@ -209,6 +209,8 @@ void sendButtonCanMessages(unsigned long *_currentMillis){
   //reverse
   if(reverseISRFlag && ((*_currentMillis - lastDriveModeSwitchEvent) > DEBOUNCE_INTERVAL)){
     revMode = digitalRead(REVERSE_SWITCH_PIN);
+    Serial.print("Reverse: ");
+    Serial.println(revMode);
     reverseMsg.data.u8[0] = revMode;
     ESP32Can.CANWriteFrame(&reverseMsg);
     reverseISRFlag = false;
