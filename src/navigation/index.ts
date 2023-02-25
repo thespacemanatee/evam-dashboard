@@ -21,6 +21,11 @@ export type SettingsStackParamList = {
   Device: { device: Device };
 };
 
+export type DashboardScreenProps = StackScreenProps<
+  DashboardStackParamList,
+  'Dashboard'
+>;
+
 export type DashboardScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<DashboardStackParamList, 'Dashboard'>,
   StackNavigationProp<RootStackParamList>

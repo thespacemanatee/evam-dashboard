@@ -9,7 +9,11 @@ import CarGraphic from '../components/status/CarGraphic';
 import { type DashboardStackParamList } from '../navigation';
 import { bleManagerRef } from '../utils/BleHelper';
 import { useAppSelector } from '../app/hooks';
-import { decodeBleString, getStatusCharacteristic } from '../utils/utils';
+import {
+  decodeBleString,
+  getStatusCharacteristic,
+  getStatusIndicatorData,
+} from '../utils/utils';
 import StatusIndicator from '../components/status/StatusIndicator';
 import { type StatusIndicatorData } from '../index';
 
@@ -31,24 +35,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginRight: 16,
   },
-  FRL: {
-    position: 'absolute',
-    top: 60,
-    right: 220,
-  },
-  FRW: {
+  FW: {
     position: 'absolute',
     top: 110,
     right: 220,
   },
-  FLL: {
+  FL: {
     position: 'absolute',
     top: 60,
-    left: 220,
-  },
-  FLW: {
-    position: 'absolute',
-    top: 110,
     left: 220,
   },
   INT: {
@@ -66,7 +60,7 @@ const styles = StyleSheet.create({
     top: 190,
     left: 150,
   },
-  RRL: {
+  RL: {
     position: 'absolute',
     top: 270,
     right: 195,
@@ -75,11 +69,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 320,
     right: 195,
-  },
-  RLL: {
-    position: 'absolute',
-    top: 270,
-    left: 195,
   },
   RLW: {
     position: 'absolute',
@@ -109,31 +98,15 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
   const deviceUUID = useAppSelector(
     (state) => state.settings.selectedDeviceUUID,
   );
-  const [data, setIndicatorData] = useState<StatusIndicatorData>();
+  const [indicatorData, setIndicatorData] = useState<StatusIndicatorData>();
 
   const readAndUpdateStatusValues = useCallback(async () => {
     try {
       const statusCharacteristic = await getStatusCharacteristic();
-
       const decodedString = decodeBleString(
         (await statusCharacteristic?.read())?.value,
       );
-      setIndicatorData({
-        ecu: decodedString.charCodeAt(0),
-        bms: decodedString.charCodeAt(1),
-        tps: decodedString.charCodeAt(2),
-        sas: decodedString.charCodeAt(3),
-        imu: decodedString.charCodeAt(4),
-        int: decodedString.charCodeAt(5),
-        flw: decodedString.charCodeAt(6),
-        frw: decodedString.charCodeAt(7),
-        rlw: decodedString.charCodeAt(8),
-        rrw: decodedString.charCodeAt(9),
-        fll: decodedString.charCodeAt(10),
-        frl: decodedString.charCodeAt(11),
-        rll: decodedString.charCodeAt(12),
-        rrl: decodedString.charCodeAt(13),
-      });
+      setIndicatorData(getStatusIndicatorData(decodedString));
     } catch (err) {
       console.error(err);
     }
@@ -148,22 +121,7 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
           return;
         }
         const decodedString = decodeBleString(cha?.value);
-        setIndicatorData({
-          ecu: decodedString.charCodeAt(0),
-          bms: decodedString.charCodeAt(1),
-          tps: decodedString.charCodeAt(2),
-          sas: decodedString.charCodeAt(3),
-          imu: decodedString.charCodeAt(4),
-          int: decodedString.charCodeAt(5),
-          flw: decodedString.charCodeAt(6),
-          frw: decodedString.charCodeAt(7),
-          rlw: decodedString.charCodeAt(8),
-          rrw: decodedString.charCodeAt(9),
-          fll: decodedString.charCodeAt(10),
-          frl: decodedString.charCodeAt(11),
-          rll: decodedString.charCodeAt(12),
-          rrl: decodedString.charCodeAt(13),
-        });
+        setIndicatorData(getStatusIndicatorData(decodedString));
       });
     } catch (err) {
       console.error(err);
@@ -202,20 +160,61 @@ const StatusScreen = ({ navigation }: Props): JSX.Element => {
     <>
       <View style={[StyleSheet.absoluteFill, styles.screen]}>
         <CarGraphic />
-        <StatusIndicator status={data?.frl} label="FRL" style={styles.FRL} />
-        <StatusIndicator status={data?.frw} label="FRW" style={styles.FRW} />
-        <StatusIndicator status={data?.fll} label="FLL" style={styles.FLL} />
-        <StatusIndicator status={data?.flw} label="FLW" style={styles.FLW} />
-        <StatusIndicator status={data?.int} label="INT" style={styles.INT} />
-        <StatusIndicator status={data?.ecu} label="ECU" style={styles.ECU} />
-        <StatusIndicator status={data?.imu} label="IMU" style={styles.IMU} />
-        <StatusIndicator status={data?.rrl} label="RRL" style={styles.RRL} />
-        <StatusIndicator status={data?.rrw} label="RRW" style={styles.RRW} />
-        <StatusIndicator status={data?.rll} label="RLL" style={styles.RLL} />
-        <StatusIndicator status={data?.rlw} label="RLW" style={styles.RLW} />
-        <StatusIndicator status={data?.bms} label="BMS" style={styles.BMS} />
-        <StatusIndicator status={data?.tps} label="TPS" style={styles.TPS} />
-        <StatusIndicator status={data?.sas} label="SAS" style={styles.SAS} />
+        <StatusIndicator
+          status={indicatorData?.fw}
+          label="FW"
+          style={styles.FW}
+        />
+        <StatusIndicator
+          status={indicatorData?.fl}
+          label="FL"
+          style={styles.FL}
+        />
+        <StatusIndicator
+          status={indicatorData?.int}
+          label="INT"
+          style={styles.INT}
+        />
+        <StatusIndicator
+          status={indicatorData?.ecu}
+          label="ECU"
+          style={styles.ECU}
+        />
+        <StatusIndicator
+          status={indicatorData?.imu}
+          label="IMU"
+          style={styles.IMU}
+        />
+        <StatusIndicator
+          status={indicatorData?.rl}
+          label="RL"
+          style={styles.RL}
+        />
+        <StatusIndicator
+          status={indicatorData?.rrw}
+          label="RRW"
+          style={styles.RRW}
+        />
+        <StatusIndicator
+          status={indicatorData?.rlw}
+          label="RLW"
+          style={styles.RLW}
+        />
+        <StatusIndicator
+          status={indicatorData?.bms}
+          label="BMS"
+          style={styles.BMS}
+        />
+        <StatusIndicator
+          status={indicatorData?.tps}
+          label="TPS"
+          style={styles.TPS}
+        />
+        <StatusIndicator
+          status={indicatorData?.sas}
+          label="SAS"
+          style={styles.SAS}
+        />
       </View>
       <TouchableOpacity
         onPress={() => {

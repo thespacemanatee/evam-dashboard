@@ -35,11 +35,11 @@ const CharacteristicCard: React.FC<CharacteristicCardProps> = ({
       try {
         const desc = await char.descriptors();
         const r = await desc[0]?.read();
-        if (r.value != null) {
+        if (r?.value != null) {
           setDescriptor(btoa(r.value));
         }
       } catch (err) {
-        console.error(err);
+        console.error('[CharacteristicCard]', err);
       }
     })();
   }, [char]);

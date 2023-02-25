@@ -19,7 +19,7 @@ const DescriptorCard: React.FC<DescriptorCardProps> = ({ descriptor }) => {
           setValue(r.value);
         }
       } catch (err) {
-        console.error(err);
+        console.error('[DescriptorCard]', err);
       }
     })();
   }, [descriptor]);

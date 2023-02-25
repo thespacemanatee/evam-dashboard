@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { type Subscription } from 'react-native-ble-plx';
 import RadioPlayer from 'react-native-radio-player';
@@ -25,6 +25,7 @@ import RadioPlayerUI from '../components/radio/RadioPlayerUI';
 import TopIndicator from '../components/status/TopIndicator';
 import { type TopIndicatorData } from '../index';
 import RadioPlayerSheet from './RadioPlayerSheet';
+import { type DashboardScreenProps } from '../navigation';
 
 const styles = StyleSheet.create({
   screen: {
@@ -53,19 +54,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   leftTachometer: {
-    right: -100,
+    right: -120,
   },
   rightTachometer: {
-    left: -100,
+    left: -120,
   },
   dashboardRadioPlayer: {
     position: 'absolute',
     left: 32,
     bottom: 32,
   },
+  disconnectedOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+  },
+  disconnectedCard: {
+    padding: 32,
+    backgroundColor: 'black',
+    borderWidth: 1,
+    borderColor: 'red',
+  },
+  disconnectedText: {
+    color: 'white',
+    fontFamily: 'Digital-Numbers',
+    fontSize: 40,
+    textAlign: 'center',
+  },
 });
 
-const DashboardScreen = (): JSX.Element => {
+const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
   const deviceUUID = useAppSelector(
     (state) => state.settings.selectedDeviceUUID,
   );
@@ -73,6 +92,8 @@ const DashboardScreen = (): JSX.Element => {
   const currentChannel = useAppSelector((state) => state.player.currentChannel);
   const [isPlaying, setIsPlaying] = useState(false);
   const [indicatorData, setIndicatorData] = useState<TopIndicatorData>();
+  const [isReversing, setIsReversing] = useState(false);
+  const [isDisconnected, setIsDisconnected] = useState(true);
   const velocity = useSharedValue(0);
   const acceleration = useSharedValue(0);
   const brake = useSharedValue(0);
@@ -98,7 +119,7 @@ const DashboardScreen = (): JSX.Element => {
     }
   }, [channels, currentChannel, dispatch]);
 
-  const handlePlayPause = async (): Promise<void> => {
+  const handlePlayPause = useCallback(async (): Promise<void> => {
     try {
       if (isPlaying) {
         await RadioPlayer.stop();
@@ -110,9 +131,9 @@ const DashboardScreen = (): JSX.Element => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [isPlaying]);
 
-  const handleSkipBack = async (): Promise<void> => {
+  const handleSkipBack = useCallback(async (): Promise<void> => {
     try {
       if (currentChannel != null) {
         const nextChannelId =
@@ -126,9 +147,9 @@ const DashboardScreen = (): JSX.Element => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [channels, currentChannel, dispatch]);
 
-  const handleSkipForward = async (): Promise<void> => {
+  const handleSkipForward = useCallback(async (): Promise<void> => {
     try {
       if (currentChannel != null) {
         const nextChannelId =
@@ -140,23 +161,27 @@ const DashboardScreen = (): JSX.Element => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [channels, currentChannel, dispatch]);
 
   const monitorAndUpdateCoreValues = useCallback(async () => {
     try {
       const coreCharacteristic = await getCoreCharacteristic();
       return coreCharacteristic?.monitor((err, cha) => {
         if (err != null) {
-          console.error(err);
+          setIsDisconnected(true);
+          console.error('[coreCharacteristic.monitor]', err);
           return;
         }
         const decodedString = decodeBleString(cha?.value);
         velocity.value = decodedString.charCodeAt(0);
         acceleration.value = decodedString.charCodeAt(1);
         brake.value = decodedString.charCodeAt(2);
+        setIsReversing(decodedString.charCodeAt(3) === 1);
+        setIsDisconnected(false);
       });
     } catch (err) {
-      console.error(err);
+      setIsDisconnected(true);
+      console.error('[monitorAndUpdateCoreValues]', err);
     }
   }, [acceleration, brake, velocity]);
 
@@ -170,34 +195,46 @@ const DashboardScreen = (): JSX.Element => {
       setIndicatorData(getTopIndicatorData(decodedString));
 
       return statusCharacteristic?.monitor((err, cha) => {
+        setIsDisconnected(true);
         if (err != null) {
-          console.error(err);
+          setIsDisconnected(true);
+          console.error('[statusCharacteristic.monitor]', err);
           return;
         }
         decodedString = decodeBleString(cha?.value);
         setIndicatorData(getTopIndicatorData(decodedString));
+        setIsDisconnected(false);
       });
     } catch (err) {
-      console.error(err);
+      setIsDisconnected(true);
+      console.error('[monitorAndUpdateStatusValues]', err);
     }
   }, []);
 
   const monitorAndUpdateBatteryValues = useCallback(async () => {
-    const batteryCharacteristic = await getBatteryCharacteristic();
+    try {
+      const batteryCharacteristic = await getBatteryCharacteristic();
 
-    return batteryCharacteristic?.monitor((err, cha) => {
-      if (err != null) {
-        console.error(err);
-        return;
-      }
-      const decodedString = decodeBleString(cha?.value);
-      battPercentage.value = decodedString.charCodeAt(0) / 10;
-      battVoltage.value = decodedString.charCodeAt(1) / 10;
-      battCurrent.value =
-        (decodedString.charCodeAt(2) * 256 + decodedString.charCodeAt(3)) / 10 -
-        320;
-      battTemperature.value = decodedString.charCodeAt(4) / 10;
-    });
+      return batteryCharacteristic?.monitor((err, cha) => {
+        if (err != null) {
+          setIsDisconnected(true);
+          console.error('[batteryCharacteristic.monitor]', err);
+          return;
+        }
+        const decodedString = decodeBleString(cha?.value);
+        battPercentage.value = decodedString.charCodeAt(0);
+        battVoltage.value = decodedString.charCodeAt(1);
+        battCurrent.value =
+          (decodedString.charCodeAt(3) * 256 + decodedString.charCodeAt(2)) /
+            10 -
+          320;
+        battTemperature.value = decodedString.charCodeAt(4);
+        setIsDisconnected(false);
+      });
+    } catch (err) {
+      setIsDisconnected(true);
+      console.error('[monitorAndUpdateBatteryValues]', err);
+    }
   }, [battCurrent, battPercentage, battTemperature, battVoltage]);
 
   useEffect(() => {
@@ -232,9 +269,26 @@ const DashboardScreen = (): JSX.Element => {
   return (
     <>
       <View style={styles.screen}>
-        <TopIndicator data={indicatorData} />
         <View style={[StyleSheet.absoluteFill, styles.analogIndicators]}>
           <LeftTachometer progress={brake} style={styles.leftTachometer} />
+          <View
+            style={{
+              borderWidth: 2,
+              borderColor: isReversing ? 'red' : 'green',
+              width: 60,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: 'Gotham-Narrow',
+                fontWeight: 'bold',
+                fontSize: 40,
+                color: isReversing ? 'red' : 'green',
+              }}
+            >
+              {isReversing ? ' R ' : ' D '}
+            </Text>
+          </View>
           <RightTachometer
             progress={acceleration}
             style={styles.rightTachometer}
@@ -251,7 +305,19 @@ const DashboardScreen = (): JSX.Element => {
           temperature={battTemperature}
           style={styles.battery}
         />
-        <DashboardMenu style={styles.menu} />
+        <TopIndicator
+          data={indicatorData}
+          onPress={() => {
+            navigation.navigate('Status');
+          }}
+        />
+        {isDisconnected && (
+          <View style={styles.disconnectedOverlay}>
+            <View style={styles.disconnectedCard}>
+              <Text style={styles.disconnectedText}>Disconnected</Text>
+            </View>
+          </View>
+        )}
         <RadioPlayerUI
           onPressRadioLabel={() => {
             sheetRef.current?.expand();
@@ -263,6 +329,7 @@ const DashboardScreen = (): JSX.Element => {
           currentChannel={currentChannel?.name ?? ''}
           style={styles.dashboardRadioPlayer}
         />
+        <DashboardMenu style={styles.menu} />
       </View>
       <RadioPlayerSheet sheetRef={sheetRef} />
     </>

@@ -6,6 +6,7 @@ import {
   View,
   type ViewStyle,
   useWindowDimensions,
+  TouchableOpacity,
 } from 'react-native';
 
 import { type TopIndicatorData } from '../../index';
@@ -45,32 +46,38 @@ const styles = StyleSheet.create({
 
 interface TopIndicatorProps {
   data?: TopIndicatorData;
+  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }
 
-const TopIndicator = ({ data, style }: TopIndicatorProps): JSX.Element => {
+const TopIndicator = ({
+  data,
+  onPress,
+  style,
+}: TopIndicatorProps): JSX.Element => {
   const { width } = useWindowDimensions();
 
   return (
-    <View style={style}>
-      <View style={[styles.contentContainer, { width: width / 3 }]}>
-        <View style={styles.topIndicator}>
-          <Indicator status={data?.tps} style={styles.indicator} />
-          <Indicator status={data?.sas} style={styles.indicator} />
-          <Indicator status={data?.ecu} style={styles.indicator} />
-          <Indicator status={data?.bms} style={styles.indicator} />
-          <Indicator status={data?.whl} style={styles.indicator} />
-        </View>
-        <View style={styles.divider} />
-        <View style={styles.labelContainer}>
-          <Text style={styles.labelText}>TPS</Text>
-          <Text style={styles.labelText}>SAS</Text>
-          <Text style={styles.labelText}>ECU</Text>
-          <Text style={styles.labelText}>BMS</Text>
-          <Text style={styles.labelText}>WHL</Text>
-        </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.contentContainer, { width: width / 3 }, style]}
+    >
+      <View style={styles.topIndicator}>
+        <Indicator status={data?.tps} style={styles.indicator} />
+        <Indicator status={data?.sas} style={styles.indicator} />
+        <Indicator status={data?.ecu} style={styles.indicator} />
+        <Indicator status={data?.bms} style={styles.indicator} />
+        <Indicator status={data?.whl} style={styles.indicator} />
       </View>
-    </View>
+      <View style={styles.divider} />
+      <View style={styles.labelContainer}>
+        <Text style={styles.labelText}>TPS</Text>
+        <Text style={styles.labelText}>SAS</Text>
+        <Text style={styles.labelText}>ECU</Text>
+        <Text style={styles.labelText}>BMS</Text>
+        <Text style={styles.labelText}>WHL</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 

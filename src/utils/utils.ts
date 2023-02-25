@@ -3,7 +3,7 @@ import { decode as btoa } from 'base-64';
 import { type Characteristic } from 'react-native-ble-plx';
 
 import { bleManagerRef } from './BleHelper';
-import { type TopIndicatorData } from '../index';
+import { type StatusIndicatorData, type TopIndicatorData } from '../index';
 import {
   BATTERY_CHARACTERISTIC_UUID,
   CORE_CHARACTERISTIC_UUID,
@@ -118,24 +118,40 @@ export const getTopIndicatorData = (
   decodedString: string,
 ): TopIndicatorData => {
   const whl =
+    decodedString.charCodeAt(5) +
     decodedString.charCodeAt(6) +
-    decodedString.charCodeAt(7) +
-    decodedString.charCodeAt(8) +
-    decodedString.charCodeAt(9);
+    decodedString.charCodeAt(7);
   return {
     ecu: decodedString.charCodeAt(0),
     bms: decodedString.charCodeAt(1),
     tps: decodedString.charCodeAt(2),
     sas: decodedString.charCodeAt(3),
     whl:
+      decodedString.charCodeAt(5) === 0 ||
       decodedString.charCodeAt(6) === 0 ||
-      decodedString.charCodeAt(7) === 0 ||
-      decodedString.charCodeAt(8) === 0 ||
-      decodedString.charCodeAt(9) === 0
+      decodedString.charCodeAt(7) === 0
         ? 0
-        : whl === 4
+        : whl === 3
         ? 1
         : -1,
+  };
+};
+
+export const getStatusIndicatorData = (
+  decodedString: string,
+): StatusIndicatorData => {
+  return {
+    ecu: decodedString.charCodeAt(0),
+    bms: decodedString.charCodeAt(1),
+    tps: decodedString.charCodeAt(2),
+    sas: decodedString.charCodeAt(3),
+    imu: decodedString.charCodeAt(4),
+    fw: decodedString.charCodeAt(5),
+    rlw: decodedString.charCodeAt(6),
+    rrw: decodedString.charCodeAt(7),
+    fl: decodedString.charCodeAt(8),
+    rl: decodedString.charCodeAt(9),
+    int: decodedString.charCodeAt(10),
   };
 };
 

@@ -27,9 +27,9 @@ const Indicator = ({ status, style }: IndicatorProps): JSX.Element => {
       backgroundColor:
         status === 1
           ? colors.nodeActive
-          : status === 0
-          ? colors.nodeError
-          : colors.nodeInactive,
+          : status === 255
+          ? colors.nodeInactive
+          : colors.nodeError,
     };
   });
   return <Animated.View style={[styles.indicator, animatedStyle, style]} />;

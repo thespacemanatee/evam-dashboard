@@ -20,13 +20,10 @@ export interface StatusIndicatorData {
   tps: number;
   sas: number;
   imu: number;
-  int: number;
-  flw: number;
-  frw: number;
+  fw: number;
   rlw: number;
   rrw: number;
-  fll: number;
-  frl: number;
-  rll: number;
-  rrl: number;
+  fl: number;
+  rl: number;
+  int: number;
 }
