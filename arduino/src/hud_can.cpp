@@ -94,8 +94,9 @@ void checkIncomingCanMessages(){
 
     //check Core Data
     else if(rx_frame.MsgID == THROTTLE_BRAKE_MSG_ID){
-      coreMessage[1] = uint8_t((rx_frame.data.u8[0] * 0.4)); //ew, float calculations
-      coreMessage[2] = uint8_t((rx_frame.data.u8[4] * 0.4)); //ew, float calculations
+      uint16_t throttle = (uint16_t(rx_frame.data.u8[0]) * 4) / 10;
+      coreMessage[1] = uint8_t(throttle); // throttle % - attempted non-float
+      coreMessage[2] = uint8_t((rx_frame.data.u8[4] * 0.4)); // brake %
     }
     else if(rx_frame.MsgID == BATT_STATS_MSG_ID){
         uint16_t battVolt_16_t = (rx_frame.data.u8[0] + (rx_frame.data.u8[1]<<8))/10;
@@ -110,6 +111,9 @@ void checkIncomingCanMessages(){
     } 
     else if(rx_frame.MsgID == VEH_SPEED_MSG_ID){
       coreMessage[0] = rx_frame.data.u8[1]; //just take the second byte (MSB) since we only need 8-bit resolution
+    }
+    else if(rx_frame.MsgID == STEERING_MSG_ID){
+      coreMessage[4] = rx_frame.data.u8[0]; // calibrated steering angle from canbus
     }
 
     //check other data if required

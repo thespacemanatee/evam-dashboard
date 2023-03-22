@@ -35,6 +35,7 @@ extern BLECharacteristic *pBatteryCharacteristic;
 extern BLECharacteristic *pFrontLightingCharacteristic;
 extern BLECharacteristic *pRearLightingCharacteristic;
 extern BLECharacteristic *pInteriorLightingCharacteristic;
+// extern BLECharacteristic *pTurnIndicatorCharacteristic;
 extern BLECharacteristicCallbacks *lightingCallback;
 
 class ConnectionCallbacks : public BLEServerCallbacks

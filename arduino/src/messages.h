@@ -13,12 +13,13 @@
 /********** MESSAGES FOR BLE CHARACTERISTICS **********/
 
 /* Core message to be notified 
-    coreMessage[0] = vel    //Car velocity, 0-255km/h
-    coreMessage[1] = acc    //Accelerator percentage, 0-100%
-    coreMessage[2] = brake  //Brake percentage, 0-100%
-    coreMessage[3] = reverse  //Reverse: 0 or 1
+    coreMessage[0] = vel        //Car velocity, 0-255km/h
+    coreMessage[1] = acc        //Accelerator percentage, 0-100%
+    coreMessage[2] = brake      //Brake percentage, 0-100%
+    coreMessage[3] = reverse    //Reverse: 0 or 1
+    coreMessage[4] = steering   //Center: 128
 */
-extern uint8_t coreMessage[4];
+extern uint8_t coreMessage[5];
 
 /* Node status message to be notified:
     statusMessage[0] = ecu          //engine control unit

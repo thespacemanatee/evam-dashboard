@@ -134,6 +134,9 @@ void setupBLE(){
   pInteriorLightingCharacteristic = pLightingService->createCharacteristic(
       INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+  // pTurnIndicatorCharacteristic = pLightingService->createCharacteristic(
+  //     INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
+  //     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 
   lightingCallback = new LightingUpdateCallback();
 

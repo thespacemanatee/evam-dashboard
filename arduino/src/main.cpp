@@ -6,17 +6,21 @@ Ported to Arduino ESP32 by Evandro Copercini
 updated by chegewara)
 
 FUNCTIONS:
+- Reads CAN messages from car and updates BLE charactersitics (see excel)
+-- Status of CAN nodes
+-- Code data such as speed, battery %, current, etc
+- Reads lighting data from BLE and updates car CAN
+- Monitors wheel lock out switch and sends relevant CAN message
+- Monitors reverse switch and sends out relevant CAN message
 
-
+TODO / Bugs: 
+- Check why battery current is capped at 297A
 
 Designed to run on an ESP32 (ARDUINO_AVR_NANO)
 
 
 !!THIS CODE HAS NO OVERFLOW PROTECTION!!
 (since the car isn't expected to remain on for 50 days consecutively)
-  
-TODO:  ECO/BOOST not enabled (probably not enabling)
-       Test
 */
 
 #include <EVAM.h>
@@ -26,11 +30,6 @@ TODO:  ECO/BOOST not enabled (probably not enabling)
 /*************** SETUP ***************/
 void setup()
 {
-  /*
-  #ifndef CAN_CONNECTED
-  srand(static_cast<unsigned>(time(0)));  //to create the random data
-  #endif
-  */
   #ifdef SERIAL_DEBUG
   Serial.begin(115200);
   Serial.println("EVAM HUD (Dashboard) Node");
@@ -50,7 +49,6 @@ void setup()
     Serial.println("CAN Set Up Failed!");
   }
   #endif
-
 
   /* Message Set up */
   initMessageData();
