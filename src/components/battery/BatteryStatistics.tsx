@@ -22,6 +22,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
   },
+  percentageTextContainer: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  percentageText: {
+    position: 'absolute',
+    color: 'red',
+    fontFamily: 'Digital-Numbers',
+    fontSize: 20,
+  },
   stats: {
     color: 'white',
     fontFamily: 'Digital-Numbers',
@@ -49,6 +60,12 @@ const BatteryStatistics = ({
   temperature,
   style,
 }: BatteryStatisticsProps): JSX.Element => {
+  const percentageProps = useAnimatedProps(() => {
+    return {
+      text: `${percentage.value.toFixed(1)}%`,
+    };
+  });
+
   const voltageProps = useAnimatedProps(() => {
     return {
       text: voltage.value.toFixed(1),
@@ -70,7 +87,15 @@ const BatteryStatistics = ({
   return (
     <View style={style}>
       <View style={styles.container}>
-        <Battery percentage={percentage} style={styles.battery} />
+        <View>
+          <Battery percentage={percentage} style={styles.battery} />
+          <View style={styles.percentageTextContainer}>
+            <AnimateableText
+              animatedProps={percentageProps}
+              style={styles.percentageText}
+            />
+          </View>
+        </View>
         <View style={styles.statsContainer}>
           <AnimateableText animatedProps={voltageProps} style={styles.stats} />
           <Text style={styles.units}>V</Text>
