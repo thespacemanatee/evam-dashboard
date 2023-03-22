@@ -33,7 +33,7 @@ const SpeedIndicator: React.FC<SpeedIndicatorProps> = ({ progress, style }) => {
   const { width } = useWindowDimensions();
 
   const animatedProps = useAnimatedProps(() => ({
-    text: progress.value.toString().padStart(2, '0'),
+    text: progress.value.toString().padStart(3, '0'),
   }));
 
   return (

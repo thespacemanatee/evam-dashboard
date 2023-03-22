@@ -34,6 +34,7 @@ import { type TopIndicatorData } from '../index';
 import RadioPlayerSheet from './RadioPlayerSheet';
 import { type DashboardScreenProps } from '../navigation';
 import { setSelectedDeviceUUID } from '../features/settings/settingsSlice';
+import SteeringWheel from '../components/core/SteeringWheel';
 
 const styles = StyleSheet.create({
   screen: {
@@ -45,11 +46,14 @@ const styles = StyleSheet.create({
     top: 32,
     left: 32,
   },
-  battery: {
+  horizontalIndicatorContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    marginHorizontal: 32,
+  },
+  horizontalIndicators: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    marginRight: 16,
   },
   analogIndicators: {
     flexDirection: 'row',
@@ -58,6 +62,7 @@ const styles = StyleSheet.create({
     bottom: 16,
   },
   speedIndicator: {
+    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -107,6 +112,7 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
   const velocity = useSharedValue(0);
   const acceleration = useSharedValue(0);
   const brake = useSharedValue(0);
+  const steering = useSharedValue(127);
   const battPercentage = useSharedValue(0);
   const battVoltage = useSharedValue(0);
   const battCurrent = useSharedValue(0);
@@ -189,13 +195,14 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
           acceleration.value = decodedString.charCodeAt(1);
           brake.value = decodedString.charCodeAt(2);
           setIsReversing(decodedString.charCodeAt(3) === 1);
+          steering.value = decodedString.charCodeAt(4);
         });
       } catch (err) {
         setIsDisconnected(true);
         console.error('[monitorAndUpdateCoreValues]', err);
       }
     },
-    [acceleration, brake, velocity],
+    [acceleration, brake, steering, velocity],
   );
 
   const monitorAndUpdateStatusValues = useCallback(async (uuid?: string) => {
@@ -339,17 +346,19 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
             style={styles.rightTachometer}
           />
         </View>
-        <SpeedIndicator
-          progress={velocity}
-          style={[StyleSheet.absoluteFill, styles.speedIndicator]}
-        />
-        <BatteryStatistics
-          percentage={battPercentage}
-          voltage={battVoltage}
-          current={battCurrent}
-          temperature={battTemperature}
-          style={styles.battery}
-        />
+        <View style={styles.horizontalIndicatorContainer}>
+          <View style={styles.horizontalIndicators}>
+            <SteeringWheel progress={steering} />
+          </View>
+          <BatteryStatistics
+            percentage={battPercentage}
+            voltage={battVoltage}
+            current={battCurrent}
+            temperature={battTemperature}
+            style={styles.horizontalIndicators}
+          />
+        </View>
+        <SpeedIndicator progress={velocity} style={styles.speedIndicator} />
         <TopIndicator
           data={indicatorData}
           onPress={() => {
