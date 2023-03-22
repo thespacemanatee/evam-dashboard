@@ -6,7 +6,12 @@ Ported to Arduino ESP32 by Evandro Copercini
 updated by chegewara)
 
 FUNCTIONS:
-
+- Reads CAN messages from car and updates BLE charactersitics (see excel)
+-- Status of CAN nodes
+-- Code data such as speed, battery %, current, etc
+- Reads lighting data from BLE and updates car CAN
+- Monitors wheel lock out switch and sends relevant CAN message
+- Monitors reverse switch and sends out relevant CAN message
 
 
 Designed to run on an ESP32 (ARDUINO_AVR_NANO)
@@ -14,9 +19,6 @@ Designed to run on an ESP32 (ARDUINO_AVR_NANO)
 
 !!THIS CODE HAS NO OVERFLOW PROTECTION!!
 (since the car isn't expected to remain on for 50 days consecutively)
-  
-TODO:  ECO/BOOST not enabled (probably not enabling)
-       Test
 */
 
 #include <EVAM.h>

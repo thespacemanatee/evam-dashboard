@@ -1,7 +1,7 @@
 #include <messages.h>
 
 /********** MESSAGES FOR BLE CHARACTERISTICS **********/
-uint8_t coreMessage[4];
+uint8_t coreMessage[5];
 uint8_t statusMessage[11];
 uint8_t batteryMessage[5];
 
