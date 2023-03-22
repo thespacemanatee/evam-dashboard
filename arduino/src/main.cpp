@@ -13,6 +13,8 @@ FUNCTIONS:
 - Monitors wheel lock out switch and sends relevant CAN message
 - Monitors reverse switch and sends out relevant CAN message
 
+TODO / Bugs: 
+- Check why battery current is capped at 297A
 
 Designed to run on an ESP32 (ARDUINO_AVR_NANO)
 
@@ -28,11 +30,6 @@ Designed to run on an ESP32 (ARDUINO_AVR_NANO)
 /*************** SETUP ***************/
 void setup()
 {
-  /*
-  #ifndef CAN_CONNECTED
-  srand(static_cast<unsigned>(time(0)));  //to create the random data
-  #endif
-  */
   #ifdef SERIAL_DEBUG
   Serial.begin(115200);
   Serial.println("EVAM HUD (Dashboard) Node");
@@ -52,7 +49,6 @@ void setup()
     Serial.println("CAN Set Up Failed!");
   }
   #endif
-
 
   /* Message Set up */
   initMessageData();

@@ -94,7 +94,8 @@ void checkIncomingCanMessages(){
 
     //check Core Data
     else if(rx_frame.MsgID == THROTTLE_BRAKE_MSG_ID){
-      coreMessage[1] = uint8_t((uint16_t(rx_frame.data.u8[0]) * 10) / 4); // throttle % - attempted non-float
+      uint16_t throttle = (uint16_t(rx_frame.data.u8[0]) * 4) / 10;
+      coreMessage[1] = uint8_t(throttle); // throttle % - attempted non-float
       coreMessage[2] = uint8_t((rx_frame.data.u8[4] * 0.4)); // brake %
     }
     else if(rx_frame.MsgID == BATT_STATS_MSG_ID){
