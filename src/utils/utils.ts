@@ -29,7 +29,6 @@ const getCharacteristic = async (
   deviceUUID: string,
   characteristicUUID: string,
 ): Promise<Characteristic | undefined> => {
-  let characteristic: Characteristic | undefined;
   const device = await bleManagerRef.current?.devices([deviceUUID]);
   if (device != null && device.length > 0) {
     const services = await (
@@ -37,69 +36,67 @@ const getCharacteristic = async (
     ).services();
     const service = services.find((e) => e.uuid === serviceUUID);
     const characteristics = await service?.characteristics();
-    characteristic = characteristics?.find(
-      (e) => e.uuid === characteristicUUID,
-    );
+    return characteristics?.find((e) => e.uuid === characteristicUUID);
   }
-  return characteristic;
+  throw new Error('Device not found');
 };
 
-export const getCoreCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
+export const getCoreCharacteristic = async (
+  selectedDeviceUUID?: string,
+): Promise<Characteristic | undefined> => {
   return await getCharacteristic(
     CORE_SERVICE_UUID,
-    store.getState().settings.selectedDeviceUUID,
+    selectedDeviceUUID ?? store.getState().settings.selectedDeviceUUID,
     CORE_CHARACTERISTIC_UUID,
   );
 };
 
-export const getStatusCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
+export const getStatusCharacteristic = async (
+  selectedDeviceUUID?: string,
+): Promise<Characteristic | undefined> => {
   return await getCharacteristic(
     STATUS_SERVICE_UUID,
-    store.getState().settings.selectedDeviceUUID,
+    selectedDeviceUUID ?? store.getState().settings.selectedDeviceUUID,
     STATUS_CHARACTERISTIC_UUID,
   );
 };
 
-export const getBatteryCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
+export const getBatteryCharacteristic = async (
+  selectedDeviceUUID?: string,
+): Promise<Characteristic | undefined> => {
   return await getCharacteristic(
     STATUS_SERVICE_UUID,
-    store.getState().settings.selectedDeviceUUID,
+    selectedDeviceUUID ?? store.getState().settings.selectedDeviceUUID,
     BATTERY_CHARACTERISTIC_UUID,
   );
 };
 
-export const getFrontLightingCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
+export const getFrontLightingCharacteristic = async (
+  selectedDeviceUUID?: string,
+): Promise<Characteristic | undefined> => {
   return await getCharacteristic(
     LIGHTING_SERVICE_UUID,
-    store.getState().settings.selectedDeviceUUID,
+    selectedDeviceUUID ?? store.getState().settings.selectedDeviceUUID,
     FRONT_LIGHTING_CHARACTERISTIC_UUID,
   );
 };
 
-export const getRearLightingCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
+export const getRearLightingCharacteristic = async (
+  selectedDeviceUUID?: string,
+): Promise<Characteristic | undefined> => {
   return await getCharacteristic(
     LIGHTING_SERVICE_UUID,
-    store.getState().settings.selectedDeviceUUID,
+    selectedDeviceUUID ?? store.getState().settings.selectedDeviceUUID,
     REAR_LIGHTING_CHARACTERISTIC_UUID,
   );
 };
 
-export const getInteriorLightingCharacteristic = async (): Promise<
-  Characteristic | undefined
-> => {
+export const getInteriorLightingCharacteristic = async (
+  selectedDeviceUUID?: string,
+): Promise<Characteristic | undefined> => {
   return await getCharacteristic(
     LIGHTING_SERVICE_UUID,
-    store.getState().settings.selectedDeviceUUID,
+    selectedDeviceUUID ?? store.getState().settings.selectedDeviceUUID,
     INTERIOR_LIGHTING_CHARACTERISTIC_UUID,
   );
 };

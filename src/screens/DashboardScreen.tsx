@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useSharedValue } from 'react-native-reanimated';
 import { type Subscription } from 'react-native-ble-plx';
 import RadioPlayer from 'react-native-radio-player';
@@ -11,7 +18,7 @@ import RightTachometer from '../components/core/RightTachometer';
 import BatteryStatistics from '../components/battery/BatteryStatistics';
 import DashboardMenu from '../components/ui/DashboardMenu';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { bleManagerRef } from '../utils/BleHelper';
+import { scanDevices } from '../utils/BleHelper';
 import {
   decodeBleString,
   getBatteryCharacteristic,
@@ -26,6 +33,7 @@ import TopIndicator from '../components/status/TopIndicator';
 import { type TopIndicatorData } from '../index';
 import RadioPlayerSheet from './RadioPlayerSheet';
 import { type DashboardScreenProps } from '../navigation';
+import { setSelectedDeviceUUID } from '../features/settings/settingsSlice';
 
 const styles = StyleSheet.create({
   screen: {
@@ -75,6 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     borderWidth: 1,
     borderColor: 'red',
+    alignItems: 'center',
   },
   disconnectedText: {
     color: 'white',
@@ -94,6 +103,7 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
   const [indicatorData, setIndicatorData] = useState<TopIndicatorData>();
   const [isReversing, setIsReversing] = useState(false);
   const [isDisconnected, setIsDisconnected] = useState(true);
+  const [isBluetoothLoading, setIsBluetoothLoading] = useState(false);
   const velocity = useSharedValue(0);
   const acceleration = useSharedValue(0);
   const brake = useSharedValue(0);
@@ -163,39 +173,41 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
     }
   }, [channels, currentChannel, dispatch]);
 
-  const monitorAndUpdateCoreValues = useCallback(async () => {
-    try {
-      const coreCharacteristic = await getCoreCharacteristic();
-      return coreCharacteristic?.monitor((err, cha) => {
-        if (err != null) {
-          setIsDisconnected(true);
-          console.error('[coreCharacteristic.monitor]', err);
-          return;
-        }
-        const decodedString = decodeBleString(cha?.value);
-        velocity.value = decodedString.charCodeAt(0);
-        acceleration.value = decodedString.charCodeAt(1);
-        brake.value = decodedString.charCodeAt(2);
-        setIsReversing(decodedString.charCodeAt(3) === 1);
+  const monitorAndUpdateCoreValues = useCallback(
+    async (uuid?: string) => {
+      try {
+        const coreCharacteristic = await getCoreCharacteristic(uuid);
         setIsDisconnected(false);
-      });
-    } catch (err) {
-      setIsDisconnected(true);
-      console.error('[monitorAndUpdateCoreValues]', err);
-    }
-  }, [acceleration, brake, velocity]);
+        return coreCharacteristic?.monitor((err, cha) => {
+          if (err != null) {
+            setIsDisconnected(true);
+            console.error('[coreCharacteristic.monitor]', err);
+            return;
+          }
+          const decodedString = decodeBleString(cha?.value);
+          velocity.value = decodedString.charCodeAt(0);
+          acceleration.value = decodedString.charCodeAt(1);
+          brake.value = decodedString.charCodeAt(2);
+          setIsReversing(decodedString.charCodeAt(3) === 1);
+        });
+      } catch (err) {
+        setIsDisconnected(true);
+        console.error('[monitorAndUpdateCoreValues]', err);
+      }
+    },
+    [acceleration, brake, velocity],
+  );
 
-  const monitorAndUpdateStatusValues = useCallback(async () => {
+  const monitorAndUpdateStatusValues = useCallback(async (uuid?: string) => {
     try {
-      const statusCharacteristic = await getStatusCharacteristic();
+      const statusCharacteristic = await getStatusCharacteristic(uuid);
+      setIsDisconnected(false);
       let decodedString: string;
       decodedString = decodeBleString(
         (await statusCharacteristic?.read())?.value,
       );
       setIndicatorData(getTopIndicatorData(decodedString));
-
       return statusCharacteristic?.monitor((err, cha) => {
-        setIsDisconnected(true);
         if (err != null) {
           setIsDisconnected(true);
           console.error('[statusCharacteristic.monitor]', err);
@@ -203,7 +215,6 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
         }
         decodedString = decodeBleString(cha?.value);
         setIndicatorData(getTopIndicatorData(decodedString));
-        setIsDisconnected(false);
       });
     } catch (err) {
       setIsDisconnected(true);
@@ -211,31 +222,66 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
     }
   }, []);
 
-  const monitorAndUpdateBatteryValues = useCallback(async () => {
-    try {
-      const batteryCharacteristic = await getBatteryCharacteristic();
-
-      return batteryCharacteristic?.monitor((err, cha) => {
-        if (err != null) {
-          setIsDisconnected(true);
-          console.error('[batteryCharacteristic.monitor]', err);
-          return;
-        }
-        const decodedString = decodeBleString(cha?.value);
-        battPercentage.value = decodedString.charCodeAt(0);
-        battVoltage.value = decodedString.charCodeAt(1);
-        battCurrent.value =
-          (decodedString.charCodeAt(3) * 256 + decodedString.charCodeAt(2)) /
-            10 -
-          320;
-        battTemperature.value = decodedString.charCodeAt(4);
+  const monitorAndUpdateBatteryValues = useCallback(
+    async (uuid?: string) => {
+      try {
+        const batteryCharacteristic = await getBatteryCharacteristic(uuid);
         setIsDisconnected(false);
-      });
+        return batteryCharacteristic?.monitor((err, cha) => {
+          if (err != null) {
+            setIsDisconnected(true);
+            console.error('[batteryCharacteristic.monitor]', err);
+            return;
+          }
+          const decodedString = decodeBleString(cha?.value);
+          battPercentage.value = decodedString.charCodeAt(0);
+          battVoltage.value = decodedString.charCodeAt(1);
+          battCurrent.value =
+            (decodedString.charCodeAt(3) * 256 + decodedString.charCodeAt(2)) /
+              10 -
+            320;
+          battTemperature.value = decodedString.charCodeAt(4);
+        });
+      } catch (err) {
+        setIsDisconnected(true);
+        console.error('[monitorAndUpdateBatteryValues]', err);
+      }
+    },
+    [battCurrent, battPercentage, battTemperature, battVoltage],
+  );
+
+  const handleScanDevices = useCallback(async (): Promise<void> => {
+    try {
+      setIsBluetoothLoading(true);
+      await scanDevices(
+        (scannedDevice) => {
+          if (scannedDevice.name === 'EVAM') {
+            void (async () => {
+              try {
+                if (!(await scannedDevice.isConnected())) {
+                  await scannedDevice.connect();
+                  console.log(scannedDevice.name, 'is connected');
+                  dispatch(setSelectedDeviceUUID(scannedDevice.id));
+                }
+              } catch (err) {
+                console.error('[handleScanDevices]', err);
+              }
+            })();
+          }
+        },
+        () => {
+          setIsBluetoothLoading(false);
+        },
+      );
     } catch (err) {
-      setIsDisconnected(true);
-      console.error('[monitorAndUpdateBatteryValues]', err);
+      setIsBluetoothLoading(false);
+      console.error(err);
     }
-  }, [battCurrent, battPercentage, battTemperature, battVoltage]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    void handleScanDevices();
+  }, [handleScanDevices]);
 
   useEffect(() => {
     let coreSubscription: Subscription | undefined;
@@ -243,11 +289,10 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
     let batterySubscription: Subscription | undefined;
     void (async () => {
       try {
-        const device = await bleManagerRef.current?.devices([deviceUUID]);
-        if (device != null && device.length > 0) {
-          coreSubscription = await monitorAndUpdateCoreValues();
-          statusSubscription = await monitorAndUpdateStatusValues();
-          batterySubscription = await monitorAndUpdateBatteryValues();
+        if (deviceUUID !== '') {
+          coreSubscription = await monitorAndUpdateCoreValues(deviceUUID);
+          statusSubscription = await monitorAndUpdateStatusValues(deviceUUID);
+          batterySubscription = await monitorAndUpdateBatteryValues(deviceUUID);
         }
       } catch (err) {
         console.error(err);
@@ -315,6 +360,24 @@ const DashboardScreen = ({ navigation }: DashboardScreenProps): JSX.Element => {
           <View style={styles.disconnectedOverlay}>
             <View style={styles.disconnectedCard}>
               <Text style={styles.disconnectedText}>Disconnected</Text>
+              {isBluetoothLoading ? (
+                <ActivityIndicator size="large" color="white" />
+              ) : (
+                <TouchableOpacity
+                  onPress={handleScanDevices}
+                  style={{ flexDirection: 'row', marginTop: 16 }}
+                >
+                  <Text style={{ color: 'white', fontSize: 18 }}>
+                    Try again
+                  </Text>
+                  <Ionicons
+                    name="refresh-circle"
+                    size={24}
+                    color="white"
+                    style={{ marginStart: 4 }}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         )}

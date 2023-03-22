@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { type StackScreenProps } from '@react-navigation/stack';
 import { type Service, type Subscription } from 'react-native-ble-plx';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { decode as btoa } from 'base-64';
 
 import { type SettingsStackParamList } from '../navigation';
@@ -47,11 +48,14 @@ const DeviceScreen = ({
   const dispatch = useAppDispatch();
 
   const disconnectDevice = async (): Promise<void> => {
-    const isDeviceConnected = await device.isConnected();
-    if (isDeviceConnected) {
-      await device.cancelConnection();
-      setIsConnected(false);
-      setServices(undefined);
+    try {
+      if (await device.isConnected()) {
+        await device.cancelConnection();
+        setIsConnected(false);
+        setServices(undefined);
+      }
+    } catch (err) {
+      console.error('[DeviceScreen]', err);
     }
   };
 
@@ -75,6 +79,7 @@ const DeviceScreen = ({
         subscription = device.onDisconnected(() => {
           setIsConnected(false);
           setServices(undefined);
+          dispatch(setSelectedDeviceUUID(''));
           Alert.alert('Disconnected', 'Device was disconnected');
         });
       } catch (err) {
@@ -93,7 +98,7 @@ const DeviceScreen = ({
   };
 
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={styles.screen}>
       <Button onPress={disconnectDevice} title="DISCONNECT" />
       <View style={styles.container}>
         <BaseCard disabled>
@@ -114,7 +119,7 @@ const DeviceScreen = ({
           style={styles.services}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
